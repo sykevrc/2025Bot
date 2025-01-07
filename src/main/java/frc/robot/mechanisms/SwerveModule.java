@@ -35,11 +35,14 @@ import frc.robot.Constants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.tools.parts.PIDGains;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SPI;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -53,17 +56,13 @@ public class SwerveModule {
 	/** Creates a new SwerveModule. */
 	//private final CANBus kCANBus = new CANBus();
 
-	//private final CANSparkFlex driveMotor;
-	//private final  CANSparkMax driveMotor;
 	private final SparkFlex driveMotor;
 	private SparkFlexSim driveMotorSim = null;
-	//private final CANSparkMax turningMotor;
 	private final SparkMax turningMotor;
 	private SparkMaxSim turninMaxSim = null;
 	private final CANcoder cancoder;
 	private final RelativeEncoder driveEncoder;
 
-	//private final SparkPIDController drivePID;
 	private final SparkClosedLoopController drivePID;
 	private final ProfiledPIDController m_turningPIDController;
 
@@ -84,7 +83,6 @@ public class SwerveModule {
 	SparkMaxConfig turnConfig = null;
 	SparkMaxConfig driveConfig = null;
 	
-
 	SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
 			ModuleConstants.ksTurning, ModuleConstants.kvTurning);
 
@@ -111,48 +109,47 @@ public class SwerveModule {
 		}
 
 		// Initialize the motors
-		//driveMotor = new CANSparkFlex(driveMotorChannel, MotorType.kBrushless);
-		//driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
 		driveMotor = new SparkFlex(driveMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			//REVPhysicsSim.getInstance().addSparkMax(driveMotor, 2.6f, 5676);
 			driveMotorSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
 
 		}
-		//turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
 		turningMotor = new SparkMax(turningMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			//REVPhysicsSim.getInstance().addSparkMax(turningMotor, 2.6f, 5676);
 			turninMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
 		}
 
 		//turningMotor.restoreFactoryDefaults();
 		//driveMotor.restoreFactoryDefaults();
 
-		//driveMotor.setInverted(invertDriveMotor);
-		//turningMotor.setInverted(invertTurningMotor);
+
 		cancoder = new CANcoder(absoluteEncoderPort, Constants.kCanivoreCANBusName);
 		
 		//Timer.delay(1);
 		
 		cancoder.clearStickyFaults();
 
-		driveConfig = new SparkMaxConfig();
+		SparkFlexConfig driveConfig = new SparkFlexConfig();
 
 		driveConfig
-            .inverted(false)
+            .inverted(invertDriveMotor)
             .idleMode(IdleMode.kCoast);
         //driveConfig.encoder
             //.positionConversionFactor(1000)
             //.velocityConversionFactor(1000);
         driveConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(Constants.ArmConstants.P, Constants.ArmConstants.I, Constants.ArmConstants.D);
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            //.pid(Constants.ArmConstants.P, Constants.ArmConstants.I, Constants.ArmConstants.D);
         driveConfig.signals.primaryEncoderPositionPeriodMs(5);
 
-        driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        driveMotor.configure(
+			driveConfig, 
+			ResetMode.kResetSafeParameters, 
+			PersistMode.kNoPersistParameters
+		);
 
 		this.drivePID = driveMotor.getClosedLoopController();
 
@@ -172,14 +169,18 @@ public class SwerveModule {
 		turnConfig = new SparkMaxConfig();
 
 		turnConfig
-            .inverted(false)
+            .inverted(invertTurningMotor)
             .idleMode(IdleMode.kCoast);
         //turnConfig.encoder
             //.positionConversionFactor(1000)
             //.velocityConversionFactor(1000);
         turnConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(Constants.ArmConstants.P, Constants.ArmConstants.I, Constants.ArmConstants.D);
+			.pid(
+				Constants.DriveConstants.kGyroTurningGains.kP, 
+				Constants.DriveConstants.kGyroTurningGains.kI, 
+				Constants.DriveConstants.kGyroTurningGains.kD
+			);
         turnConfig.signals.primaryEncoderPositionPeriodMs(5);
 
         turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
