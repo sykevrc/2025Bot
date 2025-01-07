@@ -51,12 +51,10 @@ public class ArmSubsystem extends SubsystemBase {
             }
 
             //motor = new CANSparkMax(Constants.ArmConstants.motor_id, MotorType.kBrushless);
-            motor = new SparkMax(Constants.ArmConstants.motor_id, MotorType.kBrushless);
+            /*motor = new SparkMax(Constants.ArmConstants.motor_id, MotorType.kBrushless);
             drivePID = motor.getClosedLoopController();
 
             if (isSim) {
-                //REVPhysicsSim.getInstance().addSparkMax(motor, 2.6f, 5676);
-                //SparkMaxSim maxSim = new SparkMaxSim(max, maxGearbox);
                 DCMotor maxGearbox = DCMotor.getNEO(1);
                 SparkMaxSim maxSim = new SparkMaxSim(motor, maxGearbox);
             }
@@ -74,7 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
                 .pid(Constants.ArmConstants.P, Constants.ArmConstants.I, Constants.ArmConstants.D);
             config.signals.primaryEncoderPositionPeriodMs(5);
 
-            motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);*/
         }
     }
 
@@ -115,12 +113,12 @@ public class ArmSubsystem extends SubsystemBase {
             
         }
 
-        drivePID.setReference(targetPosition, ControlType.kPosition);
+        //drivePID.setReference(targetPosition, ControlType.kPosition);
     }
 
     @Override
 	public void periodic() {
-        drivePID.setReference(targetPosition, ControlType.kPosition);
+        //drivePID.setReference(targetPosition, ControlType.kPosition);
     }
     
 }
