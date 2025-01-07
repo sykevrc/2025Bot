@@ -400,6 +400,8 @@ public class DriveSubsystem extends SubsystemBase {
 		xSpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
 		ySpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
 
+		//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+
 		if (gyroTurning) {
 			targetRotationDegrees += rot;
 			rot = gyroTurnPidController.calculate(getHeading360(), targetRotationDegrees);

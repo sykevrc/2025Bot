@@ -57,7 +57,7 @@ public class SwerveModule {
 	//private final CANBus kCANBus = new CANBus();
 
 	private final SparkFlex driveMotor;
-	private SparkFlexSim driveMotorSim = null;
+	private SparkFlexSim driveFlexSim = null;
 	private final SparkMax turningMotor;
 	private SparkMaxSim turninMaxSim = null;
 	private final CANcoder cancoder;
@@ -112,23 +112,15 @@ public class SwerveModule {
 		driveMotor = new SparkFlex(driveMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			driveMotorSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
-
+			//driveFlexSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
 		}
 		turningMotor = new SparkMax(turningMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			turninMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
+			//turninMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
 		}
 
-		//turningMotor.restoreFactoryDefaults();
-		//driveMotor.restoreFactoryDefaults();
-
-
 		cancoder = new CANcoder(absoluteEncoderPort, Constants.kCanivoreCANBusName);
-		
-		//Timer.delay(1);
-		
 		cancoder.clearStickyFaults();
 
 		SparkFlexConfig driveConfig = new SparkFlexConfig();
@@ -140,10 +132,23 @@ public class SwerveModule {
             //.positionConversionFactor(1000)
             //.velocityConversionFactor(1000);
         driveConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-            //.pid(Constants.ArmConstants.P, Constants.ArmConstants.I, Constants.ArmConstants.D);
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+			.pid(
+				drivePID.kP,
+				drivePID.kI,
+				drivePID.kD
+			);
         driveConfig.signals.primaryEncoderPositionPeriodMs(5);
 
+		driveConfig.encoder
+		.positionConversionFactor(
+			ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference
+		)
+		.velocityConversionFactor(
+			ModuleConstants.kdriveGearRatioL3
+			* ModuleConstants.kwheelCircumference
+			* (1d / 60d)
+		);
 
         driveMotor.configure(
 			driveConfig, 
