@@ -9,10 +9,13 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends LoggedRobot {
+// This is needed for AdvantageScope
+//public class Robot extends LoggedRobot {
+public class Robot extends TimedRobot {
 	private Command autonomousCommand;
 
 	private RobotContainer robotContainer;
@@ -22,11 +25,13 @@ public class Robot extends LoggedRobot {
 	public void robotInit() {
 
 		Pathfinding.setPathfinder(new LocalADStarAK());
-		Logger.addDataReceiver(new NT4Publisher());
+
+		// This is for advantagekit
+		//Logger.addDataReceiver(new NT4Publisher());
 
 		//PathPlannerServer.startServer(5811);
 
-		robotContainer = new RobotContainer();
+		robotContainer = new RobotContainer(!Robot.isReal());
 		DriverStation.silenceJoystickConnectionWarning(true);
 
 		if(Constants.kEnableLimelight) {
@@ -35,7 +40,8 @@ public class Robot extends LoggedRobot {
         	}
 		}
 
-		Logger.start();
+		// This is for advantagekit
+		//Logger.start();
 	}
 
 	@Override
@@ -43,11 +49,11 @@ public class Robot extends LoggedRobot {
 
 		CommandScheduler.getInstance().run();
 
-		Logger.recordOutput("Power/BatteryVoltage", RobotController.getBatteryVoltage());
+		/*Logger.recordOutput("Power/BatteryVoltage", RobotController.getBatteryVoltage());
 		Logger.recordOutput("Power/IsBrownedOut", RobotController.isBrownedOut());
 		Logger.recordOutput("CAN/ReceiveErrorCount", RobotController.getCANStatus().receiveErrorCount);
 		Logger.recordOutput("CAN/TransmitErrorCount", RobotController.getCANStatus().transmitErrorCount);
-		Logger.recordOutput("CAN/PercentBusUtilization", RobotController.getCANStatus().percentBusUtilization);
+		Logger.recordOutput("CAN/PercentBusUtilization", RobotController.getCANStatus().percentBusUtilization);*/
 	}
 
 	@Override

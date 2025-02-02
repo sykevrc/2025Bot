@@ -4,14 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.*;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -20,9 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -32,7 +28,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.PhotonVisionConstants;
-import edu.wpi.first.cscore.VideoMode;
 import edu.wpi.first.wpilibj.RobotBase;
 
 //import edu.wpi.first.cscore.VideoMode.PixelFormat;
@@ -270,6 +265,7 @@ public class PhotonVision {
 
 	// Get the pose/location on the field that photonvision thinks the robot is at
 	public EstimatedRobotPose getPose(Pose2d prevEstimatedRobotPose) {
+		try {
 		this.prevEstimatedRobotPose = prevEstimatedRobotPose;
 
 		o = getPhotonPose(prevEstimatedRobotPose);
@@ -298,24 +294,36 @@ public class PhotonVision {
 			// 	"AprilTagVision/TargetsUsed",
 			// 	allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
 
-			Logger.recordOutput(
-			 	"AprilTagVision/TargetsUsed",
-			 	allTagPoses.toArray(new Pose3d[allTagPoses.size()])
-			);
+			if(Constants.enableLogger) {
+
+				Logger.recordOutput(
+			 		"AprilTagVision/TargetsUsed",
+			 		allTagPoses.toArray(new Pose3d[allTagPoses.size()])
+				);
+			}
 			
 
 		} else {
 			// System.out.println("PhonVision::getPose() - I don't see any tags");
 			// Since we do not have any tags that we can see, blank out the list
 			// System.out.println("we do not have a pose");
-			Logger.recordOutput(
+
+			if(Constants.enableLogger) {
+				Logger.recordOutput(
 					"AprilTagVision/TagPoses",
 					allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
 
-			_estimatedRobotPose = null;
+				_estimatedRobotPose = null;
+			}
 		}
 
 		return _estimatedRobotPose;
+		} catch (Exception e) {
+			System.out.println("got it");
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	// Set the reference 2D (X,Y) pose/position for PhotonVision to use
@@ -463,10 +471,13 @@ public class PhotonVision {
 							}
 						}
 
-						// use _lastPhotonPoseEstimatorPose since we assigned it earlier
-						Logger.recordOutput(
+						if(Constants.enableLogger) {
+
+							// use _lastPhotonPoseEstimatorPose since we assigned it earlier
+							Logger.recordOutput(
 								"PhotonVisionEstimator/Robot",
 								_lastPhotonPoseEstimatorPose);
+						}
 
 						
 
@@ -475,9 +486,11 @@ public class PhotonVision {
 					}
 				} else {
 
-					Logger.recordOutput(
+					if(Constants.enableLogger) {
+						Logger.recordOutput(
 							"PhotonVisionEstimator/Robot",
 							_lastPhotonPoseEstimatorPose);
+					}
 
 					return Optional.empty();
 				}

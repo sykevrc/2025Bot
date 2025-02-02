@@ -34,13 +34,17 @@ import edu.wpi.first.math.geometry.Transform3d;
  */
 public final class Constants {
 
-	public static boolean debugDriveTrain = true;
+	public static boolean debugDriveTrain = false;
+	public static boolean kEnableDriveSubSystemLogger = false;
 	public static boolean enableLogger = false;
 	public static boolean kEnablePhotonVision = false;
 	public static boolean debugPhotonVision = false;
-	public static boolean kEnableLimelight = false;
+	public static boolean kEnableLimelight = true;
 	public static boolean kDebugLimelight = false;
 	public static boolean enableArm = false;
+	public static boolean kEnableSlider = true;
+	public static boolean kEnableDebugSlider = true;
+	public static boolean enableEndEffector = false;
 
 	public static class ModuleConstants {
 
@@ -56,9 +60,11 @@ public final class Constants {
 		public static final double kturnGearRatio = 1d / (150d / 7d);
 
 		public static final double kwheelCircumference = Units.inchesToMeters(4) * Math.PI;
+		//public static final double kwheelCircumference = Units.inchesToMeters(3.5) * Math.PI;
 
 		// The max speed the modules are capable of
-		public static final double kMaxModuleSpeedMetersPerSecond = Units.feetToMeters(16.5);
+		//public static final double kMaxModuleSpeedMetersPerSecond = Units.feetToMeters(16.5);
+		public static final double kMaxModuleSpeedMetersPerSecond = 16.5;
 
 		//public static final double ksVolts = .1;
 		public static final double kDriveFeedForward = .2;
@@ -68,22 +74,22 @@ public final class Constants {
 		public static final double ksTurning = .17161; 
 
 		// NEO drive motor CAN ID's
-		public static final int kFrontLeftDriveMotorPort = 4;
-		public static final int kFrontRightDriveMotorPort = 6;
-		public static final int kRearLeftDriveMotorPort = 2;
-		public static final int kRearRightDriveMotorPort = 8;
+		public static final int kFrontLeftDriveMotorPort = 2;
+		public static final int kFrontRightDriveMotorPort = 4;
+		public static final int kRearLeftDriveMotorPort = 8;
+		public static final int kRearRightDriveMotorPort = 6;
 
 		// NEO turning motor CAN ID's
-		public static final int kFrontLeftTurningMotorPort = 3;
-		public static final int kFrontRightTurningMotorPort = 5;
-		public static final int kRearLeftTurningMotorPort = 1;
-		public static final int kRearRightTurningMotorPort = 7;
+		public static final int kFrontLeftTurningMotorPort = 1;
+		public static final int kFrontRightTurningMotorPort = 3;
+		public static final int kRearLeftTurningMotorPort = 7;
+		public static final int kRearRightTurningMotorPort = 5;
 
 		// CANcoder CAN ID's
-		public static final int kFrontLeftTurningEncoderPort = 10;
-		public static final int kFrontRightTurningEncoderPort = 11;
-		public static final int kRearLeftTurningEncoderPort = 9;
-		public static final int kRearRightTurningEncoderPort = 12;
+		public static final int kFrontLeftTurningEncoderPort = 9;
+		public static final int kFrontRightTurningEncoderPort = 10;
+		public static final int kRearLeftTurningEncoderPort = 12;
+		public static final int kRearRightTurningEncoderPort = 11;
 
 		// Offset angle for absolute encoders (find this using CTRE client)
 		public static final double kFrontLeftAngleZero = 0.0;
@@ -240,16 +246,63 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
-		public static double CoralL4 = 40.0;
-		public static double CoralL3 = 30.0;
-		public static double CoralL2 = 20.0;
-		public static double CoralL1 = 10.0;
+		public static double CoralL4 = 8.0;
+		public static double CoralL3 = 6.0;
+		public static double CoralL2 = 4.0;
+		public static double CoralL1 = 2.0;
 
-		public static double P = 0.1;
+		//public static double P = 1.5;
+		public static double P = 1.0;
 		public static double I = 0.0;
+		//public static double D = 0.0;
 		public static double D = 0.0;
 
 		public static int motor_id = 20;
+	}
+
+	public static class EndEffectorConstants {
+		public static double StoppedMotor1 = 0.0;
+		public static double StoppedMotor2 = 0.0;
+		public static double IntakeAlgaeFloorMotor1 = 0.0;
+		public static double IntakeAlgaeFloorMmotor2 = 0.0;
+		public static double IntakeCoralHumanElementMotor1 = 0.0;
+		public static double IntakeCoralHumanElementMotor2 = 0.0;
+		public static double EjectAlgaeFloorMotor1 = 0.0;
+		public static double EjectAlgaeFloorMotor2 = 0.0;
+		public static double EjectCoralMotor1 = 10.0;
+		public static double EjectCoralMotor2 = 10.0;
+
+		public static double OutputCurrentLimitMotor1 = 5.0;
+		public static double OutputCurrentLimitMotor2 = 5.0;
+		
+		//public static double P = 1.5;
+		public static double P = 1.0;
+		public static double I = 0.0;
+		//public static double D = 0.0;
+		public static double D = 0.01;
+
+		public static int motor_id = 30;
+		public static int motor2_id = 31;
+	}
+
+	public static class SliderConstants {
+		public static int motor_id = 32;
+		public static int motor2_id = 33;
+		public static double P = 0.2;
+		public static double I = 0.0;
+		public static double D = 0.5;
+
+		public static double Start = 0.0;
+		public static double Stopped = 0.0;
+		public static double CoralL4 = 15.0;
+		public static double CoralL3 = 13.0;
+		public static double CoralL2 = 12.0;
+		public static double CoralL1 = 10.0;
+		public static double AlgaeHuman = 2.0;
+		public static double AlgaeL3 = 13.0;
+		public static double AlgaeL2 = 12.0;
+		public static double AlgaeL1 = 10.0;
+		public static double AlgaeShoot = 15.0;
 	}
 	
 	public static final String kRioCANBusName = "rio";

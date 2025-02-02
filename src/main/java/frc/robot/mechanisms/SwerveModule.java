@@ -8,14 +8,7 @@ import java.util.EnumSet;
 
 import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.hardware.CANcoder;
-//import com.revrobotics.CANSparkFlex;
-//import com.revrobotics.CANSparkMax;
-//import com.revrobotics.REVPhysicsSim;
 import com.revrobotics.RelativeEncoder;
-//import com.revrobotics.SparkPIDController;
-//import com.revrobotics.CANSparkBase.ControlType;
-//import com.revrobotics.CANSparkBase.IdleMode;
-//import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -59,7 +52,7 @@ public class SwerveModule {
 	private final SparkFlex driveMotor;
 	private SparkFlexSim driveFlexSim = null;
 	private final SparkMax turningMotor;
-	private SparkMaxSim turninMaxSim = null;
+	private SparkMaxSim turningMaxSim = null;
 	private final CANcoder cancoder;
 	private final RelativeEncoder driveEncoder;
 
@@ -72,7 +65,8 @@ public class SwerveModule {
 	private Rotation2d _simulatedAbsoluteEncoderRotation2d = null;
 
 	private double m_moduleAngleRadians;
-	private SwerveModuleState optimizedState;
+	private Rotation2d m_moduleAngleRotation2d = new Rotation2d();
+	//private SwerveModuleState optimizedState;
 	private double angularPIDOutput;
 	private double angularFFOutput;
 	private double turnOutput;
@@ -112,15 +106,17 @@ public class SwerveModule {
 		driveMotor = new SparkFlex(driveMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			//driveFlexSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
+			driveFlexSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
 		}
+		
 		turningMotor = new SparkMax(turningMotorChannel, MotorType.kBrushless);
 
 		if(isSim) {
-			//turninMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
+			turningMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
 		}
 
 		cancoder = new CANcoder(absoluteEncoderPort, Constants.kCanivoreCANBusName);
+		//cancoder = new CANcoder(absoluteEncoderPort);
 		cancoder.clearStickyFaults();
 
 		SparkFlexConfig driveConfig = new SparkFlexConfig();
@@ -140,20 +136,24 @@ public class SwerveModule {
 			);
         driveConfig.signals.primaryEncoderPositionPeriodMs(5);
 
+
 		driveConfig.encoder
 		.positionConversionFactor(
 			ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference
+			//Divide the circumference by the gear ratio to get your conversion calculation
+			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
 		)
 		.velocityConversionFactor(
-			ModuleConstants.kdriveGearRatioL3
+			ModuleConstants.kdriveGearRatioL2
 			* ModuleConstants.kwheelCircumference
+			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
 			* (1d / 60d)
 		);
 
         driveMotor.configure(
 			driveConfig, 
 			ResetMode.kResetSafeParameters, 
-			PersistMode.kNoPersistParameters
+			PersistMode.kPersistParameters
 		);
 
 		this.drivePID = driveMotor.getClosedLoopController();
@@ -218,6 +218,7 @@ public class SwerveModule {
 			// Swerve tab stuff
 			swerveTab = Shuffleboard.getTab("Swerve");
 			swerveTab.addDouble(moduleName + " Absolute", this::getAbsoluteHeading);
+			swerveTab.addDouble(moduleName + " Meters", this::getDistanceMeters);
 			//swerveTab.addDouble("FR Absolute", frontRight::getAbsoluteHeading);
 			//swerveTab.addDouble("RL Absolute", rearLeft::getAbsoluteHeading);
 			//swerveTab.addDouble("RR Absolute", rearRight::getAbsoluteHeading);
@@ -226,7 +227,7 @@ public class SwerveModule {
 			//swerveTab.addDouble("RL Meters", rearLeft::getDistanceMeters);
 			//swerveTab.addDouble("RR Meters", rearRight::getDistanceMeters);
 			
-			swerveTab.addDouble(moduleName + " Offset", this::getAngleZero);
+			//swerveTab.addDouble(moduleName + " Offset", this::getAngleZero);
 			swerveTab.addString(moduleName + " Abs. Status", this::getStatus);
 		}
 
@@ -305,19 +306,30 @@ public class SwerveModule {
 	// Returns current position of the modules
 	public SwerveModulePosition getPosition() {
 
+		m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360.0);
+
 		if(isSim){
+			m_moduleAngleRotation2d = _simulatedAbsoluteEncoderRotation2d;
 			return new SwerveModulePosition(driveEncoder.getPosition(), _simulatedAbsoluteEncoderRotation2d);
 		}
 
 		//return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(Math.toRadians(cancoder.getAbsolutePosition().refresh().getValue() * 360)));
-		return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(Math.toRadians(cancoder.getAbsolutePosition().refresh().getValueAsDouble() * 360)));
+		//return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(Math.toRadians(cancoder.getAbsolutePosition().refresh().getValueAsDouble() * 360)));
+
+		// testing
+		//return new SwerveModulePosition(driveEncoder.getPosition(), Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360));
+		m_moduleAngleRotation2d = Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360.0);
+		//return new SwerveModulePosition(driveEncoder.getPosition(), Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360));
+		return new SwerveModulePosition(driveEncoder.getPosition(), m_moduleAngleRotation2d);
 	}
 
 	// Sets the position of the swerve module
 	public void setDesiredState(SwerveModuleState desiredState) {
 
-		//m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition().refresh().getValue() * 360);
-		m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition().refresh().getValueAsDouble() * 360);
+		//m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360);
+		//testing
+		//m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360);
+		
 
 		if(isSim) {
 			m_moduleAngleRadians = Math.toRadians(desiredState.angle.getDegrees());
@@ -326,53 +338,56 @@ public class SwerveModule {
 
 		// Optimize the reference state to avoid spinning further than 90 degrees to
 		// desired state
-		optimizedState = SwerveModuleState.optimize(
+		/*optimizedState = SwerveModuleState.optimize(
 				desiredState,
-				Rotation2d.fromRadians(m_moduleAngleRadians));
+				Rotation2d.fromRadians(m_moduleAngleRadians));*/
+		
+		// testing
+		//desiredState.optimize(Rotation2d.fromRadians(m_moduleAngleRadians));
+		desiredState.optimize(m_moduleAngleRotation2d);
+
+		/*angularPIDOutput = m_turningPIDController.calculate(m_moduleAngleRadians,
+				optimizedState.angle.getRadians());*/
 
 		angularPIDOutput = m_turningPIDController.calculate(m_moduleAngleRadians,
-				optimizedState.angle.getRadians());
+			desiredState.angle.getRadians());
 
 		angularFFOutput = turnFeedForward.calculate(m_turningPIDController.getSetpoint().velocity);
 
 		turnOutput = angularPIDOutput + angularFFOutput;
 
-		turningMotor.setVoltage(turnOutput);		
-
+		turningMotor.setVoltage(turnOutput);
+		
 		if(isSim) {
 			drivePID.setReference(
-				optimizedState.speedMetersPerSecond,
-				//CANSparkMax.ControlType.kVoltage
-				ControlType.kVoltage
+				desiredState.speedMetersPerSecond,
+				ControlType.kVelocity
 			);
+
+
+			driveFlexSim.iterate(
+				desiredState.speedMetersPerSecond,
+        		RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+        		0.02
+			);
+
 		} else {
 			drivePID.setReference(
-				optimizedState.speedMetersPerSecond,
+				desiredState.speedMetersPerSecond,
 				ControlType.kVelocity
 			);
 		}
 
-		//SmartDashboard.putNumber(this.moduleName + " Optimized Angle", optimizedState.angle.getDegrees());
-		//SmartDashboard.putNumber(this.moduleName + " PID", angularPIDOutput);
-		//SmartDashboard.putNumber(this.moduleName + " Turn Output", turnOutput);
-
-		Logger.recordOutput("Motors/DriveMotorCurrentOutput_" + moduleName, driveMotor.getOutputCurrent());
-		Logger.recordOutput("Motors/DriveMotorTemp_" + moduleName, driveMotor.getMotorTemperature());
-		Logger.recordOutput("Motors/TurnMotorCurrentOutput_" + moduleName, turningMotor.getOutputCurrent());
-		Logger.recordOutput("Motors/TurnMotorTemp_" + moduleName, turningMotor.getMotorTemperature());
+		if(Constants.kEnableDriveSubSystemLogger) {
+			Logger.recordOutput("Motors/DriveMotorCurrentOutput_" + moduleName, driveMotor.getOutputCurrent());
+			Logger.recordOutput("Motors/DriveMotorTemp_" + moduleName, driveMotor.getMotorTemperature());
+			Logger.recordOutput("Motors/TurnMotorCurrentOutput_" + moduleName, turningMotor.getOutputCurrent());
+			Logger.recordOutput("Motors/TurnMotorTemp_" + moduleName, turningMotor.getMotorTemperature());
+		}
 	}
 
 	public void resetEncoders() {
-		/*Timer.delay(.1);
-		absoluteEncoder.configFactoryDefault();
-		Timer.delay(.1);
-		absoluteEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
-		Timer.delay(.1);
-		absoluteEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-		Timer.delay(.1);
-		absoluteEncoder.configMagnetOffset(-1 * angleZero);
-		Timer.delay(.1);
-		absoluteEncoder.clearStickyFaults();*/
+		
 	}
 
 	public void stopMotors() {
@@ -399,16 +414,6 @@ public class SwerveModule {
 	}*/
 
 	public void simulatePeriodic() {
-		//this.driveMotorSim.iterate(angularPIDOutput, angularFFOutput, angleZero);
-		// Now, we update the Spark Flex
-    	/*driveMotorSim.iterate(
-        	Units.radiansPerSecondToRotationsPerMinute( // motor velocity, in RPM
-            	//m_armSim.getVelocityRadPerSec()
-				0
-			),
-        	RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-        	0.02
-		); // Time interval, in Seconds
-		*/
+		
 	}
 }

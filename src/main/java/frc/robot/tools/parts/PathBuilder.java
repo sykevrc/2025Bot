@@ -29,27 +29,13 @@ public class PathBuilder {
 		try {
 			driveSubsystem = RobotContainer.driveSubsystem;
 
-			//RobotConfig config = RobotConfig.fromGUISettings();
-
-			RobotConfig config = new RobotConfig(
-				74.088, 
-				6.883, 
-				new ModuleConfig(
-					0.048, 
-					5.450, 
-					1.200, 
-					DCMotor.getNeoVortex(1), 
-					60, 
-					1
-				), 
-				0.273
-			);
+			RobotConfig config = RobotConfig.fromGUISettings();
 
 			AutoBuilder.configure(
 				driveSubsystem::getPoseEstimatorPose2d, 
 				driveSubsystem::resetOdometry, 
-				driveSubsystem::getChassisSpeedsRobotRelative, 
-				driveSubsystem::setChassisSpeedsRobotRelative, 
+				driveSubsystem::getChassisSpeedsRobotRelative,
+				driveSubsystem::setChassisSpeedsRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards 
 				new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                 	    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
 	                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
@@ -62,7 +48,7 @@ public class PathBuilder {
   
 					var alliance = DriverStation.getAlliance();
 					if (alliance.isPresent()) {
-				  	return alliance.get() == DriverStation.Alliance.Red;
+				  		return alliance.get() == DriverStation.Alliance.Red;
 					}
 					return false;
 			  	}, 

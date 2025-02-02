@@ -5,9 +5,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -17,14 +21,18 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
+import frc.robot.commands.Coral4Command;
 import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.DummyCommand;
+import frc.robot.commands.autonomous.EjectCoralCommand;
 import frc.robot.commands.autonomous.IntakeCommand;
 import frc.robot.commands.autonomous.LockWheelsCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.SliderSubsystem;
 
 public class RobotContainer {
 
@@ -34,6 +42,8 @@ public class RobotContainer {
 	public static final DriveSubsystem driveSubsystem = new DriveSubsystem();
 	public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
+	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
+	public static final SliderSubsystem sliderSubsystem = new SliderSubsystem();
 	public static final LED led1 = new LED(0);
 	//private static final CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -57,7 +67,7 @@ public class RobotContainer {
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
-	public RobotContainer() {
+	public RobotContainer(boolean isSim) {
 
 		// Configure the trigger bindings
 		configureBindings();
@@ -69,6 +79,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Intake", new IntakeCommand());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
 
+		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand(OptionalLong.of(500)));
+
 		if(Constants.kEnablePhotonVision) {
 			NamedCommands.registerCommand("Aim", new AimCommand(photonVision));
 		} else {
@@ -76,12 +88,18 @@ public class RobotContainer {
 		}
 		
 		// This creates the chooser from the autos built in Autonomous
-		autoChooser = AutoBuilder.buildAutoChooser();
+		//autoChooser = AutoBuilder.buildAutoChooser();
+
+		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
+
+		SmartDashboard.putData("Auto", autoChooser);
+		//SmartDashboard.putData(autoChooser);
 
 		// Add the chooser to the Shuffleboard to select which Auo to run
-		Shuffleboard.getTab("Autonomous").add("Auto", autoChooser);
+		Shuffleboard.getTab("Autonomous").add("Auto", autoChooser)
+		.withWidget(BuiltInWidgets.kComboBoxChooser);
 
-		autoChooser.onChange(RobotContainer::selected);
+		//autoChooser.onChange(RobotContainer::selected);
 	}
 
 	public void setupAuto(boolean setupAuto) {
@@ -90,7 +108,7 @@ public class RobotContainer {
 	}
 
 	// this is for testing
-	private static void selected(Command c) {
+	/*private static void selected(Command c) {
 		
 		try {
 			if(c instanceof PathPlannerAuto) {
@@ -105,7 +123,7 @@ public class RobotContainer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	private void configureBindings() {
 
@@ -118,14 +136,29 @@ public class RobotContainer {
 		//operatorController.button(3).whileTrue(new RunCommand(() -> driveSubsystem.goToPose(Constants.PoseDefinitions.kFieldPoses.AMPLIFIER)));
 		//operatorController.button(4).whileTrue(new RunCommand(() -> driveSubsystem.goToPose(Constants.PoseDefinitions.kFieldPoses.SOURCE)));
 
-		//operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
+		if(RobotBase.isReal()) {
+			// Real, not a simulation
+			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL4)));
+			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL1)));
+		} else {
+			// Simulation
+			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
+			operatorController.button(1).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
+			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
+			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
+
+			operatorController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL4)));
+			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
+			operatorController.button(4).whileTrue(new Coral4Command());
+		}
+		
 
 		// Swerve Drive method is set as default for drive subsystem
 		driveSubsystem.setDefaultCommand(
 
 				new RunCommand(() -> driveSubsystem.drive(
-					JoystickUtils.processJoystickInput(-driverController.getLeftY()),
-					JoystickUtils.processJoystickInput(-driverController.getLeftX()),
+					JoystickUtils.processJoystickInput(driverController.getLeftY()),
+					JoystickUtils.processJoystickInput(driverController.getLeftX()),
 					JoystickUtils.processJoystickInput(-driverController.getRightX())
 				),
 				driveSubsystem
