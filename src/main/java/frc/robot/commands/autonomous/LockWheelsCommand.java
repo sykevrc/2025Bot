@@ -26,11 +26,11 @@ public class LockWheelsCommand extends Command {
 
         }*/
 
-        if(this.enabledLock == true) {
+        /*if(this.enabledLock == true) {
             _driveSubsystem.setMode(kDriveModes.LOCK_WHEELS);
         } else {
             _driveSubsystem.setMode(kDriveModes.NORMAL);
-        }
+        }*/
 
         
     }

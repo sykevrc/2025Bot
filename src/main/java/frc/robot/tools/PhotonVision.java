@@ -41,27 +41,27 @@ public class PhotonVision {
 	private Pose3d _sim_farTargetPose = null;
 	private double _sim_targetWidth = 0.0;
 	private double _sim_targetHeight = 0.0;
-	private AprilTagFieldLayout _aprilTagFieldLayout;
-	private PhotonPoseEstimator _photonPoseEstimator;
-	private ShuffleboardTab photonVisionTab;
-	private EstimatedRobotPose _estimatedRobotPose;
-	private int[] _targetsUsed = new int[0];
-	private int _speakerTarget = 0;
-	PhotonPipelineResult result;
-	List<PhotonTrackedTarget> targets;
+	private AprilTagFieldLayout _aprilTagFieldLayout = null;
+	private PhotonPoseEstimator _photonPoseEstimator = null;
+	private ShuffleboardTab photonVisionTab = null;
+	private EstimatedRobotPose _estimatedRobotPose = null;
+	//private int[] _targetsUsed = new int[0];
+	//private int _speakerTarget = 0;
+	PhotonPipelineResult result = null;
+	//List<PhotonTrackedTarget> targets;
 	private Pose2d prevEstimatedRobotPose = null;
 	private Pose2d prevPhotonEstimatedPose = null;
-	List<Pose3d> allTagPoses = new ArrayList<>();
-	Optional<EstimatedRobotPose> estimatedRobotPose = null;
+	//List<Pose3d> allTagPoses = new ArrayList<>();
+	private Optional<EstimatedRobotPose> estimatedRobotPose = null;
 
 	//private double[] poseArray = new double[3];
 
-	Pose3d camPose = new Pose3d();
-	private Pose3d _lastPhotonPoseEstimatorPose = new Pose3d();
-	private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
+	//private Pose3d camPose = new Pose3d();
+	//private Pose3d _lastPhotonPoseEstimatorPose = new Pose3d();
+	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
 
 	private boolean isSim = false;
-	Optional<EstimatedRobotPose> o = null;
+	private Optional<EstimatedRobotPose> o = null;
 	
 	public PhotonVision() {
 
@@ -81,7 +81,7 @@ public class PhotonVision {
 				// This sets up the field with the correct Apriltags in the proper places
 				// These values are used later for aiming and localization
 				_aprilTagFieldLayout = AprilTagFieldLayout
-						.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+						.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
 
 				// Set if we are blue or red
 				// Set the origin accordingly
@@ -125,7 +125,7 @@ public class PhotonVision {
 			}
 
 			// Create the elements in Shuffleboard for debugging if debugPhotonVision is true 
-			if (_camera.isConnected() && Constants.debugPhotonVision == true) {
+			if (_camera.isConnected() && Constants.kDebugPhotonVision == true) {
 				photonVisionTab = Shuffleboard.getTab("PhotonVision");
 
 				//photonVisionTab.addDouble("Target Distance", this::getTargetDistance);
@@ -265,7 +265,7 @@ public class PhotonVision {
 
 	// Get the pose/location on the field that photonvision thinks the robot is at
 	public EstimatedRobotPose getPose(Pose2d prevEstimatedRobotPose) {
-		try {
+
 		this.prevEstimatedRobotPose = prevEstimatedRobotPose;
 
 		o = getPhotonPose(prevEstimatedRobotPose);
@@ -279,28 +279,28 @@ public class PhotonVision {
 
 			_estimatedRobotPose = o.get();
 
-			for (PhotonTrackedTarget target : _estimatedRobotPose.targetsUsed) {
+			/*for (PhotonTrackedTarget target : _estimatedRobotPose.targetsUsed) {
 				allTagPoses.add(
 					_aprilTagFieldLayout.getTagPose(target.getFiducialId()).get()
 				);
-			}
-
-			/*if (Constants.debugPhotonVision) {
-				RobotContainer.field.getObject("PhotonEstimatedRobot")
-					.setPose(_estimatedRobotPose.estimatedPose.toPose2d());
 			}*/
+
+			//if (Constants.debugPhotonVision) {
+			//	RobotContainer.field.getObject("PhotonEstimatedRobot")
+			//		.setPose(_estimatedRobotPose.estimatedPose.toPose2d());
+			//}
 
 			//Logger.recordOutput(
 			// 	"AprilTagVision/TargetsUsed",
 			// 	allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
 
-			if(Constants.enableLogger) {
+			/*if(Constants.enableLogger) {
 
 				Logger.recordOutput(
 			 		"AprilTagVision/TargetsUsed",
 			 		allTagPoses.toArray(new Pose3d[allTagPoses.size()])
 				);
-			}
+			}*/
 			
 
 		} else {
@@ -308,22 +308,17 @@ public class PhotonVision {
 			// Since we do not have any tags that we can see, blank out the list
 			// System.out.println("we do not have a pose");
 
-			if(Constants.enableLogger) {
+			/*if(Constants.enableLogger) {
 				Logger.recordOutput(
 					"AprilTagVision/TagPoses",
 					allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
 
 				_estimatedRobotPose = null;
-			}
+			}*/
 		}
 
 		return _estimatedRobotPose;
-		} catch (Exception e) {
-			System.out.println("got it");
-			e.printStackTrace();
-		}
 
-		return null;
 	}
 
 	// Set the reference 2D (X,Y) pose/position for PhotonVision to use
@@ -458,7 +453,7 @@ public class PhotonVision {
 
 				estimatedRobotPose = _photonPoseEstimator.update(_camera.getLatestResult());
 
-				allTagPoses.clear();
+				/*allTagPoses.clear();
 
 				if (estimatedRobotPose.isPresent()) {
 					_lastPhotonPoseEstimatorPose = estimatedRobotPose.get().estimatedPose;
@@ -493,7 +488,7 @@ public class PhotonVision {
 					}
 
 					return Optional.empty();
-				}
+				}*/
 
 				return estimatedRobotPose;
 			} else {
@@ -624,7 +619,7 @@ public class PhotonVision {
 		setupAprilTagFieldLayoutSim();
 	}
 
-	public String targetsUsed() {
+	/*public String targetsUsed() {
 
 		if(_targetsUsed.length == 0) {
 			return "";
@@ -637,17 +632,17 @@ public class PhotonVision {
 		}
 
 		return targets;
-	}
+	}*/
 
-	public double getTargetUsed() {
+	/*public double getTargetUsed() {
 		if(this._targetsUsed.length > 0) {
 			return this._targetsUsed[0];
 		}
 
 		return 0;
-	}
+	}*/
 
-	public double getSpeakerTarget() {
+	/*public double getSpeakerTarget() {
 		return _speakerTarget;
-	}
+	}*/
 }

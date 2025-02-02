@@ -72,9 +72,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private double ySpeed = 0.0;
 	private double rot = 0.0;
 
-	private kDriveModes mode = kDriveModes.NORMAL;
+	//private kDriveModes mode = kDriveModes.NORMAL;
 	//private int speakerTarget = 0;
-	private boolean targetLocked = false;
+	//private boolean targetLocked = false;
 	private boolean isSim = false;
 	private LimelightHelpers.PoseEstimate limelightMeasurement = null;
 
@@ -82,8 +82,8 @@ public class DriveSubsystem extends SubsystemBase {
 	private SwerveDriveOdometry odometry;
 
 	//private Pose2d estimatedPose = new Pose2d();
-	private double[] combinedEstimatedPoseArray = new double[9];
-	private boolean setupAuto = false;
+	//private double[] combinedEstimatedPoseArray = new double[9];
+	//private boolean setupAuto = false;
 	//private Pose2d startPosition = null;
 	private boolean limeLightCanSeeTag = false;
 	private boolean photonVisionCanSeeTag = false;
@@ -144,7 +144,7 @@ public class DriveSubsystem extends SubsystemBase {
 		return this.gyro;
 	}
 
-	private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
+	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
 
 	/** Creates a new DriveSubsystem. */
 	public DriveSubsystem() {
@@ -286,9 +286,9 @@ public class DriveSubsystem extends SubsystemBase {
 		poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
 	}
 
-	public void setupAuto(boolean setupAuto) {
+	/*public void setupAuto(boolean setupAuto) {
 		this.setupAuto = setupAuto;
-	}
+	}*/
 
 	/*public void setStartPosition(Pose2d startPosition) {
 		this.startPosition = startPosition;
@@ -577,7 +577,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 			phoneEstimatedRobotPose = _photonVision.getPose(poseEstimator.getEstimatedPosition());
 
-			if(phoneEstimatedRobotPose != null) {
+			/*if(phoneEstimatedRobotPose != null) {
 
 				if(phoneEstimatedRobotPose.targetsUsed.size() >= 1) {
 					poseEstimator.addVisionMeasurement(
@@ -597,7 +597,7 @@ public class DriveSubsystem extends SubsystemBase {
 				}
 			} else {
 				photonVisionCanSeeTag = false;
-			}
+			}*/
 		}
 
 		if (Constants.kEnableLimelight) {
@@ -628,9 +628,9 @@ public class DriveSubsystem extends SubsystemBase {
 				}
 				//Logger.recordOutput("Limelight/position", _limeLight.getPoseArray());
 
-				combinedEstimatedPoseArray[3] = limelightMeasurement.pose.getX();
+				/*combinedEstimatedPoseArray[3] = limelightMeasurement.pose.getX();
 				combinedEstimatedPoseArray[4] = limelightMeasurement.pose.getY();
-				combinedEstimatedPoseArray[5] = limelightMeasurement.pose.getRotation().getDegrees();
+				combinedEstimatedPoseArray[5] = limelightMeasurement.pose.getRotation().getDegrees();*/
 
 				if(!gyro.isMoving() && limelightMeasurement.tagCount >= 1) {
 					resetOdometry(limelightMeasurement.pose);
@@ -834,7 +834,7 @@ public class DriveSubsystem extends SubsystemBase {
 		return autoY_Position;
 	}
 
-	public void setMode(kDriveModes mode) {
+	/*public void setMode(kDriveModes mode) {
 		this.mode = mode;
 	}
 
@@ -848,9 +848,9 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		return false;
-	}
+	}*/
 
-	public boolean getTargetLocked() {
+	/*public boolean getTargetLocked() {
 		return targetLocked;
-	}
+	}*/
 }

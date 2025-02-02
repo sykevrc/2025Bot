@@ -102,10 +102,10 @@ public class RobotContainer {
 		//autoChooser.onChange(RobotContainer::selected);
 	}
 
-	public void setupAuto(boolean setupAuto) {
+	/*public void setupAuto(boolean setupAuto) {
 		//this.setupAuto = setupAuto;
 		RobotContainer.driveSubsystem.setupAuto(setupAuto);
-	}
+	}*/
 
 	// this is for testing
 	/*private static void selected(Command c) {
@@ -140,6 +140,7 @@ public class RobotContainer {
 			// Real, not a simulation
 			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL4)));
 			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL1)));
+			driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
 		} else {
 			// Simulation
 			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));

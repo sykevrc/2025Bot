@@ -34,11 +34,11 @@ import edu.wpi.first.math.geometry.Transform3d;
  */
 public final class Constants {
 
-	public static boolean debugDriveTrain = false;
+	public static boolean debugDriveTrain = true;
 	public static boolean kEnableDriveSubSystemLogger = false;
 	public static boolean enableLogger = false;
-	public static boolean kEnablePhotonVision = false;
-	public static boolean debugPhotonVision = false;
+	public static boolean kEnablePhotonVision = true;
+	public static boolean kDebugPhotonVision = false;
 	public static boolean kEnableLimelight = true;
 	public static boolean kDebugLimelight = false;
 	public static boolean enableArm = false;
