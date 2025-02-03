@@ -1,20 +1,18 @@
 package frc.robot.commands;
 
-import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
-public class Coral4Command extends Command {
+public class Coral1Command extends Command {
 
-  ElevatorSubsystem sliderSubsystem;
-  ArmSubsystem armSubsystem;
+    ElevatorSubsystem sliderSubsystem;
+    ArmSubsystem armSubsystem;
 
-  public Coral4Command() {
+    public Coral1Command() {
       this.sliderSubsystem = RobotContainer.sliderSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
@@ -29,8 +27,8 @@ public class Coral4Command extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    sliderSubsystem.setDesiredState(ElevatorState.CoralL4);
-    armSubsystem.setDesiredState(ArmState.CoralL4);
+    sliderSubsystem.setDesiredState(ElevatorState.CoralL1);
+    armSubsystem.setDesiredState(ArmState.CoralL1);
   }
 
   // Called once the command ends or is interrupted.

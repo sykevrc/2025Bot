@@ -22,6 +22,7 @@ import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
 import frc.robot.commands.Coral4Command;
+import frc.robot.commands.StartCommand;
 import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.DummyCommand;
@@ -136,7 +137,8 @@ public class RobotContainer {
 			// Real, not a simulation
 			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
 			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
-			driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
+			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
+			operatorController.button(4).whileTrue(new StartCommand());
 		} else {
 			// Simulation
 			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
