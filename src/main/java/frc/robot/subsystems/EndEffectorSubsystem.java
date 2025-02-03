@@ -19,13 +19,12 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -46,7 +45,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private SparkFlexSim motorSim = null;
     private SparkClosedLoopController pid = null;
     private SparkFlexConfig config = new SparkFlexConfig();
-    private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
     private double p = Constants.EndEffectorConstants.P;
     private double i = Constants.EndEffectorConstants.I;
     private double d = Constants.EndEffectorConstants.D;
@@ -59,7 +57,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private boolean hasItem = false;
 
     public EndEffectorSubsystem() {
-        if(Constants.enableEndEffector) {
+        if(Constants.kEnableEndEffector) {
             if (RobotBase.isReal()) {
                 isSim = false;
             } else {
@@ -79,56 +77,28 @@ public class EndEffectorSubsystem extends SubsystemBase {
 		    pid = motor.getClosedLoopController();
             pid2 = motor2.getClosedLoopController();
 
-            GenericEntry entry = Shuffleboard.getTab("EndEffector")
-                .add("PID Controller P", p)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
+            if (Constants.kEnableDebugEndEffector) {
 
-            networkTableInstance.addListener(
-                //networkTableInstance.getEntry("/Shuffleboard/EndEffector/PID Controller P"),
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    p = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+                Shuffleboard.getTab("End Effector")
+                    .addDouble("Velocity1", this::getVelocity1)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            entry = Shuffleboard.getTab("EndEffector")
-                .add("PID Controller I", i)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
+                    Shuffleboard.getTab("End Effector")
+                    .addDouble("Velocity2", this::getVelocity1)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            networkTableInstance.addListener(
-                //networkTableInstance.getEntry("/Shuffleboard/EndEffector/PID Controller P"),
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    i = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+                Shuffleboard.getTab("End Effector")
+                    .addDouble("Target Velocity 1", this::getTargetVelocity1)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            entry = Shuffleboard.getTab("EndEffector")
-                .add("PID Controller D", d)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
+                Shuffleboard.getTab("End Effector")
+                    .addDouble("Target Velocity 2", this::getTargetVelocity2)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            networkTableInstance.addListener(
-                //networkTableInstance.getEntry("/Shuffleboard/EndEffector/PID Controller P"),
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    d = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+                SmartDashboard.putData(this);
+                Shuffleboard.getTab("End Effector").add(this);
+
+            }   
         }
     }
 
@@ -180,7 +150,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     @Override
 	public void periodic() {
 
-        if (Constants.enableEndEffector) {
+        if (Constants.kEnableEndEffector) {
             pid.setReference(targetVelocity1, ControlType.kVelocity);
             pid2.setReference(targetVelocity2, ControlType.kVelocity);
 
@@ -259,5 +229,80 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public boolean hasItem() {
         return this.hasItem;
+    }
+
+    public double getVelocity1() {
+
+        if(isSim) {
+            return motorSim.getRelativeEncoderSim().getVelocity();
+        }
+
+        return motor.getEncoder().getVelocity();
+    }
+
+    public double getVelocity2() {
+
+        if(isSim) {
+            return motor2Sim.getRelativeEncoderSim().getVelocity();
+        }
+
+        return motor2.getEncoder().getVelocity();
+    }
+
+    public double getTargetVelocity1() {
+
+        return this.targetVelocity1;
+    }
+
+    public void setTargetVelocity1(double targetVelocity) {
+        this.targetVelocity1 = targetVelocity;
+    }
+
+    public double getTargetVelocity2() {
+
+        return this.targetVelocity1;
+    }
+
+    public void setTargetVelocity2(double targetVelocity) {
+        this.targetVelocity2 = targetVelocity;
+    }
+
+    public double getP() {
+        return this.p;
+    }
+
+    public void setP(double p) {
+        this.p = p;
+        setConfig();
+    }
+
+    public double getI() {
+        return this.i;
+    }
+
+    public void setI(double i) {
+        this.i = i;
+        setConfig();
+    }
+
+    public double getD() {
+        return this.d;
+    }
+
+    public void setD(double d) {
+        this.d = d;
+        setConfig();
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("RobotPreferences");
+        builder.addDoubleProperty("D", this::getD, this::setD);
+        builder.addDoubleProperty("I", this::getI, this::setI);
+        builder.addDoubleProperty("P", this::getP, this::setP);
+        builder.addDoubleProperty("Target Velocity1", this::getTargetVelocity1, this::setTargetVelocity1);
+        builder.addDoubleProperty("Target Velocity2", this::getTargetVelocity2, this::setTargetVelocity2);
+        builder.addDoubleProperty("Velocity1", this::getVelocity1, null);
+        builder.addDoubleProperty("Velocity2", this::getVelocity2, null);
     }
 }

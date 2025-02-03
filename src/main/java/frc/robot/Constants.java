@@ -45,7 +45,8 @@ public final class Constants {
 	public static boolean kEnableDebugArm = true;
 	public static boolean kEnableElevator = true;
 	public static boolean kEnableDebugElevator = true;
-	public static boolean enableEndEffector = false;
+	public static boolean kEnableEndEffector = true;
+	public static boolean kEnableDebugEndEffector = true;
 
 	public static class ModuleConstants {
 
