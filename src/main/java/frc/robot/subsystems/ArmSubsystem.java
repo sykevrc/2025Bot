@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import java.util.EnumSet;
 import java.util.Map;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkMaxSim;
@@ -23,15 +22,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEvent;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ModuleConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -56,14 +54,13 @@ public class ArmSubsystem extends SubsystemBase {
     private SparkClosedLoopController pid = null;
     private SparkFlexConfig config = new SparkFlexConfig();
 
-    private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
     private double d = Constants.ArmConstants.D;
 
     public ArmSubsystem() {
 
-        if (Constants.enableArm) {
+        if (Constants.kEnableArm) {
 
             if (RobotBase.isReal()) {
                 isSim = false;
@@ -81,53 +78,20 @@ public class ArmSubsystem extends SubsystemBase {
 
 		    pid = motor.getClosedLoopController();
 
-            GenericEntry entry = Shuffleboard.getTab("Arm")
-                .add("PID Controller P", p)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
+            if (Constants.kEnableDebugArm) {
 
-            networkTableInstance.addListener(
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    p = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+                Shuffleboard.getTab("Arm")
+                    .addDouble("Position", this::getPosition)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            entry = Shuffleboard.getTab("Arm")
-                .add("PID Controller I", i)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
+                Shuffleboard.getTab("Arm")
+                    .addDouble("Target", this::getPosition)
+                    .withWidget(BuiltInWidgets.kTextView);
 
-            networkTableInstance.addListener(
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    i = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+                SmartDashboard.putData(this);
+                Shuffleboard.getTab("Arm").add(this);
 
-            entry = Shuffleboard.getTab("Arm")
-                .add("PID Controller D", d)
-                .withWidget(BuiltInWidgets.kNumberSlider) // specify the widget here
-                .withProperties(Map.of("min", 0, "max", 1)) // specify widget properties here
-                .getEntry();
-
-            networkTableInstance.addListener(
-                networkTableInstance.getEntry(entry.getTopic().getName()),
-                EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-                event -> {
-                    d = event.valueData.value.getDouble();
-                    
-                    setConfig();
-                }
-            );
+            }
         }
     }
 
@@ -174,8 +138,9 @@ public class ArmSubsystem extends SubsystemBase {
     @Override
 	public void periodic() {
 
-        if (Constants.enableArm) {
+        if (Constants.kEnableArm) {
             pid.setReference(targetPosition, ControlType.kPosition);
+            //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             if (isSim) {
                 motorSim.iterate(
@@ -194,16 +159,24 @@ public class ArmSubsystem extends SubsystemBase {
         config
             .inverted(false)
             .idleMode(IdleMode.kBrake);
-        config.encoder
-            .positionConversionFactor(25)
-            .velocityConversionFactor(25);
+        //config.encoder
+        //    .positionConversionFactor(25)
+        //    .velocityConversionFactor(25);
         config.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            //.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
 		    .pid(
 			    p, 
                 i, 
                 d
 			);
+
+        // Set MAXMotion parameters
+        config.closedLoop.maxMotion
+            .maxVelocity(6784)
+            .maxAcceleration(1)
+            //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+            .allowedClosedLoopError(.1);
+
         config.signals.primaryEncoderPositionPeriodMs(5);
 
         motor.configure(
@@ -211,5 +184,60 @@ public class ArmSubsystem extends SubsystemBase {
 			ResetMode.kResetSafeParameters, 
 			PersistMode.kPersistParameters
 		);
+    }
+
+    public double getPosition() {
+
+        if(isSim) {
+            return motorSim.getRelativeEncoderSim().getPosition();
+        }
+
+        return motor.getEncoder().getPosition();
+    }
+
+    public double getTargetPosition() {
+
+        return this.targetPosition;
+    }
+
+    public void setTargetPosition(double targetPosition) {
+        this.targetPosition = targetPosition;
+    }
+
+    public double getP() {
+        return this.p;
+    }
+
+    public void setP(double p) {
+        this.p = p;
+        setConfig();
+    }
+
+    public double getI() {
+        return this.i;
+    }
+
+    public void setI(double i) {
+        this.i = i;
+        setConfig();
+    }
+
+    public double getD() {
+        return this.d;
+    }
+
+    public void setD(double d) {
+        this.d = d;
+        setConfig();
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("RobotPreferences");
+        builder.addDoubleProperty("D", this::getD, this::setD);
+        builder.addDoubleProperty("I", this::getI, this::setI);
+        builder.addDoubleProperty("P", this::getP, this::setP);
+        builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
+        builder.addDoubleProperty("Position", this::getPosition,null);
     }
 }

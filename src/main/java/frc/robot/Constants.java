@@ -41,9 +41,10 @@ public final class Constants {
 	public static boolean kDebugPhotonVision = false;
 	public static boolean kEnableLimelight = true;
 	public static boolean kDebugLimelight = false;
-	public static boolean enableArm = false;
-	public static boolean kEnableSlider = true;
-	public static boolean kEnableDebugSlider = true;
+	public static boolean kEnableArm = true;
+	public static boolean kEnableDebugArm = true;
+	public static boolean kEnableElevator = true;
+	public static boolean kEnableDebugElevator = true;
 	public static boolean enableEndEffector = false;
 
 	public static class ModuleConstants {
@@ -285,7 +286,7 @@ public final class Constants {
 		public static int motor2_id = 31;
 	}
 
-	public static class SliderConstants {
+	public static class ElevatorConstants {
 		public static int motor_id = 32;
 		public static int motor2_id = 33;
 		public static double P = 0.2;

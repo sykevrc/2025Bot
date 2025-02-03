@@ -17,7 +17,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -27,8 +26,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class SliderSubsystem extends SubsystemBase {
-    public enum SliderState {
+public class ElevatorSubsystem extends SubsystemBase {
+    public enum ElevatorState {
         Start,
         CoralL4,
         CoralL3,
@@ -42,7 +41,7 @@ public class SliderSubsystem extends SubsystemBase {
     }
 
     private boolean isSim = false;
-    private SliderState state = SliderState.Start;
+    private ElevatorState state = ElevatorState.Start;
     private double targetPosition = 0.0;
     private SparkMax motor = null;
     private SparkMaxSim motorSim = null;
@@ -50,14 +49,13 @@ public class SliderSubsystem extends SubsystemBase {
     private SparkMaxSim motor2Sim = null;
     private SparkClosedLoopController pid = null;
     private SparkMaxConfig config = new SparkMaxConfig();
-    private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
-    private double p = Constants.SliderConstants.P;
-    private double i = Constants.SliderConstants.I;
-    private double d = Constants.SliderConstants.D;
+    private double p = Constants.ElevatorConstants.P;
+    private double i = Constants.ElevatorConstants.I;
+    private double d = Constants.ElevatorConstants.D;
 
-    public SliderSubsystem() {
+    public ElevatorSubsystem() {
 
-        if(Constants.kEnableSlider) {
+        if(Constants.kEnableElevator) {
 
             if (RobotBase.isReal()) {
                 isSim = false;
@@ -65,8 +63,8 @@ public class SliderSubsystem extends SubsystemBase {
                 isSim = true;
             }
 
-            motor = new SparkMax(Constants.SliderConstants.motor_id, MotorType.kBrushless);
-            motor2 = new SparkMax(Constants.SliderConstants.motor2_id, MotorType.kBrushless);
+            motor = new SparkMax(Constants.ElevatorConstants.motor_id, MotorType.kBrushless);
+            motor2 = new SparkMax(Constants.ElevatorConstants.motor2_id, MotorType.kBrushless);
 
             if(isSim) {
                 motorSim = new SparkMaxSim(motor, DCMotor.getNEO(1));
@@ -77,23 +75,23 @@ public class SliderSubsystem extends SubsystemBase {
 
             pid = motor.getClosedLoopController();
 
-            if (Constants.kEnableDebugSlider) {
+            if (Constants.kEnableDebugElevator) {
 
-                Shuffleboard.getTab("Slider")
+                Shuffleboard.getTab("Elevator")
                     .addDouble("Position", this::getPosition)
                     .withWidget(BuiltInWidgets.kTextView);
 
-                Shuffleboard.getTab("Slider")
+                Shuffleboard.getTab("Elevator")
                     .addDouble("Target", this::getPosition)
                     .withWidget(BuiltInWidgets.kTextView);
 
                 SmartDashboard.putData(this);
-                Shuffleboard.getTab("Slider").add(this);
+                Shuffleboard.getTab("Elevator").add(this);
             }
         }
     }
 
-    public void setDesiredState(SliderState state) {
+    public void setDesiredState(ElevatorState state) {
 
         // Are we sending the same state again?  If so act like a toggle and stop
         //if (this.state == state) {
@@ -102,34 +100,34 @@ public class SliderSubsystem extends SubsystemBase {
 
             switch (state) {
                 case Start:
-                    targetPosition = Constants.SliderConstants.Start;
+                    targetPosition = Constants.ElevatorConstants.Start;
                     break;
                 case CoralL4:
-                    targetPosition = Constants.SliderConstants.CoralL4;
+                    targetPosition = Constants.ElevatorConstants.CoralL4;
                     break;
                 case CoralL3:
-                    targetPosition = Constants.SliderConstants.CoralL3;
+                    targetPosition = Constants.ElevatorConstants.CoralL3;
                     break;
                 case CoralL2:
-                    targetPosition = Constants.SliderConstants.CoralL2;
+                    targetPosition = Constants.ElevatorConstants.CoralL2;
                     break;
                 case CoralL1:
-                    targetPosition = Constants.SliderConstants.CoralL1;
+                    targetPosition = Constants.ElevatorConstants.CoralL1;
                     break;
                 case AlgaeL3:
-                    targetPosition = Constants.SliderConstants.AlgaeL3;
+                    targetPosition = Constants.ElevatorConstants.AlgaeL3;
                     break;
                 case AlgaeL2:
-                    targetPosition = Constants.SliderConstants.AlgaeL2;
+                    targetPosition = Constants.ElevatorConstants.AlgaeL2;
                     break;
                 case AlgaeL1:
-                    targetPosition = Constants.SliderConstants.AlgaeL1;
+                    targetPosition = Constants.ElevatorConstants.AlgaeL1;
                     break;
                 case AlgaeShoot:
-                    targetPosition = Constants.SliderConstants.AlgaeShoot;
+                    targetPosition = Constants.ElevatorConstants.AlgaeShoot;
                     break;
                 case AlgaeHuman:
-                    targetPosition = Constants.SliderConstants.AlgaeHuman;
+                    targetPosition = Constants.ElevatorConstants.AlgaeHuman;
                     break;
                 default:
                     targetPosition = 0.0;
@@ -143,7 +141,7 @@ public class SliderSubsystem extends SubsystemBase {
     @Override
 	public void periodic() {
 
-        if (Constants.kEnableSlider) {
+        if (Constants.kEnableElevator) {
             pid.setReference(targetPosition, ControlType.kPosition);
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
@@ -156,10 +154,6 @@ public class SliderSubsystem extends SubsystemBase {
                         0.02
                     );
             }
-
-            /*if(Constants.kEnableDebugSlider) {
-                System.out.println("p: " + p + " i: " + i + " d: " + d);
-            }*/
         }
     }
 
@@ -202,7 +196,7 @@ public class SliderSubsystem extends SubsystemBase {
 
         config2
             .idleMode(IdleMode.kCoast);
-        config2.follow(Constants.SliderConstants.motor_id);
+        config2.follow(Constants.ElevatorConstants.motor_id);
     }
 
     public double getPosition() {

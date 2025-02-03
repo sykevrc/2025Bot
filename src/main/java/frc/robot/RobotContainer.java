@@ -27,12 +27,11 @@ import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.DummyCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
 import frc.robot.commands.autonomous.IntakeCommand;
-import frc.robot.commands.autonomous.LockWheelsCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.SliderSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
 
@@ -43,7 +42,7 @@ public class RobotContainer {
 	public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
-	public static final SliderSubsystem sliderSubsystem = new SliderSubsystem();
+	public static final ElevatorSubsystem sliderSubsystem = new ElevatorSubsystem();
 	public static final LED led1 = new LED(0);
 	//private static final CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -74,11 +73,8 @@ public class RobotContainer {
 
 		
 		// Register commands to be used in Auto
-		NamedCommands.registerCommand("LockWheels", new LockWheelsCommand(true));
-		NamedCommands.registerCommand("DisableLockWheels", new LockWheelsCommand(false));
 		NamedCommands.registerCommand("Intake", new IntakeCommand());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
-
 		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand(OptionalLong.of(500)));
 
 		if(Constants.kEnablePhotonVision) {
@@ -138,9 +134,9 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
-			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL4)));
-			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL1)));
-			driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
+			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
+			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
+			driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
 		} else {
 			// Simulation
 			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
@@ -148,7 +144,7 @@ public class RobotContainer {
 			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
 			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
 
-			operatorController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.CoralL4)));
+			operatorController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
 			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
 			operatorController.button(4).whileTrue(new Coral4Command());
 		}
