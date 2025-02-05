@@ -37,16 +37,16 @@ public final class Constants {
 	public static boolean debugDriveTrain = true;
 	public static boolean kEnableDriveSubSystemLogger = false;
 	public static boolean enableLogger = false;
-	public static boolean kEnablePhotonVision = true;
+	public static boolean kEnablePhotonVision = false;
 	public static boolean kDebugPhotonVision = false;
-	public static boolean kEnableLimelight = true;
+	public static boolean kEnableLimelight = false;
 	public static boolean kDebugLimelight = false;
-	public static boolean kEnableArm = true;
-	public static boolean kEnableDebugArm = true;
-	public static boolean kEnableElevator = true;
-	public static boolean kEnableDebugElevator = true;
-	public static boolean kEnableEndEffector = true;
-	public static boolean kEnableDebugEndEffector = true;
+	public static boolean kEnableArm = false;
+	public static boolean kEnableDebugArm = false;
+	public static boolean kEnableElevator = false;
+	public static boolean kEnableDebugElevator = false;
+	public static boolean kEnableEndEffector = false;
+	public static boolean kEnableDebugEndEffector = false;
 
 	public static class ModuleConstants {
 
@@ -283,8 +283,8 @@ public final class Constants {
 		//public static double D = 0.0;
 		public static double D = 0.01;
 
-		public static int motor_id = 30;
-		public static int motor2_id = 31;
+		public static int motor_id = 18;
+		public static int motor2_id = 19;
 	}
 
 	public static class ElevatorConstants {
