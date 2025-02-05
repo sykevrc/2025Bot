@@ -72,7 +72,7 @@ public class AimCommand extends Command {
             return true;
         }
 
-        if(Math.abs(targetYaw) > Constants.AutoConstants.kAimTargetTolerance) {
+        /*if(Math.abs(targetYaw) > Constants.AutoConstants.kAimTargetTolerance) {
 
             if(targetYaw > 0) {
                 _driveSubsystem.drive(0.0, 0.0, -.05);
@@ -81,7 +81,7 @@ public class AimCommand extends Command {
             }
             
             return false;
-        } 
+        }*/
         
         return true;
     }

@@ -34,7 +34,7 @@ import edu.wpi.first.math.geometry.Transform3d;
  */
 public final class Constants {
 
-	public static boolean debugDriveTrain = true;
+	public static boolean kDebugDriveTrain = true;
 	public static boolean kEnableDriveSubSystemLogger = false;
 	public static boolean enableLogger = false;
 	public static boolean kEnablePhotonVision = false;
@@ -48,28 +48,31 @@ public final class Constants {
 	public static boolean kEnableEndEffector = false;
 	public static boolean kEnableDebugEndEffector = false;
 
+	public static final String kRioCANBusName = "rio";
+	public static final String kCanivoreCANBusName = "canivore";
+	//public static final String logFolders = "/media/sda2/";
+
 	public static class ModuleConstants {
 
 		// Current limits for the wheels
-		public static final int kTurnMotorCurrentLimit = 25;
-		public static final int kDriveMotorCurrentLimit = 35;
+		//public static final int kTurnMotorCurrentLimit = 25;
+		//public static final int kDriveMotorCurrentLimit = 35;
 
 		// Constants set for the _SDS MK4i_ and MK4
-		public static final double kdriveGearRatioL1 = 1d / 8.14;
-		public static final double kdriveGearRatioL2 = 1d / 6.75;
+		//public static final double kdriveGearRatioL1 = 1d / 8.14;
+		//public static final double kdriveGearRatioL2 = 1d / 6.75;
 		public static final double kdriveGearRatioL3 = 1d / 6.12;
-		public static final double kdriveGearRatioL4 = 1d / 5.14;
+		//public static final double kdriveGearRatioL4 = 1d / 5.14;
 		public static final double kturnGearRatio = 1d / (150d / 7d);
 
 		public static final double kwheelCircumference = Units.inchesToMeters(4) * Math.PI;
-		//public static final double kwheelCircumference = Units.inchesToMeters(3.5) * Math.PI;
 
 		// The max speed the modules are capable of
 		//public static final double kMaxModuleSpeedMetersPerSecond = Units.feetToMeters(16.5);
 		public static final double kMaxModuleSpeedMetersPerSecond = 16.5;
 
 		//public static final double ksVolts = .1;
-		public static final double kDriveFeedForward = .2;
+		//public static final double kDriveFeedForward = .2;
 
 		// TODO: Retune feedforward values for turning
 		public static final double kvTurning = .43205;
@@ -101,14 +104,6 @@ public final class Constants {
 
 		public static final PIDGains kModuleDriveGains = new PIDGains(0.1, 0, 0);
 		public static final PIDGains kModuleTurningGains = new PIDGains(5.5, 0.0, 0.0);
-
-		public static final String kTurningPID_P = "/drive/turning/p";
-		public static final String kTurningPID_I = "/drive/turning/i";
-		public static final String kTurningPID_D = "/drive/turning/d";
-
-		public static final String kDrivePID_P = "/drive/drive/p";
-		public static final String kDrivePID_I = "/drive/drive/i";
-		public static final String kDrivePID_D = "/drive/drive/d";
 	}
 
 	public static class DriveConstants {
@@ -130,25 +125,13 @@ public final class Constants {
 		public static final double kMaxTurningAcceleratonDegrees = 10;
 		public static final double kGyroTurnTolerance = 2;
 
-		public static enum kDriveModes {
+		/*public static enum kDriveModes {
 			NORMAL,
 			AIM,
 			LOCK_WHEELS
-		}
+		}*/
 
-		public static final double kChassisAutoAimRotation = 1.9;
-	}
-
-	public static class PoseDefinitions {
-		public static enum kFieldPoses {
-			AMPLIFIER,
-			SOURCE
-		}
-
-		/*public static final Pose2d kAmplifierPoseRed = new Pose2d(14.73, 7.69, Rotation2d.fromDegrees(90.0));
-		public static final Pose2d kAmplifierPoseBlue = new Pose2d(1.83, 7.78, Rotation2d.fromDegrees(90.0));
-		public static final Pose2d kSourcePoseRed = new Pose2d(0.98, 1.05, Rotation2d.fromDegrees(-120.16));
-		public static final Pose2d kSourcePoseBlue = new Pose2d(15.35, 0.88, Rotation2d.fromDegrees(-120.0));*/
+		//public static final double kChassisAutoAimRotation = 1.9;
 	}
 
 	/**
@@ -160,26 +143,28 @@ public final class Constants {
 
 			// PID constants for path planner (these control drive direction not reaching
 			// target wheel speeds)
-			public static final PIDConstants kPPDriveConstants = new PIDConstants(8.5, 0, 0);
-			public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
+			//public static final PIDConstants kPPDriveConstants = new PIDConstants(8.5, 0, 0);
+			public static final PIDConstants kPPDriveConstants = new PIDConstants(5.0, 0, 0);
+			//public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
+			public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0, 0);
 
-			public static final double kPPMaxVelocity = 4.00;
-			public static final double kPPMaxAcceleration = 2.50;
-			public static final double kMaxModuleSpeed = 4.5; // Max module speed, in m/s
-			public static final double kDriveBaseRadius = 0.4; // Drive base radius in meters. Distance from robot center to furthest module.
+			//public static final double kPPMaxVelocity = 4.00;
+			//public static final double kPPMaxAcceleration = 2.50;
+			//public static final double kMaxModuleSpeed = 4.5; // Max module speed, in m/s
+			//public static final double kDriveBaseRadius = 0.4; // Drive base radius in meters. Distance from robot center to furthest module.
 		}
 
-		public static final double kAimTargetTolerance = 2.0;
+		//public static final double kAimTargetTolerance = 2.0;
 	}
 
 	/**
 	 * The constants pertaining to the drive station
 	 */
 	public static class OperatorConstants {
-		public static final int kDriveJoystickPort = 0;
-		public static final int kTurnJoystickPort = 1;
-		public static final int kOperatorControllerPort = 2;
-		public static final int kProgrammerControllerPort = 3;
+		//public static final int kDriveJoystickPort = 0;
+		//public static final int kTurnJoystickPort = 1;
+		//public static final int kOperatorControllerPort = 2;
+		//public static final int kProgrammerControllerPort = 3;
 
 		public static final double KDeadBand = .125;
 		// this is the number that the joystick input will be raised to
@@ -192,7 +177,7 @@ public final class Constants {
 
 	public static class PhotonVisionConstants {
 
-		public static final boolean VisionEnabled = true;
+		//public static final boolean VisionEnabled = true;
 		//public static final boolean PhysicalCamera = false;
 
 		//public static double TagHeight = Units.inchesToMeters(6.5);
@@ -306,8 +291,4 @@ public final class Constants {
 		public static double AlgaeL1 = 10.0;
 		public static double AlgaeShoot = 15.0;
 	}
-	
-	public static final String kRioCANBusName = "rio";
-	public static final String kCanivoreCANBusName = "canivore";
-	public static final String logFolders = "/media/sda2/";
 }

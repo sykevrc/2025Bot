@@ -72,7 +72,7 @@ public class SwerveModule {
 	private double turnOutput;
 	private boolean isSim = false;
 	private ShuffleboardTab swerveTab = null;
-	private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
+	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
 
 	SparkMaxConfig turnConfig = null;
 	SparkMaxConfig driveConfig = null;
@@ -144,7 +144,7 @@ public class SwerveModule {
 			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
 		)
 		.velocityConversionFactor(
-			ModuleConstants.kdriveGearRatioL2
+			ModuleConstants.kdriveGearRatioL3
 			* ModuleConstants.kwheelCircumference
 			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
 			* (1d / 60d)
@@ -214,7 +214,7 @@ public class SwerveModule {
 		//m_turningPIDController.enableContinuousInput(0, 1);
 		m_turningPIDController.enableContinuousInput(0, Math.toRadians(360));
 
-		if(Constants.debugDriveTrain == true) {
+		if(Constants.kDebugDriveTrain == true) {
 			// Swerve tab stuff
 			swerveTab = Shuffleboard.getTab("Swerve");
 			swerveTab.addDouble(moduleName + " Absolute", this::getAbsoluteHeading);
@@ -231,7 +231,7 @@ public class SwerveModule {
 			swerveTab.addString(moduleName + " Abs. Status", this::getStatus);
 		}
 
-		networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_P).setDouble(angularPID.kP);
+		/*networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_P).setDouble(angularPID.kP);
 		networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_I).setDouble(angularPID.kI);
 		networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_D).setDouble(angularPID.kD);
 
@@ -290,7 +290,7 @@ public class SwerveModule {
 				//this.drivePID.setD(event.valueData.value.getDouble());
 				turnConfig.closedLoop.d(event.valueData.value.getDouble());
 			}
-		);
+		);*/
 	}
 
 	// Returns headings of the module

@@ -22,8 +22,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +39,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.DriveConstants.kDriveModes;
+//import frc.robot.Constants.DriveConstants.kDriveModes;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.config.RobotConfig;
@@ -116,13 +118,21 @@ public class DriveSubsystem extends SubsystemBase {
 	private Limelight _limeLight = null;
 	//private Pose2d photonPose2d = null;
 
-	private double autoX_Position = 0.0;
+	/*private double autoX_Position = 0.0;
 	private double autoY_Position = 0.0;
 	private boolean autoPositionStatusX = false;
-	private boolean autoPositionStatusY = false;
+	private boolean autoPositionStatusY = false;*/
 
 	private SwerveModuleState[] swerveModuleStatesRobotRelative;
 	private EstimatedRobotPose phoneEstimatedRobotPose;
+
+	private double driveP = ModuleConstants.kModuleDriveGains.kP;
+	private double driveI = ModuleConstants.kModuleDriveGains.kI;
+	private double driveD = ModuleConstants.kModuleDriveGains.kD;
+
+	private double turnP = ModuleConstants.kModuleTurningGains.kP;
+	private double turnI = ModuleConstants.kModuleTurningGains.kI;
+	private double turnD = ModuleConstants.kModuleTurningGains.kD;
 
 	/**
 	* Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
@@ -251,15 +261,15 @@ public class DriveSubsystem extends SubsystemBase {
 		
 		targetRotationDegrees = 0;
 
-		if(Constants.debugDriveTrain == true) {
+		if(Constants.kDebugDriveTrain == true) {
 
 			// auto tab stuff
 			ShuffleboardTab autoTab = Shuffleboard.getTab("Autonomous");
-			autoTab.addDouble("AutoX Position", this::getAutoX_Position);
+			/*autoTab.addDouble("AutoX Position", this::getAutoX_Position);
 			autoTab.addDouble("AutoY Position", this::getAutoY_Position);
 			autoTab.addBoolean("AutoX Status", this::getAutoPositionStatusX);
 			autoTab.addBoolean("AutoY Status", this::getAutoPositionStatusY);
-			autoTab.addString("Alliance", this::getAlliance);
+			autoTab.addString("Alliance", this::getAlliance);*/
 
 			// gyro tab stuff
 			ShuffleboardTab gyroTab = Shuffleboard.getTab("Gyro");
@@ -279,6 +289,10 @@ public class DriveSubsystem extends SubsystemBase {
 			swerveTab.addDouble("RR Meters", rearRight::getDistanceMeters);
 			swerveTab.addBoolean("Auto Aim", this::autoAim);
 			swerveTab.addBoolean("Target Locked", this::getTargetLocked);*/
+
+            SmartDashboard.putData(this);
+            Shuffleboard.getTab("Swerve")
+				.add(this);
 		}
 
 		gyro.reset();
@@ -297,7 +311,7 @@ public class DriveSubsystem extends SubsystemBase {
 	@Override
 	public void simulationPeriodic() {
 
-		updateOdometrySim();
+		//updateOdometrySim();
 
 		/*frontLeft.simulatePeriodic();
 		rearLeft.simulatePeriodic();
@@ -310,7 +324,7 @@ public class DriveSubsystem extends SubsystemBase {
 		// This method will be called once per scheduler run
 		updateOdometry();
 
-		if(Constants.debugDriveTrain == true) {
+		if(Constants.kDebugDriveTrain == true) {
 			//SmartDashboard.putNumber("FL Offset Check", frontLeft.getAbsoluteHeading() + frontLeft.angleZero);
 			//SmartDashboard.putNumber("FR Offset Check", frontRight.getAbsoluteHeading() + frontRight.angleZero);
 			//SmartDashboard.putNumber("RL Offset Check", rearLeft.getAbsoluteHeading() + rearLeft.angleZero);
@@ -401,7 +415,7 @@ public class DriveSubsystem extends SubsystemBase {
 		//System.out.println("degrees is: " + pose.getRotation().getDegrees());
 	}
 	
-	public void lockWheels() {
+	/*public void lockWheels() {
 
 		swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
 				new ChassisSpeeds(0, 0, 0));
@@ -410,7 +424,7 @@ public class DriveSubsystem extends SubsystemBase {
 				swerveModuleStates, 0);
 
 		setModuleStates(swerveModuleStates);
-	}
+	}*/
 
 	/*public void robotCentricDrive(double xSpeed, double ySpeed, double rot) {
 		setFieldCentric(false);
@@ -426,13 +440,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 		// Apply deadbands to inputs
 		xSpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
-		//xSpeed *= 100;
 		ySpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
-		//ySpeed *= 100;
-
-		//rot *= 100;
-
-		//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
 
 		if (gyroTurning) {
 			targetRotationDegrees += rot;
@@ -695,9 +703,9 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void updateOdometrySim() {
+	/*public void updateOdometrySim() {
 
-	}
+	}*/
 
 	public void resetEncoders() {
 		frontLeft.resetEncoders();
@@ -710,10 +718,10 @@ public class DriveSubsystem extends SubsystemBase {
 		gyro.reset();
 	}
 
-	public void setHeading(double heading) {
+	/*public void setHeading(double heading) {
 		System.out.println("setHeading called");
 		//gyro.setYaw(heading);
-	}
+	}*/
 
 	/*public Command toggleFieldCentric() {
 		return runOnce(() -> {
@@ -805,13 +813,13 @@ public class DriveSubsystem extends SubsystemBase {
 		setModuleStates(moduleStates);
 	}*/
 
-	public boolean getAutoPositionStatusX() {
+	/*public boolean getAutoPositionStatusX() {
 		return autoPositionStatusX;
 	}
 
 	public boolean getAutoPositionStatusY() {
 		return autoPositionStatusY;
-	}
+	}*/
 
 	public String getAlliance() {
 		String alliance = "";
@@ -826,13 +834,13 @@ public class DriveSubsystem extends SubsystemBase {
 		return alliance;
 	}
 
-	public double getAutoX_Position() {
+	/*public double getAutoX_Position() {
 		return autoX_Position;
 	}
 
 	public double getAutoY_Position() {
 		return autoY_Position;
-	}
+	}*/
 
 	/*public void setMode(kDriveModes mode) {
 		this.mode = mode;
@@ -853,4 +861,63 @@ public class DriveSubsystem extends SubsystemBase {
 	/*public boolean getTargetLocked() {
 		return targetLocked;
 	}*/
+
+	public double getDriveP() {
+		return driveP;
+	}
+
+	public double getDriveI() {
+		return driveI;
+	}
+
+	public double getDriveD() {
+		return driveD;
+	}
+
+	public void setDriveP(double p) {
+		driveP = p;
+	}
+
+	public void setDriveI(double i) {
+		driveI = i;
+	}
+
+	public void setDriveD(double d) {
+		driveD = d;
+	}
+
+	public double getTurnP() {
+		return turnP;
+	}
+
+	public double getTurnI() {
+		return turnI;
+	}
+
+	public double getTurnD() {
+		return turnD;
+	}
+
+	public void setTurnP(double p) {
+		turnP = p;
+	}
+
+	public void setTurnI(double i) {
+		turnI = i;
+	}
+
+	public void setTurnD(double d) {
+		turnD = d;
+	}
+
+	@Override
+    public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("RobotPreferences");
+        builder.addDoubleProperty("Turn_D", this::getTurnD, this::setTurnP);
+        builder.addDoubleProperty("Turn_I", this::getTurnI, this::setTurnI);
+        builder.addDoubleProperty("Turn_P", this::getTurnP, this::setTurnD);
+        builder.addDoubleProperty("Drive_D", this::getDriveD, this::setDriveP);
+        builder.addDoubleProperty("Drive_I", this::getDriveI, this::setDriveI);
+        builder.addDoubleProperty("Drive_P", this::getDriveP, this::setDriveD);
+    }
 }
