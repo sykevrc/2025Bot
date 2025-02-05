@@ -51,6 +51,7 @@ public final class Constants {
 	public static final String kRioCANBusName = "rio";
 	public static final String kCanivoreCANBusName = "canivore";
 	//public static final String logFolders = "/media/sda2/";
+	public static final double kAutoAlignTolerance = 0.1;
 
 	public static class ModuleConstants {
 
@@ -188,7 +189,7 @@ public final class Constants {
 
 		public static double camDiagFOV = 170.0;
 		public static double camPitch = 0.0;
-		public static double camHeightOffGround = Units.inchesToMeters(6.0);
+		public static double camHeightOffGround = Units.inchesToMeters(24.0);
 		// the side to side position of the camera relative to the robot center
 		public static double camX = Units.inchesToMeters(-15.0);
 		// the front to back position of the camera relative to the robot center
@@ -207,8 +208,6 @@ public final class Constants {
 					)
 				);
 
-		//public static final String CameraName = "Microsoft_LifeCam_HD-3000";
-		//public static final String CameraName = "OV5647";
 		public static final String CameraName = "cam1";
 
 		// Simulated Vision System.
@@ -237,6 +236,7 @@ public final class Constants {
 		public static double CoralL3 = 6.0;
 		public static double CoralL2 = 4.0;
 		public static double CoralL1 = 2.0;
+		public static double CoralHuman = 2.0;
 
 		//public static double P = 1.5;
 		public static double P = 1.0;

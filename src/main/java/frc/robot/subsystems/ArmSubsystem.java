@@ -35,6 +35,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public enum ArmState {
         Start,
+        CoralHuman,
         CoralL4,
         CoralL3,
         CoralL2,
@@ -125,6 +126,9 @@ public class ArmSubsystem extends SubsystemBase {
                 break;
             case CoralL4:
                 targetPosition = Constants.ArmConstants.CoralL4;
+                break;
+            case CoralHuman:
+                targetPosition = Constants.ArmConstants.CoralHuman;
                 break;
             default:
                 targetPosition = 0.0;

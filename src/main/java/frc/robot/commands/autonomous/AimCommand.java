@@ -60,17 +60,17 @@ public class AimCommand extends Command {
             return true;
         }
 
-        if(_photonVision.canSeeTarget(_targedNumber) == false) {
+        /*if(_photonVision.canSeeTarget(_targedNumber) == false) {
             System.out.println("AimCommand::isFinished() - cannot see the target so returning true");
             // Stop because we cannot see the target
             return true;
-        } 
+        }*/
 
-        double targetYaw = _photonVision.aimAtTarget(_targedNumber);
+        //double targetYaw = _photonVision.aimAtTarget(_targedNumber);
 
-        if(targetYaw == 0.0) {
+        /*if(targetYaw == 0.0) {
             return true;
-        }
+        }*/
 
         /*if(Math.abs(targetYaw) > Constants.AutoConstants.kAimTargetTolerance) {
 

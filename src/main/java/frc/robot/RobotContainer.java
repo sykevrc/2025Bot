@@ -21,6 +21,8 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
+import frc.robot.commands.AutoAlignLeftCommand;
+import frc.robot.commands.AutoAlignRightCommand;
 import frc.robot.commands.Coral1Command;
 import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
@@ -88,11 +90,11 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
 		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
 
-		if(Constants.kEnablePhotonVision) {
+		/*if(Constants.kEnablePhotonVision) {
 			NamedCommands.registerCommand("Aim", new AimCommand(photonVision));
 		} else {
 			NamedCommands.registerCommand("Aim", new DummyCommand());
-		}
+		}*/
 		
 		// This creates the chooser from the autos built in Autonomous
 		//autoChooser = AutoBuilder.buildAutoChooser();
@@ -145,11 +147,23 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
-			driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
-			driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
-			driverController.button(1).whileTrue(new ResetPositionCommand());
+
+			if(Constants.kEnableElevator) {
+				driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
+				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
+				operatorController.button(4).whileTrue(new StartCommand());
+			}
+			
+			driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
+
+			if(Constants.kEnableLimelight) {
+				// These depend on the Limelight to be enabled
+				driverController.leftTrigger().whileTrue(new RunCommand(() -> new AutoAlignLeftCommand()));
+				driverController.rightTrigger().whileTrue(new RunCommand(() -> new AutoAlignRightCommand()));
+			}
+
 			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-			operatorController.button(4).whileTrue(new StartCommand());
+			
 		} else {
 			// Simulation
 			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));

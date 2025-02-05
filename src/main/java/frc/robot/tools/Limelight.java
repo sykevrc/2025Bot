@@ -20,7 +20,15 @@ public class Limelight {
 	private double[] poseArray = new double[3];
 
     public Limelight() {
-		LimelightHelpers.setCameraPose_RobotSpace("limelight", 0, 0, 0, 0, 0, 180);
+		LimelightHelpers.setCameraPose_RobotSpace(
+			"limelight", 
+			0, 
+			0, 
+			0, 
+			0, 
+			0, 
+			180
+		);
 	}
 
 	public PoseEstimate getPose2d(Pose2d robotPose2d) {

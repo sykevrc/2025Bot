@@ -36,7 +36,6 @@ public class PhotonVision {
 	private PhotonCamera _camera;
 	
 	// simulation variables
-	//private SimVisionSystem _simVisionSystem;
 	private VisionSystemSim _visionSystemSim = null;
 	private Pose3d _sim_farTargetPose = null;
 	private double _sim_targetWidth = 0.0;
@@ -47,10 +46,10 @@ public class PhotonVision {
 	private EstimatedRobotPose _estimatedRobotPose = null;
 	//private int[] _targetsUsed = new int[0];
 	//private int _speakerTarget = 0;
-	PhotonPipelineResult result = null;
+	//PhotonPipelineResult result = null;
 	//List<PhotonTrackedTarget> targets;
 	private Pose2d prevEstimatedRobotPose = null;
-	private Pose2d prevPhotonEstimatedPose = null;
+	//private Pose2d prevPhotonEstimatedPose = null;
 	//List<Pose3d> allTagPoses = new ArrayList<>();
 	private Optional<EstimatedRobotPose> estimatedRobotPose = null;
 
@@ -61,7 +60,7 @@ public class PhotonVision {
 	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
 
 	private boolean isSim = false;
-	private Optional<EstimatedRobotPose> o = null;
+	//private Optional<EstimatedRobotPose> o = null;
 	
 	public PhotonVision() {
 
@@ -130,9 +129,8 @@ public class PhotonVision {
 
 				//photonVisionTab.addDouble("Target Distance", this::getTargetDistance);
 				photonVisionTab.addBoolean("Connection", this::isConnected);
-				photonVisionTab.addBoolean("Has Target", this::hasTarget);
+				//photonVisionTab.addBoolean("Has Target", this::hasTarget);
 				//photonVisionTab.addString("Targets Used", this::targetsUsed);
-				//photonVisionTab.addDouble("Speaker ID", this::getSpeakerTarget);
 			}
 
 			// Start a new thread that runs faster ~10 milliseconds instead of ~20 milliseconds
@@ -268,16 +266,19 @@ public class PhotonVision {
 
 		this.prevEstimatedRobotPose = prevEstimatedRobotPose;
 
-		o = getPhotonPose(prevEstimatedRobotPose);
+		//o = getPhotonPose(prevEstimatedRobotPose);
+		estimatedRobotPose = getPhotonPose(prevEstimatedRobotPose);
 
 		if (isSim) {
 			// Update PhotonVision based on our new robot position.
 			_visionSystemSim.update(prevEstimatedRobotPose);
 		}
 
-		if (o.isPresent()) {
+		//if (o.isPresent()) {
+		if (estimatedRobotPose.isPresent()) {
 
-			_estimatedRobotPose = o.get();
+			//_estimatedRobotPose = o.get();
+			_estimatedRobotPose = estimatedRobotPose.get();
 
 			/*for (PhotonTrackedTarget target : _estimatedRobotPose.targetsUsed) {
 				allTagPoses.add(
@@ -337,17 +338,17 @@ public class PhotonVision {
 	}
 
 	// Does Photonvision have a target?
-	public boolean hasTarget() {		
+	/*public boolean hasTarget() {		
 
 		if(_estimatedRobotPose != null && !_estimatedRobotPose.targetsUsed.isEmpty()) {
 			return true;
 		}
 
 		return false;
-	}
+	}*/
 
 	// How far is the specified target
-	public double targetDistance(int targetNumber) {
+	/*public double targetDistance(int targetNumber) {
 		if(_estimatedRobotPose != null) {
 			return PhotonUtils.getDistanceToPose(
 				_estimatedRobotPose.estimatedPose.toPose2d(),
@@ -356,7 +357,7 @@ public class PhotonVision {
 		}
 
 		return -1;
-	}
+	}*/
 
 	/*public double getTargetDistance() {
 		double distance = 0.0;
@@ -394,7 +395,7 @@ public class PhotonVision {
 	}*/
 
 	// Aim at the specified target
-	public double aimAtTarget(int targetNumber) {
+	/*public double aimAtTarget(int targetNumber) {
 
 		PhotonPipelineResult result = _camera.getLatestResult();
 		List<PhotonTrackedTarget> targets = result.getTargets();
@@ -406,10 +407,10 @@ public class PhotonVision {
 		}
 
 		return 0.0;
-	}
+	}*/
 
 	// Can photon vision see the specified target?
-	public boolean canSeeTarget(int targetNumber) {
+	/*public boolean canSeeTarget(int targetNumber) {
 
 		//PhotonTrackedTarget targetToAimAt = null;
 		PhotonPipelineResult result = _camera.getLatestResult();
@@ -431,7 +432,7 @@ public class PhotonVision {
 		}
 
 		return false;
-	}
+	}*/
 
 	// Need to look this over
 	// This is a private method used only internally
@@ -514,7 +515,7 @@ public class PhotonVision {
 
 	// setup the tags and set the origin to how to show the tags
 	public void setupAprilTagFieldLayoutSim() {
-		//_simVisionSystem.clearVisionTargets();
+
 		_visionSystemSim.clearVisionTargets();
 
 		if(DriverStation.getAlliance().isPresent()) {
@@ -529,62 +530,6 @@ public class PhotonVision {
 
 		if(_aprilTagFieldLayout != null) {
 			_visionSystemSim.addAprilTags(_aprilTagFieldLayout);
-
-			/*_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(1).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				1)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(2).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				2)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(3).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				3)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(4).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				4)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(5).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				5)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(6).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				6)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(7).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				7)
-			);
-
-			_simVisionSystem.addSimVisionTarget(new SimVisionTarget(
-				_aprilTagFieldLayout.getTagPose(8).get(),
-				_sim_targetWidth,
-				_sim_targetHeight, 
-				8)
-			);*/
 		}
 	}
 
