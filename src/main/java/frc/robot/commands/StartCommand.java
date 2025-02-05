@@ -12,7 +12,7 @@ public class StartCommand extends Command {
   ArmSubsystem armSubsystem;
 
   public StartCommand() {
-      this.sliderSubsystem = RobotContainer.sliderSubsystem;
+      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
       addRequirements(sliderSubsystem);

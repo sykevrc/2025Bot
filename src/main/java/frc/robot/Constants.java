@@ -281,6 +281,7 @@ public final class Constants {
 
 		public static double Start = 0.0;
 		public static double Stopped = 0.0;
+		public static double CoralHuman = 1.0;
 		public static double CoralL4 = 15.0;
 		public static double CoralL3 = 13.0;
 		public static double CoralL2 = 12.0;

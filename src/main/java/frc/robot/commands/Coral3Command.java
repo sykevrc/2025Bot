@@ -12,7 +12,7 @@ public class Coral3Command extends Command {
   ArmSubsystem armSubsystem;
 
   public Coral3Command() {
-      this.sliderSubsystem = RobotContainer.sliderSubsystem;
+      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
       addRequirements(sliderSubsystem);

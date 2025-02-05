@@ -15,7 +15,7 @@ public class Coral4Command extends Command {
   ArmSubsystem armSubsystem;
 
   public Coral4Command() {
-      this.sliderSubsystem = RobotContainer.sliderSubsystem;
+      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
       addRequirements(sliderSubsystem);
@@ -31,6 +31,8 @@ public class Coral4Command extends Command {
   public void execute() {
     sliderSubsystem.setDesiredState(ElevatorState.CoralL4);
     armSubsystem.setDesiredState(ArmState.CoralL4);
+
+    System.out.println("Coral4Command::execute() called");
   }
 
   // Called once the command ends or is interrupted.

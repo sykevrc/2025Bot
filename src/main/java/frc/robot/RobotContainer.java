@@ -21,14 +21,18 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
+import frc.robot.commands.Coral1Command;
+import frc.robot.commands.Coral2Command;
+import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
+import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.StartCommand;
 import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.DummyCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
-import frc.robot.commands.autonomous.IntakeCommand;
+import frc.robot.commands.autonomous.IntakeWaitCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -44,7 +48,7 @@ public class RobotContainer {
 	public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
-	public static final ElevatorSubsystem sliderSubsystem = new ElevatorSubsystem();
+	public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 	public static final LED led1 = new LED(0);
 	//private static final CommandXboxController operatorController = new CommandXboxController(1);
 
@@ -75,9 +79,14 @@ public class RobotContainer {
 
 		
 		// Register commands to be used in Auto
-		NamedCommands.registerCommand("Intake", new IntakeCommand());
+		NamedCommands.registerCommand("IntakeWait", new IntakeWaitCommand());
+		NamedCommands.registerCommand("IntakeNoWait", new IntakeNoWait());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
 		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand(OptionalLong.of(500)));
+		NamedCommands.registerCommand("Coral4Command", new Coral4Command());
+		NamedCommands.registerCommand("Coral3Command", new Coral3Command());
+		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
+		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
 
 		if(Constants.kEnablePhotonVision) {
 			NamedCommands.registerCommand("Aim", new AimCommand(photonVision));
@@ -136,11 +145,11 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
-			driverController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
-			driverController.button(2).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
+			driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
+			driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
+			driverController.button(1).whileTrue(new ResetPositionCommand());
 			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
 			operatorController.button(4).whileTrue(new StartCommand());
-			operatorController.button(1).whileTrue(new ResetPositionCommand());
 		} else {
 			// Simulation
 			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
@@ -148,7 +157,7 @@ public class RobotContainer {
 			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
 			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
 
-			operatorController.button(3).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
+			operatorController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
 			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
 			operatorController.button(4).whileTrue(new Coral4Command());
 		}

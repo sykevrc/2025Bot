@@ -29,6 +29,7 @@ import frc.robot.Constants;
 public class ElevatorSubsystem extends SubsystemBase {
     public enum ElevatorState {
         Start,
+        CoralHuman,
         CoralL4,
         CoralL3,
         CoralL2,
@@ -101,6 +102,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             switch (state) {
                 case Start:
                     targetPosition = Constants.ElevatorConstants.Start;
+                    break;
+                case CoralHuman:
+                    targetPosition = Constants.ElevatorConstants.CoralHuman;
                     break;
                 case CoralL4:
                     targetPosition = Constants.ElevatorConstants.CoralL4;

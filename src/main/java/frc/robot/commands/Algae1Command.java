@@ -12,7 +12,7 @@ public class Algae1Command extends Command {
   ArmSubsystem armSubsystem;
 
   public Algae1Command() {
-      this.sliderSubsystem = RobotContainer.sliderSubsystem;
+      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
       addRequirements(sliderSubsystem);
