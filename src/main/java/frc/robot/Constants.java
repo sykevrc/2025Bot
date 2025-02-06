@@ -279,17 +279,17 @@ public final class Constants {
 		public static double I = 0.0;
 		public static double D = 0.5;
 
-		public static double Start = 0.0;
+		public static double Start = 2.0;
 		public static double Stopped = 0.0;
-		public static double CoralHuman = 1.0;
-		public static double CoralL4 = 15.0;
-		public static double CoralL3 = 13.0;
-		public static double CoralL2 = 12.0;
-		public static double CoralL1 = 10.0;
-		public static double AlgaeHuman = 2.0;
-		public static double AlgaeL3 = 13.0;
-		public static double AlgaeL2 = 12.0;
-		public static double AlgaeL1 = 10.0;
-		public static double AlgaeShoot = 15.0;
+		public static double CoralHuman = 3.0;
+		public static double CoralL4 = 1.0;
+		public static double CoralL3 = 1.0;
+		public static double CoralL2 = 1.0;
+		public static double CoralL1 = 1.0;
+		public static double AlgaeHuman = 1.0;
+		public static double AlgaeL3 = 1.0;
+		public static double AlgaeL2 = 1.0;
+		public static double AlgaeL1 = 1.0;
+		public static double AlgaeShoot = 1.0;
 	}
 }

@@ -8,14 +8,14 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
 public class StartCommand extends Command {
-    ElevatorSubsystem sliderSubsystem;
-  ArmSubsystem armSubsystem;
+    ElevatorSubsystem elevatorSubsystem;
+    ArmSubsystem armSubsystem;
 
   public StartCommand() {
-      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
+      this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
-      addRequirements(sliderSubsystem);
+      addRequirements(elevatorSubsystem);
       addRequirements(armSubsystem);
   }
 
@@ -26,7 +26,7 @@ public class StartCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    sliderSubsystem.setDesiredState(ElevatorState.Start);
+    elevatorSubsystem.setDesiredState(ElevatorState.Start);
     armSubsystem.setDesiredState(ArmState.Start);
   }
 

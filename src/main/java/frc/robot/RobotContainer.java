@@ -149,9 +149,9 @@ public class RobotContainer {
 			// Real, not a simulation
 
 			if(Constants.kEnableElevator) {
-				driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
-				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL1)));
-				operatorController.button(4).whileTrue(new StartCommand());
+				driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
+				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
+				//operatorController.button(4).whileTrue(new StartCommand());
 			}
 			
 			driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
