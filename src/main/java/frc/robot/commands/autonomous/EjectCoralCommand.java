@@ -38,13 +38,23 @@ public class EjectCoralCommand extends Command {
                     System.out.println("stopping the eject");
                     endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
                     elevatorSubsystem.setDesiredState(ElevatorState.CoralHuman);
+                    //armSubsystem.setDesiredState(ArmState.CoralHuman);
+                    //finished = true;
+                }
+            };
+
+            TimerTask task2 = new TimerTask() {
+                public void run() {
+                    System.out.println("setting the arm state");
                     armSubsystem.setDesiredState(ArmState.CoralHuman);
                     finished = true;
                 }
             };
             Timer timer = new Timer("Timer");
+            //Timer timer2 = new Timer("Timer");
     
             timer.schedule(task, ejectTime.getAsLong());
+            timer.schedule(task2, 2000);
             System.out.println("starting the eject");
             endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoral);
             finished = false;

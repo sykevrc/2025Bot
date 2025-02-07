@@ -34,19 +34,30 @@ import edu.wpi.first.math.geometry.Transform3d;
  */
 public final class Constants {
 
+	// Drive train
 	public static boolean kDebugDriveTrain = true;
 	public static boolean kEnableDriveSubSystemLogger = false;
 	public static boolean enableLogger = false;
+
+	// Photonvision
 	public static boolean kEnablePhotonVision = false;
 	public static boolean kDebugPhotonVision = false;
+
+	// Limelight
 	public static boolean kEnableLimelight = false;
 	public static boolean kDebugLimelight = false;
+	
+	// Arm
 	public static boolean kEnableArm = false;
 	public static boolean kEnableDebugArm = false;
-	public static boolean kEnableElevator = false;
-	public static boolean kEnableDebugElevator = false;
-	public static boolean kEnableEndEffector = false;
-	public static boolean kEnableDebugEndEffector = false;
+
+	// Elevator
+	public static boolean kEnableElevator = true;
+	public static boolean kEnableDebugElevator = true;
+
+	// End Effector
+	public static boolean kEnableEndEffector = true;
+	public static boolean kEnableDebugEndEffector = true;
 
 	public static final String kRioCANBusName = "rio";
 	public static final String kCanivoreCANBusName = "canivore";
@@ -258,9 +269,6 @@ public final class Constants {
 		public static double EjectAlgaeFloorMotor2 = 0.0;
 		public static double EjectCoralMotor1 = 10.0;
 		public static double EjectCoralMotor2 = 10.0;
-
-		public static double OutputCurrentLimitMotor1 = 5.0;
-		public static double OutputCurrentLimitMotor2 = 5.0;
 		
 		//public static double P = 1.5;
 		public static double P = 1.0;
@@ -270,18 +278,22 @@ public final class Constants {
 
 		public static int motor_id = 18;
 		public static int motor2_id = 19;
+
+		public static double OutputCurrentLimitMotor1 = 5.0;
+		public static double OutputCurrentLimitMotor2 = 5.0;
+		public static int kBeamBreakerPort = 0;
 	}
 
 	public static class ElevatorConstants {
 		public static int motor_id = 32;
 		public static int motor2_id = 33;
-		public static double P = 0.2;
+		public static double P = 0.8;
 		public static double I = 0.0;
 		public static double D = 0.5;
 
-		public static double Start = 2.0;
+		public static double Start = 1.0;
 		public static double Stopped = 0.0;
-		public static double CoralHuman = 3.0;
+		public static double CoralHuman = 3.5;
 		public static double CoralL4 = 1.0;
 		public static double CoralL3 = 1.0;
 		public static double CoralL2 = 1.0;

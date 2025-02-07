@@ -154,7 +154,7 @@ public class RobotContainer {
 				//operatorController.button(4).whileTrue(new StartCommand());
 			}
 			
-			driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
+			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
 
 			if(Constants.kEnableLimelight) {
 				// These depend on the Limelight to be enabled

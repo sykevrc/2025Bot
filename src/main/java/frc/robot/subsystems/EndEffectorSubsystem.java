@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -55,6 +56,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private SparkMaxConfig config2 = new SparkMaxConfig();
 
     private boolean hasItem = false;
+
+    private DigitalInput beamBreaker = new DigitalInput(Constants.EndEffectorConstants.kBeamBreakerPort);
 
     public EndEffectorSubsystem() {
         if(Constants.kEnableEndEffector) {
@@ -151,8 +154,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableEndEffector) {
-            pid.setReference(targetVelocity1, ControlType.kVelocity);
-            pid2.setReference(targetVelocity2, ControlType.kVelocity);
+
+            if(beamBreaker.get()) {
+                this.hasItem = true;
+            } else {
+                this.hasItem = false;
+            }
 
             // Do we have the item?
             if(
@@ -164,20 +171,31 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 hasItem = true;
             }
 
-            if (isSim) {
-                motorSim.iterate(
-                        // 0.1,
-                        // desiredState.speedMetersPerSecond,
-                        motor.getOutputCurrent(),
-                        RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-                        0.02
-                    );
+            if (!hasItem) {
+                // We don't have it so run
 
-                motor2Sim.iterate(
-                        motor2.getOutputCurrent(),
-                        RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-                        0.02
-                    );
+                pid.setReference(targetVelocity1, ControlType.kVelocity);
+                pid2.setReference(targetVelocity2, ControlType.kVelocity);
+
+                if (isSim) {
+                    motorSim.iterate(
+                            // 0.1,
+                            // desiredState.speedMetersPerSecond,
+                            motor.getOutputCurrent(),
+                            RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+                            0.02);
+
+                    motor2Sim.iterate(
+                            motor2.getOutputCurrent(),
+                            RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+                            0.02);
+                }
+            } else {
+                // we have it so stop the wheels
+                targetVelocity1 = 0.0;
+                targetVelocity2 = 0.0;
+                pid.setReference(targetVelocity1, ControlType.kVelocity);
+                pid2.setReference(targetVelocity2, ControlType.kVelocity);
             }
         }
     }
@@ -304,5 +322,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Target Velocity2", this::getTargetVelocity2, this::setTargetVelocity2);
         builder.addDoubleProperty("Velocity1", this::getVelocity1, null);
         builder.addDoubleProperty("Velocity2", this::getVelocity2, null);
+        builder.addBooleanProperty("Has Item", this::hasItem, null);
     }
 }

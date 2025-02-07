@@ -168,7 +168,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         config
             .inverted(true)
             //.smartCurrentLimit(200)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         //config.encoder
             //.positionConversionFactor(25)
             //.velocityConversionFactor(25);
@@ -199,8 +199,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         SparkMaxConfig config2 = new SparkMaxConfig();
 
         config2
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         config2.follow(Constants.ElevatorConstants.motor_id);
+
+        motor2.configure(
+            config2, 
+            ResetMode.kResetSafeParameters, 
+            PersistMode.kPersistParameters
+        );
     }
 
     public double getPosition() {
