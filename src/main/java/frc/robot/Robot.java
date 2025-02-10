@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 // This is needed for AdvantageScope
-//public class Robot extends LoggedRobot {
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
+//public class Robot extends TimedRobot {
 	private Command autonomousCommand;
 
 	private RobotContainer robotContainer;
@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 		Pathfinding.setPathfinder(new LocalADStarAK());
 
 		// This is for advantagekit
-		//Logger.addDataReceiver(new NT4Publisher());
+		Logger.addDataReceiver(new NT4Publisher());
 
 		//PathPlannerServer.startServer(5811);
 
@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
 		}
 
 		// This is for advantagekit
-		//Logger.start();
+		Logger.start();
 	}
 
 	@Override
@@ -50,10 +50,10 @@ public class Robot extends TimedRobot {
 		CommandScheduler.getInstance().run();
 
 		/*Logger.recordOutput("Power/BatteryVoltage", RobotController.getBatteryVoltage());
-		Logger.recordOutput("Power/IsBrownedOut", RobotController.isBrownedOut());
+		Logger.recordOutput("Power/IsBrownedOut", RobotController.isBrownedOut());*/
 		Logger.recordOutput("CAN/ReceiveErrorCount", RobotController.getCANStatus().receiveErrorCount);
 		Logger.recordOutput("CAN/TransmitErrorCount", RobotController.getCANStatus().transmitErrorCount);
-		Logger.recordOutput("CAN/PercentBusUtilization", RobotController.getCANStatus().percentBusUtilization);*/
+		Logger.recordOutput("CAN/PercentBusUtilization", RobotController.getCANStatus().percentBusUtilization);
 	}
 
 	@Override

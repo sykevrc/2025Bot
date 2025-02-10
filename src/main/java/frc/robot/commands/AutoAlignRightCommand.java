@@ -27,14 +27,25 @@ public class AutoAlignRightCommand extends Command{
     public void execute() {
 
         if(limelight.hasTarget()) {
-            double offset = LimelightHelpers.getTX(Constants.LimelightConstants.name);
+            double aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);
 
-            if((offset - Constants.kAutoAlignTolerance) > 0) {
-                driveSubsystem.drive(0.3, 0, 0);
-            } else {
-                driveSubsystem.drive(-0.3, 0, 0);
+            if(
+                Math.abs(aprilTagLocation - Constants.DriveConstants.kAutoAlignOffset) < (Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                && Math.abs(aprilTagLocation - Constants.DriveConstants.kAutoAlignOffset) > (Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+            ) {
+                driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
+            } else if(
+                Math.abs(aprilTagLocation - Constants.DriveConstants.kAutoAlignOffset) < (Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+            ) {
+                //driveSubsystem.drive(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0);
+                driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0);
+            } else if(Math.abs(aprilTagLocation - Constants.DriveConstants.kAutoAlignOffset) > (Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)) {
+                //driveSubsystem.drive(0.0, -1 * Constants.DriveConstants.kAutoAlignSpeed, 0);
+                driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0);
             }
         }
+
+        driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0);
     }
 
     // Called once the command ends or is interrupted.
@@ -44,6 +55,6 @@ public class AutoAlignRightCommand extends Command{
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 }

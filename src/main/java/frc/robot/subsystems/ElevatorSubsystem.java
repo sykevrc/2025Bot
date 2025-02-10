@@ -54,6 +54,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double i = Constants.ElevatorConstants.I;
     private double d = Constants.ElevatorConstants.D;
 
+    private double currentPosition = 0.0;
+    private double previousValue = 0.0;
+    private int revolutionCount = 0;
+
     public ElevatorSubsystem() {
 
         if(Constants.kEnableElevator) {
@@ -168,13 +172,17 @@ public class ElevatorSubsystem extends SubsystemBase {
         config
             .inverted(true)
             //.smartCurrentLimit(200)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         //config.encoder
             //.positionConversionFactor(25)
             //.velocityConversionFactor(25);
 
         config.closedLoop
-            //.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            //.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            //.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+            //.feedbackSensor(FeedbackSensor.kAnalogSensor)
+            //.positionWrappingEnabled(true)
 		    .pid(
 			    p, 
                 i, 
@@ -182,13 +190,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 			).outputRange(-1, 1);
 
         // Set MAXMotion parameters
-        config.closedLoop.maxMotion
-            .maxVelocity(6784)
-            .maxAcceleration(1)
+        //config.closedLoop.maxMotion
+            //.maxVelocity(6784)
+            //.maxVelocity(1)
+            //.maxAcceleration(1)
             //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-            .allowedClosedLoopError(.1);
+            //.allowedClosedLoopError(.1);
 
         config.signals.primaryEncoderPositionPeriodMs(5);
+        config.signals.primaryEncoderPositionAlwaysOn(true);
 
         motor.configure(
 		    config, 
@@ -199,7 +209,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         SparkMaxConfig config2 = new SparkMaxConfig();
 
         config2
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         config2.follow(Constants.ElevatorConstants.motor_id);
 
         motor2.configure(
@@ -216,6 +226,23 @@ public class ElevatorSubsystem extends SubsystemBase {
         }
 
         return motor.getEncoder().getPosition();
+        //currentPosition = motor.getEncoder().getPosition();
+        /*currentPosition = motor.getAbsoluteEncoder().getPosition();
+        //currentPosition = motor.getAlternateEncoder().getPosition();
+
+        if(currentPosition < .2 && previousValue > .8) {
+            revolutionCount--;
+        } else if(currentPosition > .8 && previousValue < .2) {
+            revolutionCount++;
+        }
+
+        previousValue = currentPosition;
+
+
+        //previousValue = revolutionCount + motor.getAbsoluteEncoder().getPosition();
+        //return revolutionCount + position;
+
+        return currentPosition;*/
     }
 
     public double getTargetPosition() {
@@ -254,6 +281,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         setConfig();
     }
 
+    public int getRevolutions() {
+        return this.revolutionCount;
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("RobotPreferences");
@@ -264,5 +295,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("P", this::getP, this::setP);
         builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
         builder.addDoubleProperty("Position", this::getPosition,null);
+        builder.addDoubleProperty("Revolutions", this::getRevolutions,null);
     }
 }

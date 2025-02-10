@@ -50,10 +50,10 @@ public class ArmSubsystem extends SubsystemBase {
     private boolean isSim = false;
     private ArmState state = ArmState.AlgaeHuman;
     private double targetPosition = 0.0;
-    private SparkFlex motor = null;
-    private SparkFlexSim motorSim = null;
+    private SparkMax motor = null;
+    private SparkMaxSim motorSim = null;
     private SparkClosedLoopController pid = null;
-    private SparkFlexConfig config = new SparkFlexConfig();
+    private SparkMaxConfig config = new SparkMaxConfig();
 
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
@@ -69,10 +69,10 @@ public class ArmSubsystem extends SubsystemBase {
                 isSim = true;
             }
 
-            motor = new SparkFlex(Constants.ArmConstants.motor_id, MotorType.kBrushless);
+            motor = new SparkMax(Constants.ArmConstants.motor_id, MotorType.kBrushless);
 
 		    if(isSim) {
-			    motorSim = new SparkFlexSim(motor, DCMotor.getNeoVortex(1));
+			    motorSim = new SparkMaxSim(motor, DCMotor.getNeoVortex(1));
 		    }
 
             setConfig();
@@ -158,7 +158,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
     
     private void setConfig() {
-        config = new SparkFlexConfig();
+        config = new SparkMaxConfig();
 
         config
             .inverted(false)

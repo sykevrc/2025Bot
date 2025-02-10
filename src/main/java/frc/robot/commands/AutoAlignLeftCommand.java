@@ -11,8 +11,9 @@ import frc.robot.tools.Limelight;
 
 public class AutoAlignLeftCommand extends Command {
 
-    DriveSubsystem driveSubsystem;
-    Limelight limelight;
+    private DriveSubsystem driveSubsystem;
+    private Limelight limelight;
+    private boolean finished = false;
 
     public AutoAlignLeftCommand() {
         this.driveSubsystem = RobotContainer.driveSubsystem;
@@ -28,15 +29,33 @@ public class AutoAlignLeftCommand extends Command {
     @Override
     public void execute() {
 
-        
-
         if(limelight.hasTarget()) {
-            double offset = LimelightHelpers.getTX(Constants.LimelightConstants.name);
+            double aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);
 
-            if((offset - Constants.kAutoAlignTolerance) < 0) {
-                driveSubsystem.drive(-0.3, 0, 0);
-            } else {
-                driveSubsystem.drive(0.3, 0, 0);
+            /*System.out.println("aprilTagLocation: " + aprilTagLocation + " location offset: " + aprilTagLocation
+                + " left: " + (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                + " right: " + (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+            );*/
+
+            if(
+                (aprilTagLocation ) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                && (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+            ) {
+               // System.out.println("we are here");
+                driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
+                //finished = true;
+            } else if(
+                (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+            ) {
+                //System.out.println("move left");
+                //driveSubsystem.drive(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+            } else if (
+                (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+            ) {
+                //System.out.println("move right");
+                //driveSubsystem.drive(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0);
+                driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
             }
         }
     }
@@ -48,6 +67,6 @@ public class AutoAlignLeftCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return finished;
     }
 }

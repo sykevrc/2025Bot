@@ -52,17 +52,16 @@ public final class Constants {
 	public static boolean kEnableDebugArm = false;
 
 	// Elevator
-	public static boolean kEnableElevator = true;
-	public static boolean kEnableDebugElevator = true;
+	public static boolean kEnableElevator = false;
+	public static boolean kEnableDebugElevator = false;
 
 	// End Effector
-	public static boolean kEnableEndEffector = true;
-	public static boolean kEnableDebugEndEffector = true;
+	public static boolean kEnableEndEffector = false;
+	public static boolean kEnableDebugEndEffector = false;
 
 	public static final String kRioCANBusName = "rio";
 	public static final String kCanivoreCANBusName = "canivore";
 	//public static final String logFolders = "/media/sda2/";
-	public static final double kAutoAlignTolerance = 0.1;
 
 	public static class ModuleConstants {
 
@@ -136,6 +135,10 @@ public final class Constants {
 		public static final double kMaxTurningVelocityDegrees = 20;
 		public static final double kMaxTurningAcceleratonDegrees = 10;
 		public static final double kGyroTurnTolerance = 2;
+
+		public static double kAutoAlignSpeed = 0.05;
+		public static double kAutoAlignTolerance = 5.0;
+		public static double kAutoAlignOffset = 20.0;
 
 		/*public static enum kDriveModes {
 			NORMAL,
@@ -246,11 +249,11 @@ public final class Constants {
 		public static double CoralL4 = 8.0;
 		public static double CoralL3 = 6.0;
 		public static double CoralL2 = 4.0;
-		public static double CoralL1 = 2.0;
-		public static double CoralHuman = 2.0;
+		public static double CoralL1 = -10.0;
+		public static double CoralHuman = 0.0;
 
 		//public static double P = 1.5;
-		public static double P = 1.0;
+		public static double P = 0.05;
 		public static double I = 0.0;
 		//public static double D = 0.0;
 		public static double D = 0.0;
@@ -285,19 +288,21 @@ public final class Constants {
 	}
 
 	public static class ElevatorConstants {
-		public static int motor_id = 32;
-		public static int motor2_id = 33;
-		public static double P = 0.8;
-		public static double I = 0.0;
-		public static double D = 0.5;
+		public static int motor_id = 33;
+		public static int motor2_id = 32;
+		public static double P = 0.06;
+		//public static double P = 5;
+		public static double I = 0.00;
+		//public static double D = 0.02;
+		public static double D = 0.0;
 
-		public static double Start = 1.0;
+		public static double Start = 1.5;
 		public static double Stopped = 0.0;
-		public static double CoralHuman = 3.5;
+		public static double CoralHuman = 5.5;
 		public static double CoralL4 = 1.0;
 		public static double CoralL3 = 1.0;
 		public static double CoralL2 = 1.0;
-		public static double CoralL1 = 1.0;
+		public static double CoralL1 = 5.5;
 		public static double AlgaeHuman = 1.0;
 		public static double AlgaeL3 = 1.0;
 		public static double AlgaeL2 = 1.0;

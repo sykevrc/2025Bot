@@ -494,6 +494,30 @@ public class DriveSubsystem extends SubsystemBase {
 		setModuleStates(swerveModuleStates);
 	}
 
+	public void driveRobotRelative(double xSpeed, double ySpeed, double rot) {
+		// Apply deadbands to inputs
+		xSpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
+		ySpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
+
+		this.xSpeed = xSpeed;
+		this.ySpeed = ySpeed;
+		this.rot = rot;
+
+		
+
+			//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+
+			/*swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+				//ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().unaryMinus())
+				ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+			);
+		
+		
+			setChassisSpeedsRobotRelative(swerveModuleStates, ChassisSpeeds.dri);*/
+
+			setChassisSpeedsRobotRelativee(getChassisSpeedsRobotRelative());
+	}
+
 	public ChassisSpeeds getChassisSpeeds() {
 		return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
 	}
@@ -506,6 +530,27 @@ public class DriveSubsystem extends SubsystemBase {
 		
 		//return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().unaryMinus());
 		return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
+	}
+
+	public void setChassisSpeedsRobotRelativee(ChassisSpeeds chassisSpeeds) {
+
+		swerveModuleStatesRobotRelative = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+		// In simulation, the actual navx does not work, so set the value from the chassisSpeeds
+		if(isSim) {
+			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[4]");
+			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+			angle.set(angle.get() + -chassisSpeeds.omegaRadiansPerSecond);
+		}
+
+		frontLeft.setDesiredState(swerveModuleStatesRobotRelative[0]);
+		frontRight.setDesiredState(swerveModuleStatesRobotRelative[1]);
+		rearLeft.setDesiredState(swerveModuleStatesRobotRelative[2]);
+		rearRight.setDesiredState(swerveModuleStatesRobotRelative[3]);
+
+		if(Constants.kEnableDriveSubSystemLogger) {
+			Logger.recordOutput("SwerveModuleStates/Setpoints", swerveModuleStatesRobotRelative);
+		}
 	}
 
 	// This is for auto

@@ -231,7 +231,7 @@
       }
     },
     {
-      "name": "EjectCoral500",
+      "name": "EjectCoralReverse500",
       "waypointRelativePos": 1.0344182371183213,
       "endWaypointRelativePos": null,
       "command": {

@@ -72,7 +72,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
             if(isSim) {
 			    motorSim = new SparkFlexSim(motor, DCMotor.getNeoVortex(1));
-                motor2Sim = new SparkMaxSim(motor2, DCMotor.getNeo550(1));
+                motor2Sim = new SparkMaxSim(motor2, DCMotor.getNEO(1));
 		    }
 
             setConfig();

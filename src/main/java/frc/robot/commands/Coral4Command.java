@@ -11,14 +11,14 @@ import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
 public class Coral4Command extends Command {
 
-  ElevatorSubsystem sliderSubsystem;
+  ElevatorSubsystem elevatorSubsystem;
   ArmSubsystem armSubsystem;
 
   public Coral4Command() {
-      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
+      this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
-      addRequirements(sliderSubsystem);
+      addRequirements(elevatorSubsystem);
       addRequirements(armSubsystem);
   }
 
@@ -29,7 +29,7 @@ public class Coral4Command extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    sliderSubsystem.setDesiredState(ElevatorState.CoralL4);
+    elevatorSubsystem.setDesiredState(ElevatorState.CoralL4);
     armSubsystem.setDesiredState(ArmState.CoralL4);
 
     System.out.println("Coral4Command::execute() called");

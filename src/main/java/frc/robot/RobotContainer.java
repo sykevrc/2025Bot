@@ -27,6 +27,7 @@ import frc.robot.commands.Coral1Command;
 import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
+import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.StartCommand;
@@ -85,6 +86,7 @@ public class RobotContainer {
 		NamedCommands.registerCommand("IntakeNoWait", new IntakeNoWait());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
 		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand(OptionalLong.of(500)));
+		NamedCommands.registerCommand("EjectCoralReverse500", new EjectCoralReverse(OptionalLong.of(500)));
 		NamedCommands.registerCommand("Coral4Command", new Coral4Command());
 		NamedCommands.registerCommand("Coral3Command", new Coral3Command());
 		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
@@ -149,10 +151,18 @@ public class RobotContainer {
 			// Real, not a simulation
 
 			if(Constants.kEnableElevator) {
-				driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
+				//driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
+				//driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
 				//operatorController.button(4).whileTrue(new StartCommand());
 			}
+
+			//if(Constants.kEnableArm) {
+				//driverController.button(4).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
+				driverController.button(4).whileTrue(new Coral1Command());
+				driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
+				driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
+				//driverController.button(3).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralHuman)));
+			//}
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
 
@@ -163,22 +173,9 @@ public class RobotContainer {
 			}
 
 			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-			
-		} else {
-			// Simulation
-			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
-			operatorController.button(1).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
-			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
-			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
 
-			operatorController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
-			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
-			operatorController.button(4).whileTrue(new Coral4Command());
-		}
-		
-
-		// Swerve Drive method is set as default for drive subsystem
-		driveSubsystem.setDefaultCommand(
+			// Swerve Drive method is set as default for drive subsystem
+			driveSubsystem.setDefaultCommand(
 
 				new RunCommand(() -> driveSubsystem.drive(
 					JoystickUtils.processJoystickInput(driverController.getLeftY()),
@@ -187,7 +184,50 @@ public class RobotContainer {
 				),
 				driveSubsystem
 			)
-		);
+			);
+			
+		} else {
+			// Simulation
+			/*
+			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
+			operatorController.button(1).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
+			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
+			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
+
+			operatorController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
+			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
+			operatorController.button(4).whileTrue(new Coral4Command());
+			*/
+
+			driverController.button(1).whileTrue(new AutoAlignRightCommand());	
+			
+			// Swerve Drive method is set as default for drive subsystem
+			driveSubsystem.setDefaultCommand(
+
+				new RunCommand(() -> driveSubsystem.drive(
+						JoystickUtils.processJoystickInput(driverController.getLeftY()),
+						JoystickUtils.processJoystickInput(driverController.getLeftX()),
+						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
+						JoystickUtils.processJoystickInput(-operatorController.getLeftX())
+						//JoystickUtils.processJoystickInput(driverController.getRightY())
+					),
+					driveSubsystem
+				)
+			);
+		}
+		
+
+		// Swerve Drive method is set as default for drive subsystem
+		/*driveSubsystem.setDefaultCommand(
+
+				new RunCommand(() -> driveSubsystem.drive(
+					JoystickUtils.processJoystickInput(driverController.getLeftY()),
+					JoystickUtils.processJoystickInput(driverController.getLeftX()),
+					JoystickUtils.processJoystickInput(-driverController.getRightX())
+				),
+				driveSubsystem
+			)
+		);*/
 	}
 
 	public Command getAutonomousCommand() {
