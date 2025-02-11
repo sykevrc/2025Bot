@@ -480,7 +480,22 @@ public class DriveSubsystem extends SubsystemBase {
 		// We multiply (times) the rotation because it is inverted
 		if(isSim) {
 			swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-				ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d()));
+				ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
+			);
+
+			// testing
+			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[4]");
+			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+			angle.set(
+				angle.get() 
+				+ ChassisSpeeds.fromFieldRelativeSpeeds(
+					xSpeed, 
+					ySpeed, 
+					rot, 
+					gyro.getRotation2d()
+				).omegaRadiansPerSecond
+			);
+			// end testing
 		} else {
 
 			//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);

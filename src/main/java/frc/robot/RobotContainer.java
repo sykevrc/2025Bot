@@ -208,7 +208,7 @@ public class RobotContainer {
 						JoystickUtils.processJoystickInput(driverController.getLeftY()),
 						JoystickUtils.processJoystickInput(driverController.getLeftX()),
 						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
-						JoystickUtils.processJoystickInput(-operatorController.getLeftX())
+						JoystickUtils.processJoystickInput(-operatorController.getRightX())
 						//JoystickUtils.processJoystickInput(driverController.getRightY())
 					),
 					driveSubsystem
