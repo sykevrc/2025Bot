@@ -176,28 +176,19 @@ public class RobotContainer {
 			);
 			
 		} else {
-			// Simulation
-			/*
-			operatorController.button(1).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL4)));
-			operatorController.button(1).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
-			operatorController.button(2).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
-			operatorController.button(2).whileTrue(new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorSubsystem.EndEffectorState.EjectCoral)));
-
-			operatorController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL4)));
-			//operatorController.button(4).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(SliderSubsystem.SliderState.Start)));
-			operatorController.button(4).whileTrue(new Coral4Command());
-			*/
-
-			driverController.button(1).whileTrue(new AutoAlignRightCommand());	
+			
+			driverController.button(1).whileTrue(new AutoAlignRightCommand());
 			
 			// Swerve Drive method is set as default for drive subsystem
 			driveSubsystem.setDefaultCommand(
 
-				new RunCommand(() -> driveSubsystem.drive(
+				//new RunCommand(() -> driveSubsystem.drive(
+				new RunCommand(() -> driveSubsystem.driveRobotRelative(
 						JoystickUtils.processJoystickInput(driverController.getLeftY()),
 						JoystickUtils.processJoystickInput(driverController.getLeftX()),
 						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
-						JoystickUtils.processJoystickInput(-operatorController.getRightX())
+						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
+						JoystickUtils.processJoystickInput(-driverController.getRawAxis(2))
 						//JoystickUtils.processJoystickInput(driverController.getRightY())
 					),
 					driveSubsystem

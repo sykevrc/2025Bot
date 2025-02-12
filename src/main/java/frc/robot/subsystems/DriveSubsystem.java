@@ -514,23 +514,24 @@ public class DriveSubsystem extends SubsystemBase {
 		xSpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
 		ySpeed *= ModuleConstants.kMaxModuleSpeedMetersPerSecond;
 
+		if (gyroTurning) {
+			targetRotationDegrees += rot;
+			rot = gyroTurnPidController.calculate(getHeading360(), targetRotationDegrees);
+		} else {
+			rot *= DriveConstants.kMaxRPM;
+		}
+
 		this.xSpeed = xSpeed;
 		this.ySpeed = ySpeed;
 		this.rot = rot;
 
-		
+		ChassisSpeeds chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, rot);
 
-			//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
+		swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+			chassisSpeeds
+		);
 
-			/*swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
-				//ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().unaryMinus())
-				ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
-			);
-		
-		
-			setChassisSpeedsRobotRelative(swerveModuleStates, ChassisSpeeds.dri);*/
-
-			setChassisSpeedsRobotRelativee(getChassisSpeedsRobotRelative());
+		setModuleStates(swerveModuleStates);
 	}
 
 	public ChassisSpeeds getChassisSpeeds() {
@@ -539,33 +540,14 @@ public class DriveSubsystem extends SubsystemBase {
 
 	// This is for auto
 	public ChassisSpeeds getChassisSpeedsRobotRelative() {
+
+
 		if(isSim) {
 			return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
 		} 
 		
 		//return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().unaryMinus());
 		return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
-	}
-
-	public void setChassisSpeedsRobotRelativee(ChassisSpeeds chassisSpeeds) {
-
-		swerveModuleStatesRobotRelative = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-
-		// In simulation, the actual navx does not work, so set the value from the chassisSpeeds
-		if(isSim) {
-			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[4]");
-			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-			angle.set(angle.get() + -chassisSpeeds.omegaRadiansPerSecond);
-		}
-
-		frontLeft.setDesiredState(swerveModuleStatesRobotRelative[0]);
-		frontRight.setDesiredState(swerveModuleStatesRobotRelative[1]);
-		rearLeft.setDesiredState(swerveModuleStatesRobotRelative[2]);
-		rearRight.setDesiredState(swerveModuleStatesRobotRelative[3]);
-
-		if(Constants.kEnableDriveSubSystemLogger) {
-			Logger.recordOutput("SwerveModuleStates/Setpoints", swerveModuleStatesRobotRelative);
-		}
 	}
 
 	// This is for auto
@@ -620,7 +602,7 @@ public class DriveSubsystem extends SubsystemBase {
 				desiredStates[0], desiredStates[1], desiredStates[2], desiredStates[3]
 			);
 
-			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[4]");
 			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
 			angle.set(angle.get() + -chassisSpeeds.omegaRadiansPerSecond);
 		}
