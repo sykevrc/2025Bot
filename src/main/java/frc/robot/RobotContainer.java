@@ -27,6 +27,7 @@ import frc.robot.commands.Coral1Command;
 import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
+import frc.robot.commands.CoralHumanCommand;
 import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
@@ -150,32 +151,15 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
-
-			if(Constants.kEnableElevator) {
-				//driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-				//driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
-				//operatorController.button(4).whileTrue(new StartCommand());
-			}
-
-			//if(Constants.kEnableArm) {
-				//driverController.button(4).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
-				driverController.button(4).whileTrue(new Coral1Command());
-				driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL2)));
-				driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL3)));
-				driverController.button(8).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
-				driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
-				driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
-				//driverController.button(3).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralHuman)));
-			//}
+			driverController.button(4).whileTrue(new Coral1Command());
+			driverController.button(2).whileTrue(new Coral2Command());
+			driverController.button(1).whileTrue(new Coral3Command());
+			driverController.button(3).whileTrue(new StartCommand());
+			driverController.button(8).whileTrue(new CoralHumanCommand());
+			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
+			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
-
-			if(Constants.kEnableLimelight) {
-				// These depend on the Limelight to be enabled
-				driverController.leftTrigger().whileTrue(new RunCommand(() -> new AutoAlignLeftCommand()));
-				driverController.rightTrigger().whileTrue(new RunCommand(() -> new AutoAlignRightCommand()));
-			}
 
 			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
 

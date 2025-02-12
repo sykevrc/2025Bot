@@ -8,35 +8,35 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 
 public class Coral2Command extends Command {
-    ElevatorSubsystem sliderSubsystem;
-  ArmSubsystem armSubsystem;
+    ElevatorSubsystem elevatorSubsystem;
+    ArmSubsystem armSubsystem;
 
-  public Coral2Command() {
-      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
+    public Coral2Command() {
+      this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
       
-      addRequirements(sliderSubsystem);
+      addRequirements(elevatorSubsystem);
       addRequirements(armSubsystem);
-  }
+    }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    sliderSubsystem.setDesiredState(ElevatorState.CoralL2);
-    armSubsystem.setDesiredState(ArmState.CoralL2);
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+      elevatorSubsystem.setDesiredState(ElevatorState.CoralL2);
+      armSubsystem.setDesiredState(ArmState.CoralL2);
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+      return true;
+    }
 }
