@@ -101,19 +101,19 @@ public class ArmSubsystem extends SubsystemBase {
 
         switch(state) {
             case AlgaeHuman:
-                targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.AlgaeHuman;
                 break;
             case AlgaeL1:
-                targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.AlgaeL1;
                 break;
             case AlgaeL2:
-                targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.AlgaeL2;
                 break;
             case AlgaeL3:
-                targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.AlgaeL3;
                 break;
             case AlgaeShoot:
-                targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.AlgaeL3;
                 break;
             case CoralL1:
                 targetPosition = Constants.ArmConstants.CoralL1;

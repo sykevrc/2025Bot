@@ -251,6 +251,11 @@ public final class Constants {
 		public static double CoralL2 = 4.0;
 		public static double CoralL1 = -10.0;
 		public static double CoralHuman = 0.0;
+		public static double AlgaeL1 = 0.0;
+		public static double AlgaeL2 = 0.0;
+		public static double AlgaeL3 = 0.0;
+		public static double AlgaeShoot = 0.0;
+		public static double AlgaeHuman = 0.0;
 
 		//public static double P = 1.5;
 		public static double P = 0.05;
