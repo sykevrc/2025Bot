@@ -127,27 +127,27 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -59.47484315924052
+      "rotationDegrees": 121.25584354171873
     },
     {
       "waypointRelativePos": 2,
-      "rotationDegrees": -127.77854939337459
+      "rotationDegrees": 55.526414486738766
     },
     {
       "waypointRelativePos": 3,
-      "rotationDegrees": -59.645020618249724
+      "rotationDegrees": 122.511300657247
     },
     {
       "waypointRelativePos": 4,
-      "rotationDegrees": -125.37619617691642
+      "rotationDegrees": 56.55782733828398
     },
     {
       "waypointRelativePos": 5,
-      "rotationDegrees": -123.05156912207302
+      "rotationDegrees": 59.88856708928184
     },
     {
       "waypointRelativePos": 6,
-      "rotationDegrees": -123.34983655958817
+      "rotationDegrees": 57.60645028959267
     }
   ],
   "constraintZones": [
@@ -285,7 +285,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.83917051984342
+    "rotation": 57.75726691990893
   },
   "reversed": false,
   "folder": "Auto 4 Paths",
