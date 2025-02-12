@@ -40,20 +40,20 @@ public final class Constants {
 	public static boolean enableLogger = false;
 
 	// Photonvision
-	public static boolean kEnablePhotonVision = false;
+	public static boolean kEnablePhotonVision = true;
 	public static boolean kDebugPhotonVision = false;
 
 	// Limelight
-	public static boolean kEnableLimelight = false;
+	public static boolean kEnableLimelight = true;
 	public static boolean kDebugLimelight = false;
 	
 	// Arm
-	public static boolean kEnableArm = false;
-	public static boolean kEnableDebugArm = false;
+	public static boolean kEnableArm = true;
+	public static boolean kEnableDebugArm = true;
 
 	// Elevator
-	public static boolean kEnableElevator = false;
-	public static boolean kEnableDebugElevator = false;
+	public static boolean kEnableElevator = true;
+	public static boolean kEnableDebugElevator = true;
 
 	// End Effector
 	public static boolean kEnableEndEffector = false;
@@ -296,12 +296,12 @@ public final class Constants {
 		//public static double D = 0.02;
 		public static double D = 0.0;
 
-		public static double Start = 1.5;
+		public static double Start = .595;
 		public static double Stopped = 0.0;
-		public static double CoralHuman = 5.5;
+		public static double CoralHuman = 2.476;
 		public static double CoralL4 = 1.0;
-		public static double CoralL3 = 1.0;
-		public static double CoralL2 = 1.0;
+		public static double CoralL3 = 13.095;
+		public static double CoralL2 = 9.167;
 		public static double CoralL1 = 5.5;
 		public static double AlgaeHuman = 1.0;
 		public static double AlgaeL3 = 1.0;

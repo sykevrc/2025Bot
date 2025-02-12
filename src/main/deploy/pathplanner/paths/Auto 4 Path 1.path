@@ -291,7 +291,7 @@
   "folder": "Auto 4 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.26888352580266
   },
   "useDefaultConstraints": true
 }

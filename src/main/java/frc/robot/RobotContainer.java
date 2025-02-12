@@ -40,6 +40,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
@@ -159,6 +160,10 @@ public class RobotContainer {
 			//if(Constants.kEnableArm) {
 				//driverController.button(4).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralL1)));
 				driverController.button(4).whileTrue(new Coral1Command());
+				driverController.button(3).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
+				driverController.button(2).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL2)));
+				driverController.button(1).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL3)));
+				driverController.button(8).whileTrue(new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.CoralHuman)));
 				driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 				driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 				//driverController.button(3).whileTrue(new RunCommand(() -> armSubsystem.setDesiredState(ArmSubsystem.ArmState.CoralHuman)));
