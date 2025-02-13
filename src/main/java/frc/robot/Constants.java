@@ -138,7 +138,7 @@ public final class Constants {
 
 		public static double kAutoAlignSpeed = 0.05;
 		public static double kAutoAlignTolerance = 5.0;
-		public static double kAutoAlignOffset = 20.0;
+		public static double kAutoAlignOffset = 10.0;
 
 		/*public static enum kDriveModes {
 			NORMAL,
@@ -247,7 +247,7 @@ public final class Constants {
 
 	public static class ArmConstants {
 		public static double CoralL4 = -0.9;
-		public static double CoralL3 = -0.9;
+		public static double CoralL3 = -2.738;
 		public static double CoralL2 = -0.9;
 		public static double CoralL1 = -10.0;
 		public static double CoralHuman = -0.462;
@@ -305,7 +305,7 @@ public final class Constants {
 		public static double Stopped = 0.0;
 		public static double CoralHuman = 3.476;
 		public static double CoralL4 = 1.0;
-		public static double CoralL3 = 13.095;
+		public static double CoralL3 = 13.45;
 		public static double CoralL2 = 9.167;
 		public static double CoralL1 = 5.5;
 		public static double AlgaeHuman = 1.0;
