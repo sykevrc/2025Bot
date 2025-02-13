@@ -56,8 +56,8 @@ public final class Constants {
 	public static boolean kEnableDebugElevator = true;
 
 	// End Effector
-	public static boolean kEnableEndEffector = false;
-	public static boolean kEnableDebugEndEffector = false;
+	public static boolean kEnableEndEffector = true;
+	public static boolean kEnableDebugEndEffector = true;
 
 	public static final String kRioCANBusName = "rio";
 	public static final String kCanivoreCANBusName = "canivore";
@@ -246,16 +246,16 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
-		public static double CoralL4 = 8.0;
-		public static double CoralL3 = 6.0;
-		public static double CoralL2 = 4.0;
+		public static double CoralL4 = -0.9;
+		public static double CoralL3 = -0.9;
+		public static double CoralL2 = -0.9;
 		public static double CoralL1 = -10.0;
-		public static double CoralHuman = 0.0;
-		public static double AlgaeL1 = 0.0;
-		public static double AlgaeL2 = 0.0;
-		public static double AlgaeL3 = 0.0;
-		public static double AlgaeShoot = 0.0;
-		public static double AlgaeHuman = 0.0;
+		public static double CoralHuman = -0.462;
+		public static double AlgaeL1 = -0.9;
+		public static double AlgaeL2 = -0.9;
+		public static double AlgaeL3 = -0.9;
+		public static double AlgaeShoot = -0.9;
+		public static double AlgaeHuman = -0.9;
 
 		//public static double P = 1.5;
 		public static double P = 0.05;
@@ -271,8 +271,8 @@ public final class Constants {
 		public static double StoppedMotor2 = 0.0;
 		public static double IntakeAlgaeFloorMotor1 = 0.0;
 		public static double IntakeAlgaeFloorMmotor2 = 0.0;
-		public static double IntakeCoralHumanElementMotor1 = 0.0;
-		public static double IntakeCoralHumanElementMotor2 = 0.0;
+		public static double IntakeCoralHumanElementMotor1 = 0.1;
+		public static double IntakeCoralHumanElementMotor2 = 0.1;
 		public static double EjectAlgaeFloorMotor1 = 0.0;
 		public static double EjectAlgaeFloorMotor2 = 0.0;
 		public static double EjectCoralMotor1 = 10.0;
@@ -303,7 +303,7 @@ public final class Constants {
 
 		public static double Start = .595;
 		public static double Stopped = 0.0;
-		public static double CoralHuman = 2.476;
+		public static double CoralHuman = 3.476;
 		public static double CoralL4 = 1.0;
 		public static double CoralL3 = 13.095;
 		public static double CoralL2 = 9.167;

@@ -32,6 +32,7 @@ import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.StartCommand;
+import frc.robot.commands.StopIntake;
 import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.DummyCommand;
@@ -158,6 +159,11 @@ public class RobotContainer {
 			driverController.button(8).whileTrue(new CoralHumanCommand());
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
+
+			//driverController.leftTrigger().whileTrue(new IntakeNoWait());
+			//driverController.leftTrigger().whileFalse(new IntakeNoWait());
+			driverController.rightTrigger().whileTrue(new IntakeNoWait());
+			driverController.rightTrigger().whileFalse(new StopIntake());
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
 

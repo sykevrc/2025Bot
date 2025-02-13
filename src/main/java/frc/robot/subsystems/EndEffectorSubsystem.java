@@ -108,10 +108,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
     public void setDesiredState(EndEffectorState state) {
 
         // Are we sending the same state again?  If so act like a toggle and stop
-        if (this.state == state) {
+        /*if (this.state == state) {
             targetVelocity1 = Constants.EndEffectorConstants.StoppedMotor1;
             targetVelocity2 = Constants.EndEffectorConstants.StoppedMotor2;
-        } else {
+        } else {*/
 
             switch (state) {
                 case Stopped:
@@ -143,7 +143,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     targetVelocity2 = 0.0;
                     break;
             }
-        }
+        //}
 
         this.state = state;
 
@@ -153,9 +153,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
     @Override
 	public void periodic() {
 
+        //motor.set(1.0);
+        //motor2.set(1.0);
+
         if (Constants.kEnableEndEffector) {
 
-            if(beamBreaker.get()) {
+            /*if(beamBreaker.get()) {
                 this.hasItem = true;
             } else {
                 this.hasItem = false;
@@ -169,12 +172,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 // Looks like we got the item, so stop the end effector motors
                 state = EndEffectorState.Stopped;
                 hasItem = true;
-            }
+            }*/
 
-            if (!hasItem) {
+            motor.set(targetVelocity1);
+            motor2.set(targetVelocity2);
+
+            //if (!hasItem) {
                 // We don't have it so run
 
-                pid.setReference(targetVelocity1, ControlType.kVelocity);
+                
+
+                /*pid.setReference(targetVelocity1, ControlType.kVelocity);
                 pid2.setReference(targetVelocity2, ControlType.kVelocity);
 
                 if (isSim) {
@@ -189,14 +197,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
                             motor2.getOutputCurrent(),
                             RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
                             0.02);
-                }
-            } else {
-                // we have it so stop the wheels
-                targetVelocity1 = 0.0;
-                targetVelocity2 = 0.0;
-                pid.setReference(targetVelocity1, ControlType.kVelocity);
-                pid2.setReference(targetVelocity2, ControlType.kVelocity);
-            }
+                }*/
+            // } else {
+            //     // we have it so stop the wheels
+            //     targetVelocity1 = 0.0;
+            //     targetVelocity2 = 0.0;
+            //     pid.setReference(targetVelocity1, ControlType.kVelocity);
+            //     pid2.setReference(targetVelocity2, ControlType.kVelocity);
+            // }
         }
     }
 
