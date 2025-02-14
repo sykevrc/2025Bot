@@ -314,5 +314,6 @@ public final class Constants {
 		public static double AlgaeL2 = 1.0;
 		public static double AlgaeL1 = 1.0;
 		public static double AlgaeShoot = 1.0;
+		public static double AlgaeFloor = 2.0;
 	}
 }

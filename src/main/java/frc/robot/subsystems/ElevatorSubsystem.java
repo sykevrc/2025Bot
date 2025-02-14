@@ -40,7 +40,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         AlgaeL3,
         AlgaeL2,
         AlgaeL1,
-        AlgaeShoot
+        AlgaeShoot,
+        AlgaeFloor
     }
 
     private boolean isSim = false;
@@ -140,6 +141,9 @@ public class ElevatorSubsystem extends SubsystemBase {
                     break;
                 case AlgaeHuman:
                     targetPosition = Constants.ElevatorConstants.AlgaeHuman;
+                    break;
+                case AlgaeFloor:
+                    targetPosition = Constants.ElevatorConstants.AlgaeFloor;
                     break;
                 default:
                     targetPosition = 0.0;

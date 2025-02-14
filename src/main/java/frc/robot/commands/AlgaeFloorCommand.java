@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
@@ -13,13 +14,16 @@ public class AlgaeFloorCommand extends Command {
 
     private EndEffectorSubsystem endEffectorSubsystem;
     private ArmSubsystem armSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
 
     public AlgaeFloorCommand() {
         this.endEffectorSubsystem = RobotContainer.endEffectorSubsystem;
         this.armSubsystem = RobotContainer.armSubsystem;
+        this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
 
         addRequirements(endEffectorSubsystem);
         addRequirements(armSubsystem);
+        addRequirements(elevatorSubsystem);
     }
     
     // Called when the command is initially scheduled.
@@ -31,6 +35,7 @@ public class AlgaeFloorCommand extends Command {
   public void execute() {
     endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
     armSubsystem.setDesiredState(ArmState.ArmFloor);
+    elevatorSubsystem.setDesiredState(ElevatorState.AlgaeFloor);
   }
 
   // Called once the command ends or is interrupted.

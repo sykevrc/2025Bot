@@ -5,19 +5,24 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 
 public class Coral1Command extends Command {
 
     ElevatorSubsystem elevatorSubsystem;
     ArmSubsystem armSubsystem;
+    EndEffectorSubsystem endEffectorSubsystem;
 
     public Coral1Command() {
       this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
+      this.endEffectorSubsystem = RobotContainer.endEffectorSubsystem;
       
       addRequirements(elevatorSubsystem);
       addRequirements(armSubsystem);
+      addRequirements(endEffectorSubsystem);
     }
 
     // Called when the command is initially scheduled.
@@ -29,6 +34,7 @@ public class Coral1Command extends Command {
     public void execute() {
       elevatorSubsystem.setDesiredState(ElevatorState.CoralL1);
       armSubsystem.setDesiredState(ArmState.CoralL1);
+      endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
     }
 
     // Called once the command ends or is interrupted.

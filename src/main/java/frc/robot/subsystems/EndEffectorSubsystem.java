@@ -58,7 +58,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private SparkClosedLoopController pid2 = null;
     private SparkMaxConfig config2 = new SparkMaxConfig();
 
-    private boolean hasItem = false;
+    private boolean hasCoral = false;
+    private boolean hasAlgae = false;
 
     private DigitalInput beamBreaker = new DigitalInput(Constants.EndEffectorConstants.kBeamBreakerPort);
 
@@ -124,22 +125,32 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 case IntakeAlgaeFloor:
                     targetVelocity1 = Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1;
                     targetVelocity2 = Constants.EndEffectorConstants.IntakeAlgaeFloorMmotor2;
-                    hasItem = false;
+                    hasCoral = false;
+                    hasAlgae = false;
                     break;
                 case IntakeCoralHumanElement:
                     targetVelocity1 = Constants.EndEffectorConstants.IntakeCoralHumanElementMotor1;
                     targetVelocity2 = Constants.EndEffectorConstants.IntakeCoralHumanElementMotor2;
-                    hasItem = false;
+                    hasCoral = false;
+                    hasAlgae = false;
                     break;
                 case EjectAlgaeFloor:
                     targetVelocity1 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor1;
                     targetVelocity2 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor2;
-                    hasItem = false;
+                    hasCoral = false;
+                    hasAlgae = true;
                     break;
                 case EjectCoralFront:
                     targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
                     targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
-                    hasItem = false;
+                    hasCoral = true;
+                    hasAlgae = false;
+                    break;
+                case EjectCoralBack:
+                    targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
+                    targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
+                    hasCoral = true;
+                    hasAlgae = false;
                     break;
                 default:
                     targetVelocity1 = 0.0;
@@ -156,15 +167,21 @@ public class EndEffectorSubsystem extends SubsystemBase {
     @Override
 	public void periodic() {
 
-        //motor.set(1.0);
-        //motor2.set(1.0);
-
         if (Constants.kEnableEndEffector) {
 
             if(!beamBreaker.get()) {
-                hasItem = true;
+                hasCoral = true;
             } else {
-                hasItem = false;
+                hasCoral = false;
+            }
+
+            if(!hasCoral && !hasAlgae) {
+                // Since we do not have the coral or algae, so the searching pattern
+                RobotContainer.led1.setStatus(LEDStatus.targetSearching);
+            } else if(hasCoral) {
+                RobotContainer.led1.setStatus(LEDStatus.hasCoral);
+            } else if(hasAlgae) {
+                RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
             }
 
             // we are only checking for these 2 states because this have indicators as to when the 
@@ -172,17 +189,15 @@ public class EndEffectorSubsystem extends SubsystemBase {
             // current from the motor.  If neither are true, just set the motors speeds accordingly
             switch (state) {
                 case IntakeCoralHumanElement:
-                    if(hasItem) {
+                    if(hasCoral) {
                         // we are trying to intake the coral and the beam breaker says we have it so
                         // stop the motors
                         motor.set(0.0);
                         motor2.set(0.0);
-                        //state = EndEffectorState.Stopped;
-                        RobotContainer.led1.setStatus(LEDStatus.hasCoral);
                     } else {
+                        // We don't have the coral so run the intake motors
                         motor.set(targetVelocity1);
                         motor2.set(targetVelocity2);
-
                     }
                     //motor.set(targetVelocity1);
                     //motor.set(0.1);
@@ -197,13 +212,21 @@ public class EndEffectorSubsystem extends SubsystemBase {
                             // we have the algae so stop the motor and set the status
                             motor2.set(0.0);
                             state = EndEffectorState.Stopped;
-                            hasItem = true;
-                            RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
+                            hasCoral = false;
+                            hasAlgae = true;
                     }
                     break;
                 case EjectCoralFront:
                     motor.set(targetVelocity1);
                     motor2.set(targetVelocity2);
+                    hasAlgae = false;
+                    hasCoral = false;
+                    break;
+                case EjectCoralBack:
+                    motor.set(targetVelocity1);
+                    motor2.set(targetVelocity2);
+                    hasAlgae = false;
+                    hasCoral = false;
                     break;
                 default:
                     //motor.set(targetVelocity1);
@@ -300,8 +323,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         config2.signals.primaryEncoderPositionPeriodMs(5);
     }
 
-    public boolean hasItem() {
-        return this.hasItem;
+    public boolean hasCoral() {
+        return this.hasCoral;
     }
 
     public double getVelocity1() {
@@ -385,7 +408,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Target Velocity2", this::getTargetVelocity2, this::setTargetVelocity2);
         builder.addDoubleProperty("Velocity1", this::getVelocity1, null);
         builder.addDoubleProperty("Velocity2", this::getVelocity2, null);
-        builder.addBooleanProperty("Has Item", this::hasItem, null);
+        builder.addBooleanProperty("Has Coral", this::hasCoral, null);
         builder.addDoubleProperty("Motor1 OutputCurrent", this::motor1OutputCurrent, null);
         builder.addDoubleProperty("Motor2 OutputCurrent", this::motor2OutputCurrent, null);
     }

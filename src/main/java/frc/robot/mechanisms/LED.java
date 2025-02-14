@@ -8,6 +8,12 @@ public class LED {
     private PWM pwm = null;
     private LEDStatus ledStatus = LEDStatus.ready;
 
+    private static final int STROBE_WHITE = 1475;
+    private static final int STROBE_BLUE = 1455;
+    private static final int LIGHT_CHASE_RED = 1345;
+    private static final int HEARTBEAT_RED = 1375;
+    private static final int LARSON_SCANNER_RED = 1325;
+
     public static enum LEDStatus {
         ready,
         problem,
@@ -38,17 +44,17 @@ public class LED {
                 break;
             case targetAquired:
                 //System.out.println("setting led to targetAquired");
-                pwm.setPulseTimeMicroseconds(1475);
+                pwm.setPulseTimeMicroseconds(STROBE_WHITE);
                 break;
             case targetSearching:
                 //System.out.println("setting led to targetSearching");
-                pwm.setPulseTimeMicroseconds(1345);
+                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_RED);
                 break;
             case hasCoral:
-                pwm.setPulseTimeMicroseconds(1475);
+                pwm.setPulseTimeMicroseconds(STROBE_BLUE);
                 break;
             case hasAlgae:
-                pwm.setPulseTimeMicroseconds(1475);
+                pwm.setPulseTimeMicroseconds(STROBE_WHITE);
                 break;
             default:
                 break;

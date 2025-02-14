@@ -5,18 +5,23 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 
 
 public class Algae1Command extends Command {
-  ElevatorSubsystem sliderSubsystem;
-  ArmSubsystem armSubsystem;
+    ElevatorSubsystem elevatorSubsystem;
+    ArmSubsystem armSubsystem;
+    EndEffectorSubsystem endEffectorSubsystem;
 
-  public Algae1Command() {
-      this.sliderSubsystem = RobotContainer.elevatorSubsystem;
+    public Algae1Command() {
+      this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
       this.armSubsystem = RobotContainer.armSubsystem;
+      this.endEffectorSubsystem = RobotContainer.endEffectorSubsystem;
       
-      addRequirements(sliderSubsystem);
+      addRequirements(elevatorSubsystem);
       addRequirements(armSubsystem);
+      addRequirements(endEffectorSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -26,8 +31,9 @@ public class Algae1Command extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    sliderSubsystem.setDesiredState(ElevatorState.AlgaeL1);
+    elevatorSubsystem.setDesiredState(ElevatorState.AlgaeL1);
     armSubsystem.setDesiredState(ArmState.AlgaeL1);
+    endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
   }
 
   // Called once the command ends or is interrupted.
