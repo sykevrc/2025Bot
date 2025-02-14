@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.mechanisms.LED.LEDStatus;
 
 public class EndEffectorSubsystem extends SubsystemBase {
     public enum EndEffectorState {
@@ -35,7 +37,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
         IntakeAlgaeFloor,
         IntakeCoralHumanElement,
         EjectAlgaeFloor,
-        EjectCoral,
+        EjectCoralFront,
+        EjectCoralBack
     }
 
     private boolean isSim = false;
@@ -67,8 +70,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 isSim = true;
             }
 
-            motor = new SparkFlex(Constants.EndEffectorConstants.motor_id, MotorType.kBrushless);
-            motor2 = new SparkMax(Constants.EndEffectorConstants.motor2_id, MotorType.kBrushless);
+            motor = new SparkFlex(Constants.EndEffectorConstants.motor2_id, MotorType.kBrushless);
+            motor2 = new SparkMax(Constants.EndEffectorConstants.motor_id, MotorType.kBrushless);
 
             if(isSim) {
 			    motorSim = new SparkFlexSim(motor, DCMotor.getNeoVortex(1));
@@ -133,7 +136,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     targetVelocity2 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor2;
                     hasItem = false;
                     break;
-                case EjectCoral:
+                case EjectCoralFront:
                     targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
                     targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
                     hasItem = false;
@@ -158,14 +161,58 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
         if (Constants.kEnableEndEffector) {
 
-            /*if(beamBreaker.get()) {
-                this.hasItem = true;
+            if(!beamBreaker.get()) {
+                hasItem = true;
             } else {
-                this.hasItem = false;
+                hasItem = false;
+            }
+
+            // we are only checking for these 2 states because this have indicators as to when the 
+            // coral or algae is loaded, the coral uses the beam breaker.  The algae uses the 
+            // current from the motor.  If neither are true, just set the motors speeds accordingly
+            switch (state) {
+                case IntakeCoralHumanElement:
+                    if(hasItem) {
+                        // we are trying to intake the coral and the beam breaker says we have it so
+                        // stop the motors
+                        motor.set(0.0);
+                        motor2.set(0.0);
+                        //state = EndEffectorState.Stopped;
+                        RobotContainer.led1.setStatus(LEDStatus.hasCoral);
+                    } else {
+                        motor.set(targetVelocity1);
+                        motor2.set(targetVelocity2);
+
+                    }
+                    //motor.set(targetVelocity1);
+                    //motor.set(0.1);
+                    //motor2.set(targetVelocity2);
+                    //motor2.set(0.1);
+                    break;
+                case IntakeAlgaeFloor:                    
+                    // Check for a spike in the current (the motor is under load)
+                    // This will tell us if we have the Algae
+                    if(motor2.getOutputCurrent() >= 
+                        Constants.EndEffectorConstants.OutputCurrentLimitMotor2) {
+                            // we have the algae so stop the motor and set the status
+                            motor2.set(0.0);
+                            state = EndEffectorState.Stopped;
+                            hasItem = true;
+                            RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
+                    }
+                    break;
+                case EjectCoralFront:
+                    motor.set(targetVelocity1);
+                    motor2.set(targetVelocity2);
+                    break;
+                default:
+                    //motor.set(targetVelocity1);
+                    //motor2.set(targetVelocity2);
+                    break;
             }
 
             // Do we have the item?
-            if(
+            /*if(
                 motor.getOutputCurrent() >= Constants.EndEffectorConstants.OutputCurrentLimitMotor1
                 || motor2.getOutputCurrent() >= Constants.EndEffectorConstants.OutputCurrentLimitMotor2
             ) {
@@ -174,8 +221,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 hasItem = true;
             }*/
 
-            motor.set(targetVelocity1);
-            motor2.set(targetVelocity2);
+            //motor.set(targetVelocity1);
+            //motor2.set(targetVelocity2);
 
             //if (!hasItem) {
                 // We don't have it so run
@@ -214,7 +261,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
         config
             .inverted(false)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         config.encoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1);
@@ -237,7 +284,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         config2 = new SparkMaxConfig();
 
         config2.inverted(true)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         config2.encoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1);
@@ -320,6 +367,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
         setConfig();
     }
 
+    public double motor1OutputCurrent() {
+        return motor.getOutputCurrent();
+    }
+
+    public double motor2OutputCurrent() {
+        return motor2.getOutputCurrent();
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("RobotPreferences");
@@ -331,5 +386,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Velocity1", this::getVelocity1, null);
         builder.addDoubleProperty("Velocity2", this::getVelocity2, null);
         builder.addBooleanProperty("Has Item", this::hasItem, null);
+        builder.addDoubleProperty("Motor1 OutputCurrent", this::motor1OutputCurrent, null);
+        builder.addDoubleProperty("Motor2 OutputCurrent", this::motor2OutputCurrent, null);
     }
 }

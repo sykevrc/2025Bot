@@ -146,6 +146,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.state = state;
     }
 
+    public ElevatorState getState() {
+        return state;
+    }
+
     @Override
 	public void periodic() {
 

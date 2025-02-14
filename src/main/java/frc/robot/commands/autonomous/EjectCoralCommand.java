@@ -56,7 +56,7 @@ public class EjectCoralCommand extends Command {
             timer.schedule(task, ejectTime.getAsLong());
             timer.schedule(task2, 2000);
             System.out.println("starting the eject");
-            endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoral);
+            endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
             finished = false;
         } else {
             finished = true;

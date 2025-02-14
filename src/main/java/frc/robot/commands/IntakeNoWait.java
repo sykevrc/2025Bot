@@ -26,7 +26,7 @@ public class IntakeNoWait extends Command{
     public void execute() {
         //elevatorSubsystem.setTargetPosition(Constants.ElevatorConstants.CoralHuman);
         endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeCoralHumanElement);
-        System.out.println("IntakeNoWait::execute() called");
+        //System.out.println("IntakeNoWait::execute() called");
     }
 
     @Override

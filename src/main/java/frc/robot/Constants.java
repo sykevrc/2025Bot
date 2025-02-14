@@ -137,8 +137,8 @@ public final class Constants {
 		public static final double kGyroTurnTolerance = 2;
 
 		public static double kAutoAlignSpeed = 0.05;
-		public static double kAutoAlignTolerance = 5.0;
-		public static double kAutoAlignOffset = 10.0;
+		public static double kAutoAlignTolerance = 1.0;
+		public static double kAutoAlignOffset = 11.0;
 
 		/*public static enum kDriveModes {
 			NORMAL,
@@ -256,6 +256,7 @@ public final class Constants {
 		public static double AlgaeL3 = -0.9;
 		public static double AlgaeShoot = -0.9;
 		public static double AlgaeHuman = -0.9;
+		public static double AlgaeFloor = -10;
 
 		//public static double P = 1.5;
 		public static double P = 0.05;
@@ -271,12 +272,12 @@ public final class Constants {
 		public static double StoppedMotor2 = 0.0;
 		public static double IntakeAlgaeFloorMotor1 = 0.0;
 		public static double IntakeAlgaeFloorMmotor2 = 0.0;
-		public static double IntakeCoralHumanElementMotor1 = 0.1;
+		public static double IntakeCoralHumanElementMotor1 = 0.2;
 		public static double IntakeCoralHumanElementMotor2 = 0.1;
 		public static double EjectAlgaeFloorMotor1 = 0.0;
 		public static double EjectAlgaeFloorMotor2 = 0.0;
-		public static double EjectCoralMotor1 = 10.0;
-		public static double EjectCoralMotor2 = 10.0;
+		public static double EjectCoralMotor1 = 0.2;
+		public static double EjectCoralMotor2 = 0.2;
 		
 		//public static double P = 1.5;
 		public static double P = 1.0;

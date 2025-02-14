@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -44,7 +45,8 @@ public class ArmSubsystem extends SubsystemBase {
         AlgaeL3,
         AlgaeL2,
         AlgaeL1,
-        AlgaeShoot
+        AlgaeShoot,
+        ArmFloor
     }
 
     private boolean isSim = false;
@@ -115,6 +117,9 @@ public class ArmSubsystem extends SubsystemBase {
             case AlgaeShoot:
                 targetPosition = Constants.ArmConstants.AlgaeL3;
                 break;
+            case ArmFloor:
+                targetPosition = Constants.ArmConstants.AlgaeFloor;
+                break;
             case CoralL1:
                 targetPosition = Constants.ArmConstants.CoralL1;
                 break;
@@ -137,6 +142,10 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         //drivePID.setReference(targetPosition, ControlType.kPosition);
+    }
+
+    public ArmState getDesiredState() {
+        return state;
     }
 
     @Override

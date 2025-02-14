@@ -738,11 +738,11 @@ public class DriveSubsystem extends SubsystemBase {
 			RobotContainer.led1.setStatus(LEDStatus.problem);
 		}*/
 
-		if(photonVisionCanSeeTag || limeLightCanSeeTag) {
+		/*if(photonVisionCanSeeTag || limeLightCanSeeTag) {
 			RobotContainer.led1.setStatus(LEDStatus.targetAquired);
 		} else {
 			RobotContainer.led1.setStatus(LEDStatus.problem);
-		}
+		}*/
 	}
 
 	/*public void updateOdometrySim() {

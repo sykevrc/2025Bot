@@ -12,7 +12,9 @@ public class LED {
         ready,
         problem,
         targetAquired,
-        targetSearching
+        targetSearching,
+        hasCoral,
+        hasAlgae
     }
 
     public LED(int channel) {
@@ -41,6 +43,12 @@ public class LED {
             case targetSearching:
                 //System.out.println("setting led to targetSearching");
                 pwm.setPulseTimeMicroseconds(1345);
+                break;
+            case hasCoral:
+                pwm.setPulseTimeMicroseconds(1475);
+                break;
+            case hasAlgae:
+                pwm.setPulseTimeMicroseconds(1475);
                 break;
             default:
                 break;

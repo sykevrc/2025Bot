@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.tools.JoystickUtils;
 import frc.robot.tools.Limelight;
@@ -21,6 +22,7 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
+import frc.robot.commands.AlgaeFloorCommand;
 import frc.robot.commands.AutoAlignLeftCommand;
 import frc.robot.commands.AutoAlignRightCommand;
 import frc.robot.commands.Coral1Command;
@@ -157,11 +159,13 @@ public class RobotContainer {
 			driverController.button(1).whileTrue(new Coral3Command());
 			driverController.button(3).whileTrue(new StartCommand());
 			driverController.button(8).whileTrue(new CoralHumanCommand());
+			driverController.button(9).whileTrue(new AlgaeFloorCommand());
+			driverController.button(9).whileFalse(new StopIntake());
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
-			//driverController.leftTrigger().whileTrue(new IntakeNoWait());
-			//driverController.leftTrigger().whileFalse(new IntakeNoWait());
+			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
+
 			driverController.rightTrigger().whileTrue(new IntakeNoWait());
 			driverController.rightTrigger().whileFalse(new StopIntake());
 			

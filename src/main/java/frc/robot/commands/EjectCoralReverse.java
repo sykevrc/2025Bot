@@ -75,7 +75,7 @@ public class EjectCoralReverse extends Command {
             timer.schedule(task2, ejectTime.getAsLong() + 1000);
             timer.schedule(task3, ejectTime.getAsLong() + 3000);
             System.out.println("EjectCoralReverse - starting the eject");
-            endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoral);
+            endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
             finished = false;
         } else {
             finished = true;
