@@ -16,11 +16,15 @@ import java.util.Map;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -60,6 +64,9 @@ public class ArmSubsystem extends SubsystemBase {
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
     private double d = Constants.ArmConstants.D;
+
+    // these values were calculate using https://www.reca.lc/arm
+    private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
 
     public ArmSubsystem() {
 
@@ -152,7 +159,20 @@ public class ArmSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableArm) {
-            pid.setReference(targetPosition, ControlType.kPosition);
+            //pid.setReference(targetPosition, ControlType.kPosition);
+
+            // Try to do a setReference using a Feed Forward
+            pid.setReference(
+                targetPosition,
+                ControlType.kPosition,
+                ClosedLoopSlot.kSlot0,
+                armFeedforward.calculate(
+                    Units.degreesToRadians(
+                        (motor.getAbsoluteEncoder().getPosition() * 360)
+                    ),
+                    motor.getAbsoluteEncoder().getVelocity()
+                )
+            );
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             if (isSim) {

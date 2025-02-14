@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Map;
 
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -16,6 +17,7 @@ import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -53,6 +55,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;
     private double d = Constants.ElevatorConstants.D;
+    // these values were calculate using https://www.reca.lc/linear
+    private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(1.1, 1.55, 3.07);
 
     private double currentPosition = 0.0;
     private double previousValue = 0.0;
@@ -154,7 +158,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableElevator) {
-            pid.setReference(targetPosition, ControlType.kPosition);
+            //pid.setReference(targetPosition, ControlType.kPosition);
+
+            // Try to do a setReference using a Feed Forward
+            pid.setReference(
+                targetPosition,
+                ControlType.kPosition,
+                ClosedLoopSlot.kSlot0,
+                elevatorFeedforward.calculate(
+                    motor.getEncoder().getVelocity()
+                )
+            );
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             if (isSim) {
