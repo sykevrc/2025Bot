@@ -33,9 +33,16 @@ public class AlgaeFloorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+    elevatorSubsystem.setDesiredState(ElevatorState.AlgaeFloor);   
     armSubsystem.setDesiredState(ArmState.ArmFloor);
-    elevatorSubsystem.setDesiredState(ElevatorState.AlgaeFloor);
+
+    if(endEffectorSubsystem.hasCoral()) {
+      endEffectorSubsystem.setDesiredState(EndEffectorState.EjectAlgaeFloor);
+    } else {
+      endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+    }
+
+    System.out.println("AlgaeFloorCommand::execute() called");
   }
 
   // Called once the command ends or is interrupted.
@@ -45,6 +52,6 @@ public class AlgaeFloorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

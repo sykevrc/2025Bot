@@ -162,18 +162,19 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableElevator) {
-            //pid.setReference(targetPosition, ControlType.kPosition);
+            pid.setReference(targetPosition, ControlType.kPosition);
+            //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             // Try to do a setReference using a Feed Forward
-            pid.setReference(
+            /*pid.setReference(
                 targetPosition,
                 ControlType.kPosition,
                 ClosedLoopSlot.kSlot0,
                 elevatorFeedforward.calculate(
                     motor.getEncoder().getVelocity()
                 )
-            );
-            //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
+            );*/
+
 
             if (isSim) {
                 motorSim.iterate(
@@ -192,6 +193,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         config = new SparkMaxConfig();
 
         config
+            //.inverted(false) // bore encoder testing
             .inverted(true)
             //.smartCurrentLimit(200)
             .idleMode(IdleMode.kCoast);
@@ -209,15 +211,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 			    p, 
                 i, 
                 d
-			).outputRange(-1, 1);
+			);//.outputRange(-1, 1);
 
         // Set MAXMotion parameters
-        //config.closedLoop.maxMotion
+        config.closedLoop.maxMotion
             //.maxVelocity(6784)
-            //.maxVelocity(1)
-            //.maxAcceleration(1)
+            .maxVelocity(100)
+            .maxAcceleration(50)
             //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-            //.allowedClosedLoopError(.1);
+            .allowedClosedLoopError(.05);
 
         config.signals.primaryEncoderPositionPeriodMs(5);
         config.signals.primaryEncoderPositionAlwaysOn(true);
@@ -250,21 +252,16 @@ public class ElevatorSubsystem extends SubsystemBase {
         return motor.getEncoder().getPosition();
         //currentPosition = motor.getEncoder().getPosition();
         /*currentPosition = motor.getAbsoluteEncoder().getPosition();
-        //currentPosition = motor.getAlternateEncoder().getPosition();
 
         if(currentPosition < .2 && previousValue > .8) {
-            revolutionCount--;
-        } else if(currentPosition > .8 && previousValue < .2) {
             revolutionCount++;
+        } else if(currentPosition > .8 && previousValue < .2) {
+            revolutionCount--;
         }
 
         previousValue = currentPosition;
 
-
-        //previousValue = revolutionCount + motor.getAbsoluteEncoder().getPosition();
-        //return revolutionCount + position;
-
-        return currentPosition;*/
+        return revolutionCount + currentPosition;*/
     }
 
     public double getTargetPosition() {

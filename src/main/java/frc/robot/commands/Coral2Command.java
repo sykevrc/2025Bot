@@ -34,6 +34,8 @@ public class Coral2Command extends Command {
       elevatorSubsystem.setDesiredState(ElevatorState.CoralL2);
       armSubsystem.setDesiredState(ArmState.CoralL2);
       endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
+
+      System.out.println("Coral1Command::execute() called");
     }
 
     // Called once the command ends or is interrupted.

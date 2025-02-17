@@ -31,7 +31,7 @@ public class EjectCoralCommand extends Command {
     
     @Override
     public void initialize() {
-         if(ejectTime.isPresent()) {
+         /*if(ejectTime.isPresent()) {
 
             TimerTask task = new TimerTask() {
                 public void run() {
@@ -60,11 +60,18 @@ public class EjectCoralCommand extends Command {
             finished = false;
         } else {
             finished = true;
-        }
+        }*/
+        finished = true;
     }
 
     @Override
     public void execute() {
+        if(endEffectorSubsystem.hasCoral()) {
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+        } else {
+            System.out.println("Does not have the coral, stopping");
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
+        }
     }
 
     @Override

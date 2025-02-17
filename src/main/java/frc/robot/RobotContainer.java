@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.tools.JoystickUtils;
 import frc.robot.tools.Limelight;
@@ -22,7 +23,9 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
+import frc.robot.mechanisms.LED.LEDStatus;
 import frc.robot.commands.AlgaeFloorCommand;
+import frc.robot.commands.ArmStartCommand;
 import frc.robot.commands.AutoAlignLeftCommand;
 import frc.robot.commands.AutoAlignRightCommand;
 import frc.robot.commands.Coral1Command;
@@ -34,6 +37,7 @@ import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.StartCommand;
+import frc.robot.commands.StopEjectCoralCommand;
 import frc.robot.commands.StopIntake;
 import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
@@ -44,6 +48,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -116,6 +121,8 @@ public class RobotContainer {
 		.withWidget(BuiltInWidgets.kComboBoxChooser);
 
 		//autoChooser.onChange(RobotContainer::selected);
+
+		led1.setStatus(LEDStatus.ready);
 	}
 
 	/*public void setupAuto(boolean setupAuto) {
@@ -157,17 +164,30 @@ public class RobotContainer {
 			driverController.button(4).whileTrue(new Coral1Command());
 			driverController.button(2).whileTrue(new Coral2Command());
 			driverController.button(1).whileTrue(new Coral3Command());
-			driverController.button(3).whileTrue(new StartCommand());
+			//driverController.button(3).whileTrue(new StartCommand());
+
 			driverController.button(8).whileTrue(new CoralHumanCommand());
 			driverController.button(9).whileTrue(new AlgaeFloorCommand());
-			driverController.button(9).whileFalse(new StopIntake());
+			//driverController.button(9).whileFalse(new StopIntake());
+			
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
+			driverController.button(3).whileTrue(new SequentialCommandGroup(
+				//new RunCommand(() -> armSubsystem.setDesiredState(ArmState.Start)),
+				new ArmStartCommand(),
+				//new RunCommand(() -> new DelayCommand(OptionalLong.of(500))),
+				//new WaitCommand(1.0),
+				new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
+			));
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
 
-			driverController.rightTrigger().whileTrue(new IntakeNoWait());
-			driverController.rightTrigger().whileFalse(new StopIntake());
+			//driverController.rightTrigger().whileTrue(new IntakeNoWait());
+			//driverController.rightTrigger().whileFalse(new StopIntake());
+			driverController.rightTrigger().whileTrue(new EjectCoralCommand(null));
+			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
+			
+
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
 

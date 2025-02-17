@@ -54,8 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private boolean isSim = false;
-    private ArmState state = ArmState.AlgaeHuman;
-    private double targetPosition = 0.0;
+    private ArmState state = ArmState.Start;
+    private double targetPosition = Constants.ArmConstants.Start;
     private SparkMax motor = null;
     private SparkMaxSim motorSim = null;
     private SparkClosedLoopController pid = null;
@@ -142,8 +142,12 @@ public class ArmSubsystem extends SubsystemBase {
             case CoralHuman:
                 targetPosition = Constants.ArmConstants.CoralHuman;
                 break;
+            case Start:
+                targetPosition = Constants.ArmConstants.Start;
+                break;
             default:
-                targetPosition = 0.0;
+                //targetPosition = 0.0;
+                targetPosition = Constants.ArmConstants.Start;
                 break;
             
         }
@@ -160,9 +164,10 @@ public class ArmSubsystem extends SubsystemBase {
 
         if (Constants.kEnableArm) {
             //pid.setReference(targetPosition, ControlType.kPosition);
+            pid.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
 
             // Try to do a setReference using a Feed Forward
-            pid.setReference(
+            /*pid.setReference(
                 targetPosition,
                 ControlType.kPosition,
                 ClosedLoopSlot.kSlot0,
@@ -172,7 +177,7 @@ public class ArmSubsystem extends SubsystemBase {
                     ),
                     motor.getAbsoluteEncoder().getVelocity()
                 )
-            );
+            );*/
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             if (isSim) {
@@ -192,11 +197,12 @@ public class ArmSubsystem extends SubsystemBase {
         config
             .inverted(false)
             .idleMode(IdleMode.kBrake);
-        //config.encoder
-        //    .positionConversionFactor(25)
-        //    .velocityConversionFactor(25);
+        config.encoder
+            .positionConversionFactor(9)
+            .velocityConversionFactor(9);
         config.closedLoop
             //.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
 		    .pid(
 			    p, 
                 i, 
@@ -205,10 +211,11 @@ public class ArmSubsystem extends SubsystemBase {
 
         // Set MAXMotion parameters
         config.closedLoop.maxMotion
-            .maxVelocity(6784)
-            .maxAcceleration(1)
+            //.maxVelocity(6784)
+            .maxVelocity(100)
+            .maxAcceleration(50)
             //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-            .allowedClosedLoopError(.1);
+            .allowedClosedLoopError(.05);
 
         config.signals.primaryEncoderPositionPeriodMs(5);
 
@@ -225,7 +232,8 @@ public class ArmSubsystem extends SubsystemBase {
             return motorSim.getRelativeEncoderSim().getPosition();
         }
 
-        return motor.getEncoder().getPosition();
+        //return motor.getEncoder().getPosition();
+        return  motor.getAbsoluteEncoder().getPosition();
     }
 
     public double getTargetPosition() {

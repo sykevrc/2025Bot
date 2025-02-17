@@ -10,9 +10,14 @@ public class LED {
 
     private static final int STROBE_WHITE = 1475;
     private static final int STROBE_BLUE = 1455;
+    private static final int STROBE_RED = 1445;
     private static final int LIGHT_CHASE_RED = 1345;
     private static final int HEARTBEAT_RED = 1375;
     private static final int LARSON_SCANNER_RED = 1325;
+    private static final int LARSON_SCANNER_GREY = 1335;
+    private static final int SOLID_RED = 1805;
+    private static final int SOLID_HOT_PINK = 1785;
+    private static final int SOLID_DARK_GREEN = 1875;
 
     public static enum LEDStatus {
         ready,
@@ -36,25 +41,25 @@ public class LED {
         switch(ledStatus) {
             case ready:
                 //System.out.println("setting led to ready");
-                pwm.setPulseTimeMicroseconds(1855);
+                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_GREY);
                 break;
             case problem:
                 //System.out.println("setting led to problem");
-                pwm.setPulseTimeMicroseconds(1795);
+                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_GREY);
                 break;
             case targetAquired:
                 //System.out.println("setting led to targetAquired");
-                pwm.setPulseTimeMicroseconds(STROBE_WHITE);
+                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_GREY);
                 break;
             case targetSearching:
                 //System.out.println("setting led to targetSearching");
-                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_RED);
+                pwm.setPulseTimeMicroseconds(LARSON_SCANNER_GREY);
                 break;
             case hasCoral:
-                pwm.setPulseTimeMicroseconds(STROBE_BLUE);
+                pwm.setPulseTimeMicroseconds(STROBE_WHITE);
                 break;
             case hasAlgae:
-                pwm.setPulseTimeMicroseconds(STROBE_WHITE);
+                pwm.setPulseTimeMicroseconds(STROBE_BLUE);
                 break;
             default:
                 break;

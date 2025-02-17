@@ -80,7 +80,8 @@ public class PhotonVision {
 				// This sets up the field with the correct Apriltags in the proper places
 				// These values are used later for aiming and localization
 				_aprilTagFieldLayout = AprilTagFieldLayout
-						.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);
+						.loadFromResource(AprilTagFields.k2025ReefscapeAndyMark
+						.m_resourceFile);
 
 				// Set if we are blue or red
 				// Set the origin accordingly
