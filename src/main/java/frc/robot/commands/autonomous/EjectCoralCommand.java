@@ -67,7 +67,18 @@ public class EjectCoralCommand extends Command {
     @Override
     public void execute() {
         if(endEffectorSubsystem.hasCoral()) {
-            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+            ArmState armState = armSubsystem.getDesiredState();
+
+            if(armState == ArmState.CoralL1) {
+                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+            } else if(armState == ArmState.CoralL2) {
+                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+            } else if(armState == ArmState.CoralL3) {
+                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+            } else if(armState == ArmState.CoralL4) {
+                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+            }
+            
         } else {
             System.out.println("Does not have the coral, stopping");
             this.endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);

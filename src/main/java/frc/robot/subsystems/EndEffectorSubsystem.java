@@ -173,7 +173,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
             }
 
             if(!hasCoral && !hasAlgae) {
-                // Since we do not have the coral or algae, so the searching pattern
+                // We do not have the algae
                 RobotContainer.led1.setStatus(LEDStatus.ready);
             } else if(hasCoral) {
                 RobotContainer.led1.setStatus(LEDStatus.hasCoral);
@@ -181,9 +181,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
             }
 
-            // we are only checking for these 2 states because this have indicators as to when the 
-            // coral or algae is loaded, the coral uses the beam breaker.  The algae uses the 
-            // current from the motor.  If neither are true, just set the motors speeds accordingly
             switch (state) {
                 case IntakeCoralHumanElement:
                     if(hasCoral) {
@@ -196,10 +193,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
                         motor.set(targetVelocity1);
                         motor2.set(targetVelocity2);
                     }
-                    //motor.set(targetVelocity1);
-                    //motor.set(0.1);
-                    //motor2.set(targetVelocity2);
-                    //motor2.set(0.1);
                     break;
                 case IntakeAlgaeFloor:                    
                     // Check for a spike in the current (the motor is under load)
@@ -211,31 +204,42 @@ public class EndEffectorSubsystem extends SubsystemBase {
                             state = EndEffectorState.Stopped;
                             hasAlgae = true;
                     } else {
+                        // We don't have the algae so run the motor
                         motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                         hasAlgae = false;
                     }
+
+                    //motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                     break;
                 case EjectAlgaeFloor:
                     motor.set(-Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                     hasAlgae = false;
                     break;
                 case EjectCoralFront:
-
                     if(hasCoral) {
+                        // we have the coral so eject it
                         motor2.set(targetVelocity1);
                         motor.set(targetVelocity2);
                     } else {
+                        // we don't have the coral so stop the motors
                         motor.set(0.0);
                         motor2.set(0.0);
                     }
                     break;
                 case EjectCoralBack:
-                    motor.set(targetVelocity1);
-                    motor2.set(targetVelocity2);
-                    hasAlgae = false;
-                    hasCoral = false;
+                    if(hasCoral) {
+                        System.out.println("ejecting the back");
+                        // we have the coral so eject it
+                        motor2.set(targetVelocity1);
+                        motor.set(targetVelocity2);
+                    } else {
+                        // we don't have the coral so stop the motors
+                        motor.set(0.0);
+                        motor2.set(0.0);
+                    }
                     break;
                 case Stopped:
+                    // stop the motors
                     motor.set(0.0);
                     motor2.set(0.0);
                 default:
@@ -243,48 +247,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     //motor2.set(targetVelocity2);
                     break;
             }
-
-            // Do we have the item?
-            /*if(
-                motor.getOutputCurrent() >= Constants.EndEffectorConstants.OutputCurrentLimitMotor1
-                || motor2.getOutputCurrent() >= Constants.EndEffectorConstants.OutputCurrentLimitMotor2
-            ) {
-                // Looks like we got the item, so stop the end effector motors
-                state = EndEffectorState.Stopped;
-                hasItem = true;
-            }*/
-
-            //motor.set(targetVelocity1);
-            //motor2.set(targetVelocity2);
-
-            //if (!hasItem) {
-                // We don't have it so run
-
-                
-
-                /*pid.setReference(targetVelocity1, ControlType.kVelocity);
-                pid2.setReference(targetVelocity2, ControlType.kVelocity);
-
-                if (isSim) {
-                    motorSim.iterate(
-                            // 0.1,
-                            // desiredState.speedMetersPerSecond,
-                            motor.getOutputCurrent(),
-                            RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-                            0.02);
-
-                    motor2Sim.iterate(
-                            motor2.getOutputCurrent(),
-                            RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-                            0.02);
-                }*/
-            // } else {
-            //     // we have it so stop the wheels
-            //     targetVelocity1 = 0.0;
-            //     targetVelocity2 = 0.0;
-            //     pid.setReference(targetVelocity1, ControlType.kVelocity);
-            //     pid2.setReference(targetVelocity2, ControlType.kVelocity);
-            // }
         }
     }
 

@@ -249,9 +249,9 @@ public final class Constants {
 		//public static double CoralL4 = -0.9;
 		public static double CoralL4 = 0.55; // using bore encoder
 		//public static double CoralL3 = -2.738;
-		public static double CoralL3 = 0.55; // using bore encoder
+		public static double CoralL3 = 0.3; // using bore encoder
 		//public static double CoralL2 = -0.9;
-		public static double CoralL2 = 0.74; // using bore encoder
+		public static double CoralL2 = 0.72; // using bore encoder
 		//public static double CoralL1 = -10.0;
 		public static double CoralL1 = 0.74; // using bore encoder
 		//public static double CoralHuman = -0.462;
@@ -306,7 +306,7 @@ public final class Constants {
 		public static int motor_id = 18;
 		public static int motor2_id = 19;
 
-		public static double OutputCurrentLimitMotor1 = 20.0;
+		public static double OutputCurrentLimitMotor1 = 80.0;
 		public static double OutputCurrentLimitMotor2 = 5.0;
 		public static int kBeamBreakerPort = 0;
 	}
@@ -327,7 +327,8 @@ public final class Constants {
 		//public static double CoralHuman = 5.0;
 		public static double CoralHuman = 4.0;
 		public static double CoralL4 = 1.0;
-		public static double CoralL3 = 13.45;
+		//public static double CoralL3 = 13.45;
+		public static double CoralL3 = .595;
 		public static double CoralL2 = 11.167;
 		public static double CoralL1 = 6.5;
 		public static double AlgaeHuman = 1.0;

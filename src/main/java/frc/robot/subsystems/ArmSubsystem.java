@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -21,8 +22,10 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
@@ -61,12 +64,16 @@ public class ArmSubsystem extends SubsystemBase {
     private SparkClosedLoopController pid = null;
     private SparkMaxConfig config = new SparkMaxConfig();
 
+    private PIDController pidController = new PIDController(0.0, 0.0, 0.0);
+
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
     private double d = Constants.ArmConstants.D;
 
     // these values were calculate using https://www.reca.lc/arm
-    private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
+    //private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
+    //private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 0.0, 0.0);
+    private ArmFeedforward armFeedforward = new ArmFeedforward(0.1, 2.0, 0.25);
 
     public ArmSubsystem() {
 
@@ -164,12 +171,12 @@ public class ArmSubsystem extends SubsystemBase {
 
         if (Constants.kEnableArm) {
             //pid.setReference(targetPosition, ControlType.kPosition);
-            pid.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
+            //pid.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
 
             // Try to do a setReference using a Feed Forward
             /*pid.setReference(
                 targetPosition,
-                ControlType.kPosition,
+                ControlType.kMAXMotionPositionControl,
                 ClosedLoopSlot.kSlot0,
                 armFeedforward.calculate(
                     Units.degreesToRadians(
@@ -177,8 +184,24 @@ public class ArmSubsystem extends SubsystemBase {
                     ),
                     motor.getAbsoluteEncoder().getVelocity()
                 )
-            );*/
+            );
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
+            */
+
+            //motor.set(pidController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+
+            motor.set(
+                pidController.calculate(
+                    /*armFeedforward.calculate(
+                        Units.degreesToRadians(
+                            (motor.getAbsoluteEncoder().getPosition() * 360)
+                        ),
+                        motor.getAbsoluteEncoder().getVelocity()
+                    )
+                    + */
+                    motor.getAbsoluteEncoder().getPosition(), targetPosition
+                )
+            );
 
             if (isSim) {
                 motorSim.iterate(
@@ -189,6 +212,8 @@ public class ArmSubsystem extends SubsystemBase {
                         0.02);
             }
         }
+
+        
     }
     
     private void setConfig() {
@@ -212,8 +237,8 @@ public class ArmSubsystem extends SubsystemBase {
         // Set MAXMotion parameters
         config.closedLoop.maxMotion
             //.maxVelocity(6784)
-            .maxVelocity(100)
-            .maxAcceleration(50)
+            .maxVelocity(400)
+            .maxAcceleration(100)
             //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
             .allowedClosedLoopError(.05);
 
@@ -224,6 +249,10 @@ public class ArmSubsystem extends SubsystemBase {
 			ResetMode.kResetSafeParameters, 
 			PersistMode.kPersistParameters
 		);
+
+        pidController.setPID(p, i, d);
+        pidController.setTolerance(0.05);
+        //MathUtil.clamp(pid.calculate(encoder.getDistance(), setpoint), -0.5, 0.5);
     }
 
     public double getPosition() {
@@ -237,7 +266,6 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getTargetPosition() {
-
         return this.targetPosition;
     }
 
