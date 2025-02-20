@@ -59,7 +59,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private SparkMaxConfig config2 = new SparkMaxConfig();
 
     private boolean hasCoral = false;
-    private boolean hasAlgae = false;
+    //private boolean hasAlgae = false;
 
     private DigitalInput beamBreaker = new DigitalInput(Constants.EndEffectorConstants.kBeamBreakerPort);
 
@@ -111,61 +111,65 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public void setDesiredState(EndEffectorState state) {
 
-        if(this.state == state) {
+        if(
+            state == EndEffectorState.IntakeAlgaeFloor
+            && this.state == EndEffectorState.IntakeAlgaeFloor
+        ) {
+            // the IntakeAlgaeFloor has been pressed twice so
+            // stop the motors
+            state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.EjectAlgaeFloor
+            && this.state == EndEffectorState.EjectAlgaeFloor
+        ) {
+            // the EjectAlgaeFloor has been pressed twice so
+            // stop the motors
+            state = EndEffectorState.Stopped;
+        } else if (this.state == state) {
             // trying to set the state to the state we are already at
             // just returning to save cycles
             return;
         }
 
-        // Are we sending the same state again?  If so act like a toggle and stop
-        /*if (this.state == state) {
-            targetVelocity1 = Constants.EndEffectorConstants.StoppedMotor1;
-            targetVelocity2 = Constants.EndEffectorConstants.StoppedMotor2;
-        } else {*/
-
-
-            switch (state) {
-                case Stopped:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - Stopped"));
-                    targetVelocity1 = 0.0;
-                    targetVelocity2 = 0.0;
-                    break;
-                case IntakeAlgaeFloor:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeAlgaeFloor"));
-                    targetVelocity1 = Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1;
-                    targetVelocity2 = Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2;
-                    break;
-                case IntakeCoralHumanElement:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeCoralHumanElement"));
-                    targetVelocity1 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor1;
-                    targetVelocity2 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor2;
-                    break;
-                case EjectAlgaeFloor:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectAlgaeFloor"));
-                    targetVelocity1 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor1;
-                    targetVelocity2 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor2;
-                    break;
-                case EjectCoralFront:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralFront"));
-                    targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
-                    targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
-                    break;
-                case EjectCoralBack:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralBack"));
-                    targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
-                    targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
-                    break;
-                default:
-                    System.out.println(("EndEffectorSubsystem::setDesiredState() - default"));
-                    targetVelocity1 = 0.0;
-                    targetVelocity2 = 0.0;
-                    break;
-            }
-        //}
+        switch (state) {
+            case Stopped:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - Stopped"));
+                targetVelocity1 = 0.0;
+                targetVelocity2 = 0.0;
+                break;
+            case IntakeAlgaeFloor:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeAlgaeFloor"));
+                targetVelocity1 = Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1;
+                targetVelocity2 = Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2;
+                break;
+            case IntakeCoralHumanElement:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeCoralHumanElement"));
+                targetVelocity1 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor1;
+                targetVelocity2 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor2;
+                break;
+            case EjectAlgaeFloor:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectAlgaeFloor"));
+                targetVelocity1 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor1;
+                targetVelocity2 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor2;
+                break;
+            case EjectCoralFront:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralFront"));
+                targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
+                targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
+                break;
+            case EjectCoralBack:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralBack"));
+                targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
+                targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
+                break;
+            default:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - default"));
+                targetVelocity1 = 0.0;
+                targetVelocity2 = 0.0;
+                break;
+        }
 
         this.state = state;
-
-        // drivePID.setReference(targetPosition, ControlType.kPosition);
     }
 
     @Override
@@ -179,16 +183,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 hasCoral = false;
             }
 
-            if(!hasCoral && !hasAlgae) {
+            //if(!hasCoral && !hasAlgae) {
+            if(!hasCoral) {
                 // We do not have the coral or algae
                 RobotContainer.led1.setStatus(LEDStatus.ready);
             } else if(hasCoral) {
                 // we have the coral
                 RobotContainer.led1.setStatus(LEDStatus.hasCoral);
-            } else if(hasAlgae) {
+            } /*else if(hasAlgae) {
                 // we have the algae
                 RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
-            }
+            }*/
 
             switch (state) {
                 case IntakeCoralHumanElement:
@@ -204,20 +209,6 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     }
                     break;
                 case IntakeAlgaeFloor:                    
-                    // Check for a spike in the current (the motor is under load)
-                    // This will tell us if we have the Algae
-                    /*if(motor.getOutputCurrent() >= 
-                        Constants.EndEffectorConstants.OutputCurrentLimitMotor1) {
-                            // we have the algae so stop the motor and set the status
-                            motor.set(0.0);
-                            state = EndEffectorState.Stopped;
-                            hasAlgae = true;
-                    } else {
-                        // We don't have the algae so run the motor
-                        motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
-                        hasAlgae = false;
-                    }*/
-
                     // Run the motors
                     motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                     motor2.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2);
@@ -227,7 +218,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 case EjectAlgaeFloor:
                     motor.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor1);
                     motor2.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor2);
-                    hasAlgae = false;
+                    //hasAlgae = false;
                     break;
                 case EjectCoralFront:
                     if(hasCoral) {
@@ -270,7 +261,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
         config
             .inverted(false)
-            .idleMode(IdleMode.kCoast);
+            .idleMode(IdleMode.kBrake);
         config.encoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1);

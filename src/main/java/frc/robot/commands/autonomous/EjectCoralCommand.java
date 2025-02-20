@@ -28,7 +28,7 @@ public class EjectCoralCommand extends Command {
     
     @Override
     public void initialize() {
-        //finished = true;
+        finished = false;
     }
 
     @Override

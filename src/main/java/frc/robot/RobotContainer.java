@@ -3,9 +3,6 @@ package frc.robot;
 import java.util.OptionalLong;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -15,15 +12,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.tools.JoystickUtils;
 import frc.robot.tools.Limelight;
 import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.mechanisms.LED;
 import frc.robot.mechanisms.LED.LEDStatus;
+import frc.robot.commands.Algae1Command;
+import frc.robot.commands.Algae2Command;
 import frc.robot.commands.AlgaeFloorCommand;
 import frc.robot.commands.ArmStartCommand;
 import frc.robot.commands.AutoAlignLeftCommand;
@@ -33,11 +30,10 @@ import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
 import frc.robot.commands.CoralHumanCommand;
+import frc.robot.commands.DriveBackwardsCommand;
 import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
-import frc.robot.commands.StartCommand;
-import frc.robot.commands.StopIntake;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
 import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
@@ -157,27 +153,34 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
+
+			// Coral Commands
 			operatorController.button(3).whileTrue(new Coral1Command());
 			operatorController.button(4).whileTrue(new Coral2Command());
 			operatorController.button(2).whileTrue(new Coral3Command());
 			operatorController.button(10).whileTrue(new Coral4Command());
 			
-			//driverController.button(3).whileTrue(new StartCommand());
-
 			// Intake coral from human element
 			operatorController.button(8).whileTrue(new CoralHumanCommand());
 
-			// This is for the floor algae
+			// Algae Commands
+			// This is for the floor algae, press again to stop
 			operatorController.button(9).whileTrue(new AlgaeFloorCommand());
 			//operatorController.button(9).whileFalse(new StopIntake());
 
+			// Press twice to stop
 			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
 			//operatorController.button(9).whileFalse(new StopIntake());
+
+			// these are to get the algae off of the reef
+			operatorController.povDown().whileTrue(new Algae1Command());
+			operatorController.povUp().whileTrue(new Algae2Command());
 
 
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
+			//driverController.button(3).whileTrue(new StartCommand());
 			operatorController.button(1).whileTrue(new SequentialCommandGroup(
 				//new RunCommand(() -> armSubsystem.setDesiredState(ArmState.Start)),
 				new ArmStartCommand(),
@@ -185,15 +188,12 @@ public class RobotContainer {
 				//new WaitCommand(1.0),
 				new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
 			));
+
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
-
-			//driverController.rightTrigger().whileTrue(new IntakeNoWait());
-			//driverController.rightTrigger().whileFalse(new StopIntake());
-
-			//driverController.rightTrigger().whileTrue(new EjectCoralCommand(null));
 
 			operatorController.rightTrigger().whileTrue(new SequentialCommandGroup(
 				new EjectCoralCommand()//,
+				//new DriveBackwardsCommand()
 				//new ArmStartCommand(), // this will retract the arm and stop end effector
 				//new StartCommand() // this will retract the arm and move the elevator down
 			));
@@ -201,8 +201,6 @@ public class RobotContainer {
 			
 
 			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
-			
-
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
 

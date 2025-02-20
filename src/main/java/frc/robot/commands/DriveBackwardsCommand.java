@@ -32,6 +32,7 @@ public class DriveBackwardsCommand extends Command {
 
         Timer timer = new Timer("Timer");
         timer.schedule(task, 250);
+        finished = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.

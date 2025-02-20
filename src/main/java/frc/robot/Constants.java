@@ -257,13 +257,13 @@ public final class Constants {
 		//public static double CoralHuman = -0.462;
 		public static double CoralHuman = 0.596; // using bore encoder
 		//public static double AlgaeL1 = -0.9;
-		public static double AlgaeL1 = 0.905; // using bore encoder
+		public static double AlgaeL1 = 0.171; // using bore encoder
 		//public static double AlgaeL2 = -0.9;
-		public static double AlgaeL2 = 0.905; // using bore encoder;
+		public static double AlgaeL2 = 0.171; // using bore encoder;
 		//public static double AlgaeL3 = -0.9;
-		public static double AlgaeL3 = 0.905; // using bore encoder;
+		public static double AlgaeL3 = 0.171; // using bore encoder;
 		//public static double AlgaeShoot = -0.9;
-		public static double AlgaeShoot = 0.905; // using bore encoder
+		public static double AlgaeShoot = 0.171; // using bore encoder
 		//public static double AlgaeHuman = -0.9;
 		public static double AlgaeHuman = 0.905; // using bore encoder
 		//public static double AlgaeFloor = -10;
@@ -332,9 +332,9 @@ public final class Constants {
 		public static double CoralL2 = 11.167;
 		public static double CoralL1 = 6.5;
 		public static double AlgaeHuman = 1.0;
-		public static double AlgaeL3 = 1.0;
-		public static double AlgaeL2 = 1.0;
-		public static double AlgaeL1 = 1.0;
+		public static double AlgaeL3 = .595;
+		public static double AlgaeL2 = .595;
+		public static double AlgaeL1 = .595;
 		public static double AlgaeShoot = 1.0;
 		public static double AlgaeFloor = 2.0;
 	}

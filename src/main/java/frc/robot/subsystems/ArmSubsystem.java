@@ -61,7 +61,7 @@ public class ArmSubsystem extends SubsystemBase {
     private double targetPosition = Constants.ArmConstants.Start;
     private SparkMax motor = null;
     private SparkMaxSim motorSim = null;
-    private SparkClosedLoopController pid = null;
+    //private SparkClosedLoopController pid = null;
     private SparkMaxConfig config = new SparkMaxConfig();
 
     private PIDController pidController = new PIDController(0.0, 0.0, 0.0);
@@ -72,8 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // these values were calculate using https://www.reca.lc/arm
     //private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
-    //private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 0.0, 0.0);
-    private ArmFeedforward armFeedforward = new ArmFeedforward(0.1, 2.0, 0.25);
+    //private ArmFeedforward armFeedforward = new ArmFeedforward(0.1, 2.0, 0.25);
 
     public ArmSubsystem() {
 
@@ -93,7 +92,7 @@ public class ArmSubsystem extends SubsystemBase {
 
             setConfig();
 
-		    pid = motor.getClosedLoopController();
+		    //pid = motor.getClosedLoopController();
 
             if (Constants.kEnableDebugArm) {
 
