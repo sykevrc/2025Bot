@@ -231,7 +231,7 @@
       }
     },
     {
-      "name": "EjectCoralReverse500",
+      "name": "EjectCoral",
       "waypointRelativePos": 1.0344182371183213,
       "endWaypointRelativePos": null,
       "command": {
@@ -242,7 +242,7 @@
       }
     },
     {
-      "name": "IntakeNoWait",
+      "name": "IntakeCoralWait",
       "waypointRelativePos": 1.9467288883587792,
       "endWaypointRelativePos": null,
       "command": {

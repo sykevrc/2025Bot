@@ -36,13 +36,15 @@ public class AlgaeFloorCommand extends Command {
     elevatorSubsystem.setDesiredState(ElevatorState.AlgaeFloor);   
     armSubsystem.setDesiredState(ArmState.ArmFloor);
 
-    if(endEffectorSubsystem.hasCoral()) {
+    /*if(endEffectorSubsystem.hasCoral()) {
       endEffectorSubsystem.setDesiredState(EndEffectorState.EjectAlgaeFloor);
     } else {
       endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
-    }
+    }*/
 
-    System.out.println("AlgaeFloorCommand::execute() called");
+    endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+
+    //System.out.println("AlgaeFloorCommand::execute() called");
   }
 
   // Called once the command ends or is interrupted.

@@ -47,10 +47,15 @@ public class ArmStartCommand extends Command {
     public boolean isFinished() {
         //return true;
 
-        System.out.println("ArmStartCommand::isFinished() - positioin is: " + armSubsystem.getPosition());
+        //System.out.println("ArmStartCommand::isFinished() - position is: " + armSubsystem.getPosition());
 
-        if(Math.abs(armSubsystem.getPosition() - Constants.ArmConstants.Start) <= 0.09) {
+        /*if(Math.abs(armSubsystem.getPosition() - Constants.ArmConstants.Start) <= 0.09) {
             System.out.println("done with ArmStartCommand");
+            return true;
+        }*/
+
+        if(armSubsystem.atTargetPosition()) {
+            System.out.println("ArmStartCommand::isFinished() - arm is at the target position so stopping");
             return true;
         }
 

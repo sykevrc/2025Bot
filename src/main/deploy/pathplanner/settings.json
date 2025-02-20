@@ -8,9 +8,7 @@
     "Auto 3 Paths",
     "Auto 4 Paths"
   ],
-  "autoFolders": [
-    "Auto 1"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 15.0,
   "defaultMaxAccel": 8.0,
   "defaultMaxAngVel": 540.0,

@@ -46,6 +46,13 @@ public class StartCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+
+    // need to check for elevator subsystem as well
+    if(armSubsystem.atTargetPosition()) {
+      return true;  
+    }
+
+    return false;
+    
   }
 }

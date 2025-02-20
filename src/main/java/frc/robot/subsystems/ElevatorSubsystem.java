@@ -102,6 +102,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void setDesiredState(ElevatorState state) {
+        if(this.state == state) {
+            // trying to set the state to the state we are already at
+            // just returning to save cycles
+            return;
+        }
 
         // Are we sending the same state again?  If so act like a toggle and stop
         //if (this.state == state) {

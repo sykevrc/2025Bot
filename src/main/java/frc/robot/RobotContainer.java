@@ -33,22 +33,17 @@ import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
 import frc.robot.commands.CoralHumanCommand;
+import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
-import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.StartCommand;
-import frc.robot.commands.StopEjectCoralCommand;
 import frc.robot.commands.StopIntake;
-import frc.robot.commands.autonomous.AimCommand;
 import frc.robot.commands.autonomous.DelayCommand;
-import frc.robot.commands.autonomous.DummyCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
-import frc.robot.commands.autonomous.IntakeWaitCommand;
+import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -58,7 +53,6 @@ public class RobotContainer {
 	public static final PhotonVision photonVision = new PhotonVision();
 	public static final Limelight limelight = new Limelight();
 	public static final DriveSubsystem driveSubsystem = new DriveSubsystem();
-	public static final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
 	public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
@@ -92,10 +86,11 @@ public class RobotContainer {
 
 		
 		// Register commands to be used in Auto
-		NamedCommands.registerCommand("IntakeWait", new IntakeWaitCommand());
+		NamedCommands.registerCommand("IntakeCoralWait", new IntakeCoralWaitCommand());
 		NamedCommands.registerCommand("IntakeNoWait", new IntakeNoWait());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
-		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand(OptionalLong.of(500)));
+		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand());
+		NamedCommands.registerCommand("EjectCoral", new EjectCoralCommand());
 		NamedCommands.registerCommand("EjectCoralReverse500", new EjectCoralReverse(OptionalLong.of(500)));
 		NamedCommands.registerCommand("Coral4Command", new Coral4Command());
 		NamedCommands.registerCommand("Coral3Command", new Coral3Command());
@@ -111,6 +106,7 @@ public class RobotContainer {
 		// This creates the chooser from the autos built in Autonomous
 		//autoChooser = AutoBuilder.buildAutoChooser();
 
+		// need to fix this
 		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
 
 		SmartDashboard.putData("Auto", autoChooser);
@@ -161,19 +157,28 @@ public class RobotContainer {
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
-			driverController.button(4).whileTrue(new Coral1Command());
-			driverController.button(2).whileTrue(new Coral2Command());
-			driverController.button(1).whileTrue(new Coral3Command());
+			operatorController.button(3).whileTrue(new Coral1Command());
+			operatorController.button(4).whileTrue(new Coral2Command());
+			operatorController.button(2).whileTrue(new Coral3Command());
+			operatorController.button(10).whileTrue(new Coral4Command());
+			
 			//driverController.button(3).whileTrue(new StartCommand());
 
-			driverController.button(8).whileTrue(new CoralHumanCommand());
-			driverController.button(9).whileTrue(new AlgaeFloorCommand());
-			//driverController.button(9).whileFalse(new StopIntake());
-			
+			// Intake coral from human element
+			operatorController.button(8).whileTrue(new CoralHumanCommand());
+
+			// This is for the floor algae
+			operatorController.button(9).whileTrue(new AlgaeFloorCommand());
+			//operatorController.button(9).whileFalse(new StopIntake());
+
+			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
+			//operatorController.button(9).whileFalse(new StopIntake());
+
+
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
-			driverController.button(3).whileTrue(new SequentialCommandGroup(
+			operatorController.button(1).whileTrue(new SequentialCommandGroup(
 				//new RunCommand(() -> armSubsystem.setDesiredState(ArmState.Start)),
 				new ArmStartCommand(),
 				//new RunCommand(() -> new DelayCommand(OptionalLong.of(500))),
@@ -184,7 +189,17 @@ public class RobotContainer {
 
 			//driverController.rightTrigger().whileTrue(new IntakeNoWait());
 			//driverController.rightTrigger().whileFalse(new StopIntake());
-			driverController.rightTrigger().whileTrue(new EjectCoralCommand(null));
+
+			//driverController.rightTrigger().whileTrue(new EjectCoralCommand(null));
+
+			operatorController.rightTrigger().whileTrue(new SequentialCommandGroup(
+				new EjectCoralCommand()//,
+				//new ArmStartCommand(), // this will retract the arm and stop end effector
+				//new StartCommand() // this will retract the arm and move the elevator down
+			));
+
+			
+
 			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
 			
 

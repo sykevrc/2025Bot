@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 5.907848640501968,
+        "x": 5.908,
         "y": 3.830803725298713
       },
       "prevControl": {
-        "x": 6.157834280894535,
+        "x": 6.1579856403925675,
         "y": 3.8281242482007904
       },
       "nextControl": null,
@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Coral1Command",
+      "waypointRelativePos": 0.6941617398648652,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Coral1Command"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 15.0,
     "maxAcceleration": 8.0,

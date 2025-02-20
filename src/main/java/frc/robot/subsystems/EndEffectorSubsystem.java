@@ -111,11 +111,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public void setDesiredState(EndEffectorState state) {
 
+        if(this.state == state) {
+            // trying to set the state to the state we are already at
+            // just returning to save cycles
+            return;
+        }
+
         // Are we sending the same state again?  If so act like a toggle and stop
         /*if (this.state == state) {
             targetVelocity1 = Constants.EndEffectorConstants.StoppedMotor1;
             targetVelocity2 = Constants.EndEffectorConstants.StoppedMotor2;
         } else {*/
+
 
             switch (state) {
                 case Stopped:
@@ -130,8 +137,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     break;
                 case IntakeCoralHumanElement:
                     System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeCoralHumanElement"));
-                    targetVelocity1 = Constants.EndEffectorConstants.IntakeCoralHumanElementMotor1;
-                    targetVelocity2 = Constants.EndEffectorConstants.IntakeCoralHumanElementMotor2;
+                    targetVelocity1 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor1;
+                    targetVelocity2 = -Constants.EndEffectorConstants.IntakeCoralHumanElementMotor2;
                     break;
                 case EjectAlgaeFloor:
                     System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectAlgaeFloor"));
@@ -173,11 +180,13 @@ public class EndEffectorSubsystem extends SubsystemBase {
             }
 
             if(!hasCoral && !hasAlgae) {
-                // We do not have the algae
+                // We do not have the coral or algae
                 RobotContainer.led1.setStatus(LEDStatus.ready);
             } else if(hasCoral) {
+                // we have the coral
                 RobotContainer.led1.setStatus(LEDStatus.hasCoral);
             } else if(hasAlgae) {
+                // we have the algae
                 RobotContainer.led1.setStatus(LEDStatus.hasAlgae);
             }
 
@@ -197,7 +206,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 case IntakeAlgaeFloor:                    
                     // Check for a spike in the current (the motor is under load)
                     // This will tell us if we have the Algae
-                    if(motor.getOutputCurrent() >= 
+                    /*if(motor.getOutputCurrent() >= 
                         Constants.EndEffectorConstants.OutputCurrentLimitMotor1) {
                             // we have the algae so stop the motor and set the status
                             motor.set(0.0);
@@ -207,12 +216,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
                         // We don't have the algae so run the motor
                         motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                         hasAlgae = false;
-                    }
+                    }*/
+
+                    // Run the motors
+                    motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
+                    motor2.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2);
 
                     //motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                     break;
                 case EjectAlgaeFloor:
-                    motor.set(-Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
+                    motor.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor1);
+                    motor2.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor2);
                     hasAlgae = false;
                     break;
                 case EjectCoralFront:
@@ -228,7 +242,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     break;
                 case EjectCoralBack:
                     if(hasCoral) {
-                        System.out.println("ejecting the back");
+                        //System.out.println("ejecting the back");
                         // we have the coral so eject it
                         motor2.set(targetVelocity1);
                         motor.set(targetVelocity2);

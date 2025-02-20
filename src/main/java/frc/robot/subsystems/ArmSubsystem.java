@@ -113,7 +113,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setDesiredState(ArmState state) {
-        this.state = state;
+
+        if(this.state == state) {
+            // trying to set the state to the state we are already at
+            // just returning to save cycles
+            return;
+        }
 
         switch(state) {
             case AlgaeHuman:
@@ -159,6 +164,7 @@ public class ArmSubsystem extends SubsystemBase {
             
         }
 
+        this.state = state;
         //drivePID.setReference(targetPosition, ControlType.kPosition);
     }
 
@@ -234,6 +240,8 @@ public class ArmSubsystem extends SubsystemBase {
                 d
 			);
 
+        config.absoluteEncoder.zeroOffset(0.5);
+
         // Set MAXMotion parameters
         config.closedLoop.maxMotion
             //.maxVelocity(6784)
@@ -273,6 +281,10 @@ public class ArmSubsystem extends SubsystemBase {
         this.targetPosition = targetPosition;
     }
 
+    public boolean atTargetPosition() {
+        return pidController.atSetpoint();
+    }
+
     public double getP() {
         return this.p;
     }
@@ -308,5 +320,6 @@ public class ArmSubsystem extends SubsystemBase {
         builder.addDoubleProperty("P", this::getP, this::setP);
         builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
         builder.addDoubleProperty("Position", this::getPosition,null);
+        builder.addBooleanProperty("At Target", this::atTargetPosition, null);
     }
 }

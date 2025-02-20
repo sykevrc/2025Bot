@@ -19,49 +19,16 @@ public class EjectCoralCommand extends Command {
     private ElevatorSubsystem elevatorSubsystem = RobotContainer.elevatorSubsystem;
     private ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
     private boolean finished = false;
-    private OptionalLong ejectTime = OptionalLong.empty();
 
-    public EjectCoralCommand(OptionalLong ejectTime) {
+    public EjectCoralCommand() {
         addRequirements(endEffectorSubsystem);
         addRequirements(elevatorSubsystem);
         addRequirements(armSubsystem);
-
-        this.ejectTime = ejectTime;
     }
     
     @Override
     public void initialize() {
-         /*if(ejectTime.isPresent()) {
-
-            TimerTask task = new TimerTask() {
-                public void run() {
-                    System.out.println("stopping the eject");
-                    endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
-                    elevatorSubsystem.setDesiredState(ElevatorState.CoralHuman);
-                    //armSubsystem.setDesiredState(ArmState.CoralHuman);
-                    //finished = true;
-                }
-            };
-
-            TimerTask task2 = new TimerTask() {
-                public void run() {
-                    System.out.println("setting the arm state");
-                    armSubsystem.setDesiredState(ArmState.CoralHuman);
-                    finished = true;
-                }
-            };
-            Timer timer = new Timer("Timer");
-            //Timer timer2 = new Timer("Timer");
-    
-            timer.schedule(task, ejectTime.getAsLong());
-            timer.schedule(task2, 2000);
-            System.out.println("starting the eject");
-            endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            finished = false;
-        } else {
-            finished = true;
-        }*/
-        finished = true;
+        //finished = true;
     }
 
     @Override
@@ -80,8 +47,9 @@ public class EjectCoralCommand extends Command {
             }
             
         } else {
-            System.out.println("Does not have the coral, stopping");
+            System.out.println("EjectCoralCommand::execute() - do not have the coral, stopping");
             this.endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
+            finished = true;
         }
     }
 
