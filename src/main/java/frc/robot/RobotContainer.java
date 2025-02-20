@@ -25,6 +25,8 @@ import frc.robot.commands.AlgaeFloorCommand;
 import frc.robot.commands.ArmStartCommand;
 import frc.robot.commands.AutoAlignLeftCommand;
 import frc.robot.commands.AutoAlignRightCommand;
+import frc.robot.commands.ClimberDownCommand;
+import frc.robot.commands.ClimberUpCommand;
 import frc.robot.commands.Coral1Command;
 import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
@@ -197,6 +199,10 @@ public class RobotContainer {
 				//new ArmStartCommand(), // this will retract the arm and stop end effector
 				//new StartCommand() // this will retract the arm and move the elevator down
 			));
+
+			// Climber Stuff
+			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
+			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
 
 			
 

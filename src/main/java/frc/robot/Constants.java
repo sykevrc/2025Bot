@@ -337,5 +337,7 @@ public final class Constants {
 		public static double AlgaeL1 = .595;
 		public static double AlgaeShoot = 1.0;
 		public static double AlgaeFloor = 2.0;
+		public static double ClimberUp = 11.167;
+		public static double ClimberDown = 10.0;
 	}
 }
