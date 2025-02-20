@@ -289,7 +289,7 @@ public final class Constants {
 		public static double StoppedMotor1 = 0.0;
 		public static double StoppedMotor2 = 0.0;
 		public static double IntakeAlgaeFloorMotor1 = -0.2;
-		public static double IntakeAlgaeFloorMotor2 = 0.2;
+		public static double IntakeAlgaeFloorMotor2 = -0.2;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;
 		public static double IntakeCoralHumanElementMotor2 = 0.16;
 		public static double EjectAlgaeFloorMotor1 = 0.2;
