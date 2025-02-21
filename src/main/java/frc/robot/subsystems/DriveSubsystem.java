@@ -627,6 +627,25 @@ public class DriveSubsystem extends SubsystemBase {
 
 			phoneEstimatedRobotPose = _photonVision.getPose(poseEstimator.getEstimatedPosition());
 
+			if(phoneEstimatedRobotPose != null) {
+				if(Constants.kEnableDriveSubSystemLogger) {
+					Logger.recordOutput("PhotonVisionEstimator/Robot", phoneEstimatedRobotPose.estimatedPose.toPose2d());
+				}
+
+				poseEstimator.addVisionMeasurement(
+					phoneEstimatedRobotPose.estimatedPose.toPose2d(),
+					//Timer.getFPGATimestamp() - phoneEstimatedRobotPose.timestampSeconds,
+					phoneEstimatedRobotPose.timestampSeconds,
+					visionMeasurementStdDevs
+				);
+
+				/*if(!gyro.isMoving()) {
+					resetOdometry(phoneEstimatedRobotPose.estimatedPose.toPose2d());
+				}*/
+			}
+
+			
+
 			/*if(phoneEstimatedRobotPose != null) {
 
 				if(phoneEstimatedRobotPose.targetsUsed.size() >= 1) {

@@ -455,6 +455,8 @@ public class PhotonVision {
 
 				estimatedRobotPose = _photonPoseEstimator.update(_camera.getLatestResult());
 
+				
+
 				/*allTagPoses.clear();
 
 				if (estimatedRobotPose.isPresent()) {
@@ -491,6 +493,8 @@ public class PhotonVision {
 
 					return Optional.empty();
 				}*/
+
+				
 
 				return estimatedRobotPose;
 			} else {

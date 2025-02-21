@@ -36,15 +36,15 @@ public final class Constants {
 
 	// Drive train
 	public static boolean kDebugDriveTrain = true;
-	public static boolean kEnableDriveSubSystemLogger = false;
+	public static boolean kEnableDriveSubSystemLogger = true;
 	public static boolean enableLogger = false;
 
 	// Photonvision
-	public static boolean kEnablePhotonVision = true;
+	public static boolean kEnablePhotonVision = false;
 	public static boolean kDebugPhotonVision = false;
 
 	// Limelight
-	public static boolean kEnableLimelight = true;
+	public static boolean kEnableLimelight = false;
 	public static boolean kDebugLimelight = false;
 	
 	// Arm
@@ -73,6 +73,7 @@ public final class Constants {
 		//public static final double kdriveGearRatioL1 = 1d / 8.14;
 		//public static final double kdriveGearRatioL2 = 1d / 6.75;
 		public static final double kdriveGearRatioL3 = 1d / 6.12;
+		//public static final double kdriveGearRatioL3 = 1d / 5.7;
 		//public static final double kdriveGearRatioL4 = 1d / 5.14;
 		public static final double kturnGearRatio = 1d / (150d / 7d);
 
@@ -150,7 +151,7 @@ public final class Constants {
 	}
 
 	/**
-	 * The constants pertaining to Autonoumus
+	 * The constants pertaining to Autonoumus 
 	 */
 	public static class AutoConstants {
 
@@ -159,9 +160,12 @@ public final class Constants {
 			// PID constants for path planner (these control drive direction not reaching
 			// target wheel speeds)
 			//public static final PIDConstants kPPDriveConstants = new PIDConstants(8.5, 0, 0);
-			public static final PIDConstants kPPDriveConstants = new PIDConstants(5.0, 0, 0);
+			//public static final PIDConstants kPPDriveConstants = new PIDConstants(5.0, 0, 0);
+			//public static final PIDConstants kPPDriveConstants = new PIDConstants(6.5, 0, 0); // best one
+			public static final PIDConstants kPPDriveConstants = new PIDConstants(7.5, 0, 0);
 			//public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
-			public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0, 0);
+			//public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0, 0);
+			public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
 
 			//public static final double kPPMaxVelocity = 4.00;
 			//public static final double kPPMaxAcceleration = 2.50;
@@ -218,7 +222,7 @@ public final class Constants {
 					new Rotation3d(
 						0,
 						PhotonVisionConstants.camPitch,
-						0
+						180
 					)
 				);
 
@@ -291,7 +295,7 @@ public final class Constants {
 		public static double IntakeAlgaeFloorMotor1 = -0.2;
 		public static double IntakeAlgaeFloorMotor2 = -0.2;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;
-		public static double IntakeCoralHumanElementMotor2 = 0.16;
+		public static double IntakeCoralHumanElementMotor2 = -0.16;
 		public static double EjectAlgaeFloorMotor1 = 0.2;
 		public static double EjectAlgaeFloorMotor2 = -0.2;
 		public static double EjectCoralMotor1 = 0.2;
@@ -337,7 +341,7 @@ public final class Constants {
 		public static double AlgaeL1 = .595;
 		public static double AlgaeShoot = 1.0;
 		public static double AlgaeFloor = 2.0;
-		public static double ClimberUp = 11.167;
-		public static double ClimberDown = 10.0;
+		public static double ClimberUp = 12.0;
+		public static double ClimberDown = 9.0;
 	}
 }
