@@ -56,7 +56,7 @@ public class SwerveModule {
 	private final CANcoder cancoder;
 	private final RelativeEncoder driveEncoder;
 
-	private final SparkClosedLoopController drivePID;
+	private final SparkClosedLoopController sparkDrivePID;
 	private final ProfiledPIDController m_turningPIDController;
 
 	public final double angleZero;
@@ -75,7 +75,7 @@ public class SwerveModule {
 	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
 
 	SparkMaxConfig turnConfig = null;
-	SparkMaxConfig driveConfig = null;
+	SparkFlexConfig driveConfig = null;
 	
 	SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
 			ModuleConstants.ksTurning, ModuleConstants.kvTurning);
@@ -119,14 +119,12 @@ public class SwerveModule {
 		//cancoder = new CANcoder(absoluteEncoderPort);
 		cancoder.clearStickyFaults();
 
-		SparkFlexConfig driveConfig = new SparkFlexConfig();
+		driveConfig = new SparkFlexConfig();
 
 		driveConfig
             .inverted(invertDriveMotor)
             .idleMode(IdleMode.kCoast);
-        //driveConfig.encoder
-            //.positionConversionFactor(1000)
-            //.velocityConversionFactor(1000);
+
         driveConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
 			.pid(
@@ -134,9 +132,10 @@ public class SwerveModule {
 				drivePID.kI,
 				drivePID.kD
 			);
+
         driveConfig.signals.primaryEncoderPositionPeriodMs(5);
 
-
+		// Set the gear ratio
 		driveConfig.encoder
 		.positionConversionFactor(
 			ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference
@@ -156,29 +155,15 @@ public class SwerveModule {
 			PersistMode.kPersistParameters
 		);
 
-		this.drivePID = driveMotor.getClosedLoopController();
+		this.sparkDrivePID = driveMotor.getClosedLoopController();
 
 		driveEncoder = driveMotor.getEncoder();
-		/*driveEncoder.setPositionConversionFactor(ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference); // meters
-		driveMotor.getEncoder().setVelocityConversionFactor(
-				ModuleConstants.kdriveGearRatioL3
-						* ModuleConstants.kwheelCircumference
-						* (1d / 60d)); // meters per second
-
-		// Initialize PID's
-		this.drivePID = driveMotor.getPIDController();
-		this.drivePID.setP(drivePID.kP);
-		this.drivePID.setI(drivePID.kI);
-		this.drivePID.setD(drivePID.kD);*/
 
 		turnConfig = new SparkMaxConfig();
 
 		turnConfig
             .inverted(invertTurningMotor)
             .idleMode(IdleMode.kCoast);
-        //turnConfig.encoder
-            //.positionConversionFactor(1000)
-            //.velocityConversionFactor(1000);
         turnConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
 			.pid(
@@ -198,20 +183,6 @@ public class SwerveModule {
 					2 * Math.PI * 600, // theoretical is 5676 RPM -> 94*2pi
 					2 * Math.PI * 1200));
 
-		/*this.drivePID.setFF(ModuleConstants.kDriveFeedForward);
-
-		this.drivePID.setFeedbackDevice(driveMotor.getEncoder());
-
-		this.drivePID.setOutputRange(-1, 1);
-
-		// Configure current limits for motors
-		driveMotor.setIdleMode(IdleMode.kCoast);
-		turningMotor.setIdleMode(IdleMode.kBrake);
-		turningMotor.setSmartCurrentLimit(ModuleConstants.kTurnMotorCurrentLimit);
-		driveMotor.setSmartCurrentLimit(ModuleConstants.kDriveMotorCurrentLimit);*/
-
-		//m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-		//m_turningPIDController.enableContinuousInput(0, 1);
 		m_turningPIDController.enableContinuousInput(0, Math.toRadians(360));
 
 		if(Constants.kDebugDriveTrain == true) {
@@ -219,84 +190,13 @@ public class SwerveModule {
 			swerveTab = Shuffleboard.getTab("Swerve");
 			swerveTab.addDouble(moduleName + " Absolute", this::getAbsoluteHeading);
 			swerveTab.addDouble(moduleName + " Meters", this::getDistanceMeters);
-			//swerveTab.addDouble("FR Absolute", frontRight::getAbsoluteHeading);
-			//swerveTab.addDouble("RL Absolute", rearLeft::getAbsoluteHeading);
-			//swerveTab.addDouble("RR Absolute", rearRight::getAbsoluteHeading);
-			//swerveTab.addDouble("FL Meters", frontLeft::getDistanceMeters);
-			//swerveTab.addDouble("FR Meters", frontRight::getDistanceMeters);
-			//swerveTab.addDouble("RL Meters", rearLeft::getDistanceMeters);
-			//swerveTab.addDouble("RR Meters", rearRight::getDistanceMeters);
-			
-			//swerveTab.addDouble(moduleName + " Offset", this::getAngleZero);
 			swerveTab.addString(moduleName + " Abs. Status", this::getStatus);
 		}
-
-		/*networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_P).setDouble(angularPID.kP);
-		networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_I).setDouble(angularPID.kI);
-		networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_D).setDouble(angularPID.kD);
-
-		networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_P).setDouble(drivePID.kP);
-		networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_I).setDouble(drivePID.kI);
-		networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_D).setDouble(drivePID.kD);
-
-		// Setup listeners to listen for changes to the values
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_P),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				m_turningPIDController.setP(event.valueData.value.getDouble());
-			}
-		);
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_I),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				m_turningPIDController.setI(event.valueData.value.getDouble());
-			}
-		);
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kTurningPID_D),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				m_turningPIDController.setD(event.valueData.value.getDouble());
-			}
-		);
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_P),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				//this.drivePID.setP(event.valueData.value.getDouble());
-				turnConfig.closedLoop.p(event.valueData.value.getDouble());
-			}
-		);
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_I),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				//this.drivePID.setI(event.valueData.value.getDouble());
-				turnConfig.closedLoop.i(event.valueData.value.getDouble());
-			}
-		);
-
-		networkTableInstance.addListener(
-			networkTableInstance.getEntry(Constants.ModuleConstants.kDrivePID_D),
-			EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-			event -> {
-				//this.drivePID.setD(event.valueData.value.getDouble());
-				turnConfig.closedLoop.d(event.valueData.value.getDouble());
-			}
-		);*/
 	}
 
 	// Returns headings of the module
 	public double getAbsoluteHeading() {
 		return (cancoder.getAbsolutePosition().refresh().getValueAsDouble() * 360);
-		//return (cancoder.getAbsolutePosition().refresh().getValue() * 360);
 	}
 
 	public double getDistanceMeters() {
@@ -313,23 +213,13 @@ public class SwerveModule {
 			return new SwerveModulePosition(driveEncoder.getPosition(), _simulatedAbsoluteEncoderRotation2d);
 		}
 
-		//return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(Math.toRadians(cancoder.getAbsolutePosition().refresh().getValue() * 360)));
-		//return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(Math.toRadians(cancoder.getAbsolutePosition().refresh().getValueAsDouble() * 360)));
-
-		// testing
-		//return new SwerveModulePosition(driveEncoder.getPosition(), Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360));
 		m_moduleAngleRotation2d = Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360.0);
-		//return new SwerveModulePosition(driveEncoder.getPosition(), Rotation2d.fromDegrees(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360));
+
 		return new SwerveModulePosition(driveEncoder.getPosition(), m_moduleAngleRotation2d);
 	}
 
 	// Sets the position of the swerve module
-	public void setDesiredState(SwerveModuleState desiredState) {
-
-		//m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360);
-		//testing
-		//m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360);
-		
+	public void setDesiredState(SwerveModuleState desiredState) {	
 
 		if(isSim) {
 			m_moduleAngleRadians = Math.toRadians(desiredState.angle.getDegrees());
@@ -338,16 +228,7 @@ public class SwerveModule {
 
 		// Optimize the reference state to avoid spinning further than 90 degrees to
 		// desired state
-		/*optimizedState = SwerveModuleState.optimize(
-				desiredState,
-				Rotation2d.fromRadians(m_moduleAngleRadians));*/
-		
-		// testing
-		//desiredState.optimize(Rotation2d.fromRadians(m_moduleAngleRadians));
 		desiredState.optimize(m_moduleAngleRotation2d);
-
-		/*angularPIDOutput = m_turningPIDController.calculate(m_moduleAngleRadians,
-				optimizedState.angle.getRadians());*/
 
 		angularPIDOutput = m_turningPIDController.calculate(m_moduleAngleRadians,
 			desiredState.angle.getRadians());
@@ -359,11 +240,10 @@ public class SwerveModule {
 		turningMotor.setVoltage(turnOutput);
 		
 		if(isSim) {
-			drivePID.setReference(
+			sparkDrivePID.setReference(
 				desiredState.speedMetersPerSecond,
 				ControlType.kVelocity
 			);
-
 
 			driveFlexSim.iterate(
 				desiredState.speedMetersPerSecond,
@@ -372,9 +252,10 @@ public class SwerveModule {
 			);
 
 		} else {
-			drivePID.setReference(
+			sparkDrivePID.setReference(
 				desiredState.speedMetersPerSecond,
 				ControlType.kVelocity
+				//ControlType.kMAXMotionVelocityControl
 			);
 		}
 
@@ -407,13 +288,17 @@ public class SwerveModule {
 		m_turningPIDController.setPID(p, i, d);
 	}
 
-	/*public void setDrivePID(double p, double i, double d) {
-		drivePID.setP(p);
-		drivePID.setI(i);
-		drivePID.setD(d);
-	}*/
-
 	public void simulatePeriodic() {
 		
+	}
+
+	public void setDrivePID(double p, double i, double d) {
+		driveConfig.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+			.pid(
+				p,
+				i,
+				d
+			);
 	}
 }

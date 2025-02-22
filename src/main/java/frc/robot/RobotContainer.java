@@ -19,6 +19,7 @@ import frc.robot.tools.PhotonVision;
 import frc.robot.tools.parts.PathBuilder;
 import frc.robot.mechanisms.LED;
 import frc.robot.mechanisms.LED.LEDStatus;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.Algae1Command;
 import frc.robot.commands.Algae2Command;
 import frc.robot.commands.AlgaeFloorCommand;
@@ -55,20 +56,13 @@ public class RobotContainer {
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
 	public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 	public static final LED led1 = new LED(0);
-	//private static final CommandXboxController operatorController = new CommandXboxController(1);
-
 	
 	// This is required by pathplanner
-	public final static PathBuilder autoBuilder = new PathBuilder();
+	//public final static PathBuilder autoBuilder = new PathBuilder();
 
 	private final CommandXboxController driverController = new CommandXboxController(0);
-	//private final CommandXboxController programmerController = new CommandXboxController(
-			//OperatorConstants.kProgrammerControllerPort);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
-
 	private SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-	//private boolean setupAuto = false;
 
 	public SendableChooser<Command> getAutoChooser() {
 		return autoChooser;
@@ -79,9 +73,11 @@ public class RobotContainer {
 	 */
 	public RobotContainer(boolean isSim) {
 
+		// This is required for auto
+		RobotContainer.driveSubsystem.CreateAutoBuilder();
+
 		// Configure the trigger bindings
 		configureBindings();
-
 		
 		// Register commands to be used in Auto
 		NamedCommands.registerCommand("IntakeCoralWait", new IntakeCoralWaitCommand());
@@ -95,63 +91,18 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
 		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
 
-		/*if(Constants.kEnablePhotonVision) {
-			NamedCommands.registerCommand("Aim", new AimCommand(photonVision));
-		} else {
-			NamedCommands.registerCommand("Aim", new DummyCommand());
-		}*/
-		
-		// This creates the chooser from the autos built in Autonomous
-		//autoChooser = AutoBuilder.buildAutoChooser();
-
-		// need to fix this
 		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
 
 		SmartDashboard.putData("Auto", autoChooser);
-		//SmartDashboard.putData(autoChooser);
 
 		// Add the chooser to the Shuffleboard to select which Auo to run
 		Shuffleboard.getTab("Autonomous").add("Auto", autoChooser)
 		.withWidget(BuiltInWidgets.kComboBoxChooser);
 
-		//autoChooser.onChange(RobotContainer::selected);
-
 		led1.setStatus(LEDStatus.ready);
 	}
 
-	/*public void setupAuto(boolean setupAuto) {
-		//this.setupAuto = setupAuto;
-		RobotContainer.driveSubsystem.setupAuto(setupAuto);
-	}*/
-
-	// this is for testing
-	/*private static void selected(Command c) {
-		
-		try {
-			if(c instanceof PathPlannerAuto) {
-				PathPlannerAuto p = (PathPlannerAuto) c;
-				var t = PathPlannerAuto.getPathGroupFromAutoFile(p.getName()).get(0).getAllPathPoints().get(0);
-
-				if(t != null && t.position != null && t.rotationTarget != null) {
-					System.out.println("Name: " + p.getName() + " x:" + t.position.getX() + " y: " + t.position.getY() + " rotation: " + t.rotationTarget.rotation().getDegrees());
-					RobotContainer.driveSubsystem.setStartPosition(new Pose2d(t.position, t.rotationTarget.rotation()));
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
-
 	private void configureBindings() {
-
-		// Always point the robot at the target
-		//operatorController.button(2).onTrue(
-		/*operatorController.leftTrigger().onTrue(
-			Commands.parallel(new ChassisAimCommand(), new ArmAimCommand())			
-		);*/
-
-		//operatorController.button(3).whileTrue(new RunCommand(() -> driveSubsystem.goToPose(Constants.PoseDefinitions.kFieldPoses.AMPLIFIER)));
-		//operatorController.button(4).whileTrue(new RunCommand(() -> driveSubsystem.goToPose(Constants.PoseDefinitions.kFieldPoses.SOURCE)));
 
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
@@ -204,8 +155,6 @@ public class RobotContainer {
 			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
 			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
 
-			
-
 			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
 			
 			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
@@ -225,6 +174,8 @@ public class RobotContainer {
 			);
 			
 		} else {
+
+			// This is for simulation
 			
 			driverController.button(1).whileTrue(new AutoAlignRightCommand());
 			
@@ -235,28 +186,12 @@ public class RobotContainer {
 				new RunCommand(() -> driveSubsystem.driveRobotRelative(
 						JoystickUtils.processJoystickInput(driverController.getLeftY()),
 						JoystickUtils.processJoystickInput(driverController.getLeftX()),
-						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
-						//JoystickUtils.processJoystickInput(-operatorController.getRightX())
 						JoystickUtils.processJoystickInput(-driverController.getRawAxis(2))
-						//JoystickUtils.processJoystickInput(driverController.getRightY())
 					),
 					driveSubsystem
 				)
 			);
 		}
-		
-
-		// Swerve Drive method is set as default for drive subsystem
-		/*driveSubsystem.setDefaultCommand(
-
-				new RunCommand(() -> driveSubsystem.drive(
-					JoystickUtils.processJoystickInput(driverController.getLeftY()),
-					JoystickUtils.processJoystickInput(driverController.getLeftX()),
-					JoystickUtils.processJoystickInput(-driverController.getRightX())
-				),
-				driveSubsystem
-			)
-		);*/
 	}
 
 	public Command getAutonomousCommand() {

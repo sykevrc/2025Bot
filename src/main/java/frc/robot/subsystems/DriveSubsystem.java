@@ -35,6 +35,7 @@ import frc.robot.Constants;
 import frc.robot.mechanisms.SwerveModule;
 import frc.robot.tools.Limelight;
 import frc.robot.tools.PhotonVision;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.LimelightHelpers;
@@ -42,7 +43,10 @@ import frc.robot.RobotContainer;
 //import frc.robot.Constants.DriveConstants.kDriveModes;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.DriveFeedforwards;
 
 import edu.wpi.first.wpilibj.SPI;
@@ -82,32 +86,8 @@ public class DriveSubsystem extends SubsystemBase {
 
 	// Odeometry class for tracking robot pose
 	private SwerveDriveOdometry odometry;
-
-	//private Pose2d estimatedPose = new Pose2d();
-	//private double[] combinedEstimatedPoseArray = new double[9];
-	//private boolean setupAuto = false;
-	//private Pose2d startPosition = null;
 	private boolean limeLightCanSeeTag = false;
-	private boolean photonVisionCanSeeTag = false;
-
-
-	// test for auto positioning
-	/*private HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-		new PIDController(1, 0, 0),
-		new PIDController(1, 0, 0),
-		new ProfiledPIDController(
-			2,
-			0,
-			0,
-			new TrapezoidProfile.Constraints(
-			12.0,
-			6.0
-			)
-		)
-	);*/
-
-	//private Trajectory trajectory = null;
-	//private Trajectory.State goal = null;
+	//private boolean photonVisionCanSeeTag = false;
 
 	// PID controller for gyro turning
 	private ProfiledPIDController gyroTurnPidController = null;
@@ -116,13 +96,6 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private PhotonVision _photonVision = null;
 	private Limelight _limeLight = null;
-	//private Pose2d photonPose2d = null;
-
-	/*private double autoX_Position = 0.0;
-	private double autoY_Position = 0.0;
-	private boolean autoPositionStatusX = false;
-	private boolean autoPositionStatusY = false;*/
-
 	private SwerveModuleState[] swerveModuleStatesRobotRelative;
 	private EstimatedRobotPose phoneEstimatedRobotPose;
 
@@ -133,6 +106,10 @@ public class DriveSubsystem extends SubsystemBase {
 	private double turnP = ModuleConstants.kModuleTurningGains.kP;
 	private double turnI = ModuleConstants.kModuleTurningGains.kI;
 	private double turnD = ModuleConstants.kModuleTurningGains.kD;
+
+	/*private double autoDriveP = AutoConstants.PathPLannerConstants.kPPDriveConstants.kP;
+	private double autoDriveI = AutoConstants.PathPLannerConstants.kPPDriveConstants.kI;
+	private double autoDriveD = AutoConstants.PathPLannerConstants.kPPDriveConstants.kD;*/
 
 	/**
 	* Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
@@ -311,12 +288,6 @@ public class DriveSubsystem extends SubsystemBase {
 	@Override
 	public void simulationPeriodic() {
 
-		//updateOdometrySim();
-
-		/*frontLeft.simulatePeriodic();
-		rearLeft.simulatePeriodic();
-		frontRight.simulatePeriodic();
-		rearRight.simulatePeriodic();*/
 	}
 
 	@Override
@@ -403,16 +374,6 @@ public class DriveSubsystem extends SubsystemBase {
 		if(Constants.kEnablePhotonVision) {
 			_photonVision.setReferencePose(pose);
 		}
-
-		/*if(isSim) {
-			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-			angle.set(pose.getRotation().getDegrees());
-		}*/
-
-		//Logger.recordOutput("Odometry/Robot", odometry.getPoseMeters());
-		//Logger.recordOutput("Estimator/Robot", poseEstimator.getEstimatedPosition());
-		//System.out.println("degrees is: " + pose.getRotation().getDegrees());
 	}
 	
 	/*public void lockWheels() {
@@ -424,16 +385,6 @@ public class DriveSubsystem extends SubsystemBase {
 				swerveModuleStates, 0);
 
 		setModuleStates(swerveModuleStates);
-	}*/
-
-	/*public void robotCentricDrive(double xSpeed, double ySpeed, double rot) {
-		setFieldCentric(false);
-		drive(xSpeed, ySpeed, rot);
-		setFieldCentric(true);
-	}*/
-
-	/*public void drive(double xSpeed, double ySpeed, double rot) {
-		drive(xSpeed, ySpeed, rot, false, false);
 	}*/
 
 	public void drive(double xSpeed, double ySpeed, double rot) {
@@ -453,31 +404,6 @@ public class DriveSubsystem extends SubsystemBase {
 		this.ySpeed = ySpeed;
 		this.rot = rot;
 
-		// If we are set to auto aim
-		/*if (mode == kDriveModes.AIM) {
-			if (Constants.kEnablePhotonVision) {
-				if (_photonVision.canSeeTarget(speakerTarget) == true) {
-
-					double targetYaw = _photonVision.aimAtTarget(speakerTarget);
-
-					if (Math.abs(targetYaw) > Constants.AutoConstants.kAimTargetTolerance) {
-						targetLocked = false;
-						if (targetYaw > 0) {
-							rot -= Constants.DriveConstants.kChassisAutoAimRotation;
-						} else {
-							rot += Constants.DriveConstants.kChassisAutoAimRotation;
-						}
-					} else {
-						targetLocked = true;
-					}
-				}
-			}
-		} else if (mode == kDriveModes.LOCK_WHEELS) {
-			lockWheels();
-			return;
-		}*/
-
-		// We multiply (times) the rotation because it is inverted
 		if(isSim) {
 			swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
 				ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d())
@@ -497,8 +423,6 @@ public class DriveSubsystem extends SubsystemBase {
 			);
 			// end testing
 		} else {
-
-			//System.out.println("xSpeed: " + xSpeed + ", ySpeed: " + ySpeed);
 
 			swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
 				//ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d().unaryMinus())
@@ -541,7 +465,6 @@ public class DriveSubsystem extends SubsystemBase {
 	// This is for auto
 	public ChassisSpeeds getChassisSpeedsRobotRelative() {
 
-
 		if(isSim) {
 			return ChassisSpeeds.fromRobotRelativeSpeeds(xSpeed, ySpeed, rot, gyro.getRotation2d());
 		} 
@@ -553,9 +476,9 @@ public class DriveSubsystem extends SubsystemBase {
 	// This is for auto
 	public DriveFeedforwards setChassisSpeedsRobotRelative(ChassisSpeeds chassisSpeeds, DriveFeedforwards feedForwards ) {
 
-		//chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
-
 		swerveModuleStatesRobotRelative = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+		//feedForwards.
 
 		// In simulation, the actual navx does not work, so set the value from the chassisSpeeds
 		if(isSim) {
@@ -569,23 +492,6 @@ public class DriveSubsystem extends SubsystemBase {
 		rearLeft.setDesiredState(swerveModuleStatesRobotRelative[2]);
 		rearRight.setDesiredState(swerveModuleStatesRobotRelative[3]);
 
-		/*if(isSim) {
-			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-			SimDouble angle = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-			angle.set(angle.get() + -chassisSpeeds.omegaRadiansPerSecond);
-		}
-
-		// Note: it is important to not discretize speeds before or after
-        // using the setpoint generator, as it will discretize them for you
-        previousSetpoint = setpointGenerator.generateSetpoint(
-            previousSetpoint, // The previous setpoint
-            chassisSpeeds, // The desired target speeds
-            0.02 // The loop time of the robot code, in seconds
-        );
-        setModuleStates(previousSetpoint.moduleStates()); // Method that will drive the robot given target module states
-
-		*/
-
 		if(Constants.kEnableDriveSubSystemLogger) {
 			Logger.recordOutput("SwerveModuleStates/Setpoints", swerveModuleStatesRobotRelative);
 		}
@@ -594,7 +500,6 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void setModuleStates(SwerveModuleState[] desiredStates) {
-		//SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, ModuleConstants.kMaxModuleSpeedMetersPerSecond);
 		
 		if(isSim) {
 
@@ -701,7 +606,8 @@ public class DriveSubsystem extends SubsystemBase {
 				combinedEstimatedPoseArray[4] = limelightMeasurement.pose.getY();
 				combinedEstimatedPoseArray[5] = limelightMeasurement.pose.getRotation().getDegrees();*/
 
-				if(!gyro.isMoving() && limelightMeasurement.tagCount >= 1) {
+				//if(!gyro.isMoving() && limelightMeasurement.tagCount >= 1) {
+				if(!gyro.isMoving()) {
 					resetOdometry(limelightMeasurement.pose);
 				}
 			} else {
@@ -779,108 +685,12 @@ public class DriveSubsystem extends SubsystemBase {
 		gyro.reset();
 	}
 
-	/*public void setHeading(double heading) {
-		System.out.println("setHeading called");
-		//gyro.setYaw(heading);
-	}*/
-
-	/*public Command toggleFieldCentric() {
-		return runOnce(() -> {
-			fieldRelative = !fieldRelative;
-		});
-	}*/
-
-	/*public void setFieldCentric(boolean fieldCentric) {
-		fieldRelative = fieldCentric;
-	}*/
-
 	public void stopMotors() {
 		frontLeft.stopMotors();
 		frontRight.stopMotors();
 		rearLeft.stopMotors();
 		rearRight.stopMotors();
 	}
-
-	/*public Trajectory.State generateTrajectory(Pose2d targetPose) {
-
-		// 2018 cross scale auto waypoints.
-		var sideStart = new Pose2d(
-			odometry.getPoseMeters().getX(), 
-			odometry.getPoseMeters().getY(),
-			odometry.getPoseMeters().getRotation()
-		);
-		
-		var interiorWaypoints = new ArrayList<Translation2d>();
-	
-		TrajectoryConfig config = new TrajectoryConfig(
-			Units.feetToMeters(12),
-			Units.feetToMeters(12)
-		);
-
-		//config.setReversed(true);
-
-		try {
-	
-			trajectory = TrajectoryGenerator.generateTrajectory(
-				sideStart,
-				interiorWaypoints,
-				//crossScale,
-				targetPose,
-				config
-			);
-		} catch (Exception e) {
-			//System.out.println("DriveSubsystem::generateTrajectory() - " + e.getMessage());
-			return null;
-		}
-
-		return trajectory.sample(trajectory.getTotalTimeSeconds());
-	}*/
-
-	/*public void goToPose(Constants.PoseDefinitions.kFieldPoses targetPose) {
-
-		Pose2d pose = null;
-
-		if(targetPose == Constants.PoseDefinitions.kFieldPoses.AMPLIFIER) {
-			if (DriverStation.getAlliance().get() == Alliance.Blue) {
-				pose = Constants.PoseDefinitions.kAmplifierPoseBlue;
-			} else {
-				pose = Constants.PoseDefinitions.kAmplifierPoseRed;
-			}
-		} else if(targetPose == Constants.PoseDefinitions.kFieldPoses.SOURCE) {
-			if (DriverStation.getAlliance().get() == Alliance.Blue) {
-				pose = Constants.PoseDefinitions.kSourcePoseBlue;
-			} else {
-				pose = Constants.PoseDefinitions.kSourcePoseRed;
-			}
-		}
-
-
-		goal = generateTrajectory(pose);
-
-		if(goal == null) {
-			return;
-		}
-
-		// Get the adjusted speeds. Here, we want the robot to be facing
-		// 180 degrees (in the field-relative coordinate system).
-		ChassisSpeeds adjustedSpeeds = holonomicDriveController.calculate(
-			getPoseEstimatorPose2d(),
-			goal,
-			pose.getRotation()
-		);
-
-		SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(adjustedSpeeds);
-
-		setModuleStates(moduleStates);
-	}*/
-
-	/*public boolean getAutoPositionStatusX() {
-		return autoPositionStatusX;
-	}
-
-	public boolean getAutoPositionStatusY() {
-		return autoPositionStatusY;
-	}*/
 
 	public String getAlliance() {
 		String alliance = "";
@@ -894,34 +704,6 @@ public class DriveSubsystem extends SubsystemBase {
 
 		return alliance;
 	}
-
-	/*public double getAutoX_Position() {
-		return autoX_Position;
-	}
-
-	public double getAutoY_Position() {
-		return autoY_Position;
-	}*/
-
-	/*public void setMode(kDriveModes mode) {
-		this.mode = mode;
-	}
-
-	public kDriveModes getMode() {
-		return this.mode;
-	}
-
-	public boolean autoAim() {
-		if(this.mode == kDriveModes.AIM) {
-			return true;
-		}
-
-		return false;
-	}*/
-
-	/*public boolean getTargetLocked() {
-		return targetLocked;
-	}*/
 
 	public double getDriveP() {
 		return driveP;
@@ -937,14 +719,29 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void setDriveP(double p) {
 		driveP = p;
+
+		this.frontLeft.setDrivePID(driveP, driveI, driveD);
+		this.frontRight.setDrivePID(driveP, driveI, driveD);
+		this.rearLeft.setDrivePID(driveP, driveI, driveD);
+		this.rearRight.setDrivePID(driveP, driveI, driveD);
 	}
 
 	public void setDriveI(double i) {
 		driveI = i;
+
+		this.frontLeft.setDrivePID(driveP, driveI, driveD);
+		this.frontRight.setDrivePID(driveP, driveI, driveD);
+		this.rearLeft.setDrivePID(driveP, driveI, driveD);
+		this.rearRight.setDrivePID(driveP, driveI, driveD);
 	}
 
 	public void setDriveD(double d) {
 		driveD = d;
+
+		this.frontLeft.setDrivePID(driveP, driveI, driveD);
+		this.frontRight.setDrivePID(driveP, driveI, driveD);
+		this.rearLeft.setDrivePID(driveP, driveI, driveD);
+		this.rearRight.setDrivePID(driveP, driveI, driveD);
 	}
 
 	public double getTurnP() {
@@ -971,14 +768,64 @@ public class DriveSubsystem extends SubsystemBase {
 		turnD = d;
 	}
 
+	public double getAutoDriveP() {
+		return AutoConstants.PathPLannerConstants.kPPDriveConstants.kP;
+	}
+
+	public double getAutoDriveI() {
+		return AutoConstants.PathPLannerConstants.kPPDriveConstants.kI;
+	}
+
+	public double getAutoDriveD() {
+		return AutoConstants.PathPLannerConstants.kPPDriveConstants.kD;
+	}
+
+	public void CreateAutoBuilder() {
+
+		try {
+
+			RobotConfig config = RobotConfig.fromGUISettings();
+			//PIDConstants kPPDriveConstants = new PIDConstants(autoDriveP, autoDriveI, autoDriveD);
+
+			AutoBuilder.configure(
+				this::getPoseEstimatorPose2d, 
+				this::resetOdometry, 
+				this::getChassisSpeedsRobotRelative,
+				this::setChassisSpeedsRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards 
+				new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+					AutoConstants.PathPLannerConstants.kPPDriveConstants, // Translation PID constants
+					AutoConstants.PathPLannerConstants.kPPTurnConstants // Rotation PID constants
+            	),
+				config, 
+				() -> {
+					// Boolean supplier that controls when the path will be mirrored for the red alliance
+					// This will flip the path being followed to the red side of the field.
+					// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+  
+					var alliance = DriverStation.getAlliance();
+					if (alliance.isPresent()) {
+				  		return alliance.get() == DriverStation.Alliance.Red;
+					}
+					return false;
+			  	}, 
+				  this
+			);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("RobotPreferences");
-        builder.addDoubleProperty("Turn_D", this::getTurnD, this::setTurnP);
+        builder.addDoubleProperty("Turn_D", this::getTurnD, this::setTurnD);
         builder.addDoubleProperty("Turn_I", this::getTurnI, this::setTurnI);
-        builder.addDoubleProperty("Turn_P", this::getTurnP, this::setTurnD);
-        builder.addDoubleProperty("Drive_D", this::getDriveD, this::setDriveP);
+        builder.addDoubleProperty("Turn_P", this::getTurnP, this::setTurnP);
+        builder.addDoubleProperty("Drive_D", this::getDriveD, this::setDriveD);
         builder.addDoubleProperty("Drive_I", this::getDriveI, this::setDriveI);
-        builder.addDoubleProperty("Drive_P", this::getDriveP, this::setDriveD);
+        builder.addDoubleProperty("Drive_P", this::getDriveP, this::setDriveP);
+		builder.addDoubleProperty("Auto_Drive_P", this::getAutoDriveP, null);
+		builder.addDoubleProperty("Auto_Drive_I", this::getAutoDriveI, null);
+		builder.addDoubleProperty("Auto_Drive_D", this::getAutoDriveD, null);
     }
 }

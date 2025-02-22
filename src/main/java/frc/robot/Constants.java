@@ -4,22 +4,13 @@
 
 package frc.robot;
 
-import java.util.Map;
-
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-
 import com.pathplanner.lib.config.PIDConstants;
-//import com.pathplanner.lib.util.PIDConstants;
-
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-//import frc.robot.Tools.AutonomousDetail;
 import frc.robot.tools.parts.PIDGains;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
@@ -44,8 +35,8 @@ public final class Constants {
 	public static boolean kDebugPhotonVision = false;
 
 	// Limelight
-	public static boolean kEnableLimelight = false;
-	public static boolean kDebugLimelight = false;
+	public static boolean kEnableLimelight = true;
+	public static boolean kDebugLimelight = true;
 	
 	// Arm
 	public static boolean kEnableArm = true;
@@ -121,10 +112,10 @@ public final class Constants {
 	public static class DriveConstants {
 		// this sets turning speed (keep this low)
 		public static final double kMaxRPM = 10;
-		public static final double kBumperToBumperWidth = Units.inchesToMeters(32);
+		public static final double kBumperToBumperWidth = Units.inchesToMeters(27);
 
-		public static final double kTrackWidth = Units.inchesToMeters(32); // in meters!
-		public static final double kWheelBase = Units.inchesToMeters(32); // in meters!
+		public static final double kTrackWidth = Units.inchesToMeters(27); // in meters!
+		public static final double kWheelBase = Units.inchesToMeters(27); // in meters!
 
 		public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
 				new Translation2d(kWheelBase / 2, kTrackWidth / 2), // FL
@@ -140,14 +131,6 @@ public final class Constants {
 		public static double kAutoAlignSpeed = 0.05;
 		public static double kAutoAlignTolerance = 1.0;
 		public static double kAutoAlignOffset = 11.0;
-
-		/*public static enum kDriveModes {
-			NORMAL,
-			AIM,
-			LOCK_WHEELS
-		}*/
-
-		//public static final double kChassisAutoAimRotation = 1.9;
 	}
 
 	/**
@@ -180,10 +163,6 @@ public final class Constants {
 	 * The constants pertaining to the drive station
 	 */
 	public static class OperatorConstants {
-		//public static final int kDriveJoystickPort = 0;
-		//public static final int kTurnJoystickPort = 1;
-		//public static final int kOperatorControllerPort = 2;
-		//public static final int kProgrammerControllerPort = 3;
 
 		public static final double KDeadBand = .125;
 		// this is the number that the joystick input will be raised to
@@ -195,12 +174,6 @@ public final class Constants {
 	}
 
 	public static class PhotonVisionConstants {
-
-		//public static final boolean VisionEnabled = true;
-		//public static final boolean PhysicalCamera = false;
-
-		//public static double TagHeight = Units.inchesToMeters(6.5);
-		//public static double TagWidth = Units.inchesToMeters(6.5);
 
 		//public static final PoseStrategy poseStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
 		public static final PoseStrategy poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;

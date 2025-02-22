@@ -83,6 +83,9 @@ public class AutoAlignRightCommand extends Command{
                 // Move left
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
             }
+        } else {
+            // we don't have a target to stop
+            driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
         }
     }
 

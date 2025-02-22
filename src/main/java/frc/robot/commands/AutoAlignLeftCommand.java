@@ -46,8 +46,8 @@ public class AutoAlignLeftCommand extends Command {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);
 
             if(
-                (aprilTagLocation ) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                && (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation ) > (Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                && (aprilTagLocation) < (Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
@@ -75,16 +75,21 @@ public class AutoAlignLeftCommand extends Command {
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
                 }
             } else if(
-                (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation) < (Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // Move right
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+                System.out.println("move right");
             } else if (
-                (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation) > (Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // Move left
                 driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+                System.out.println("move left");
             }
+        } else {
+            // we don't have a target to stop
+            driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
         }
     }
 

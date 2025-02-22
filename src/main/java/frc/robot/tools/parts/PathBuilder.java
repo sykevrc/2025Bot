@@ -20,7 +20,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class PathBuilder {
 
 	private static DriveSubsystem driveSubsystem;
-	private static HashMap<String, List<PathPlannerPath>> pathMap = new HashMap<>();
+	//private static HashMap<String, List<PathPlannerPath>> pathMap = new HashMap<>();
 
 	public PathBuilder() {
 
@@ -57,7 +57,7 @@ public class PathBuilder {
 		}
 	}
 
-	public List<PathPlannerPath> getPathCommand(String path) {
+	/*public List<PathPlannerPath> getPathCommand(String path) {
 		return pathMap.get(path);
 	}
 
@@ -72,5 +72,5 @@ public class PathBuilder {
 
 		// You can also get the starting pose from the auto. Only call this if the auto actually has a starting pose.
 		//Pose2d startingPose = PathPlannerAuto.getStaringPoseFromAutoFile(pathName);
-	}
+	}*/
 }
