@@ -6,6 +6,7 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.commands.autonomous.EjectCoralCommand;
+import frc.robot.mechanisms.LED.LEDStatus;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.DriveSubsystem;
@@ -58,6 +59,9 @@ public class AutoAlignRightCommand extends Command{
                 );
 
                 scg.execute();*/
+
+                // Set the LED to show that it has the target
+                RobotContainer.led1.setStatus(LEDStatus.targetAquired);
                 
                 if(
                     armSubsystem.getDesiredState() == ArmState.CoralL1
@@ -77,15 +81,24 @@ public class AutoAlignRightCommand extends Command{
             ) {
                 // Move right
                 driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+
+                // Set the LED to show that it has the target
+                RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             } else if (
                 (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // Move left
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+
+                // Set the LED to show that it has the target
+                RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             }
         } else {
             // we don't have a target to stop
             driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
+
+            // Set the LED to show that it has the target
+            RobotContainer.led1.setStatus(LEDStatus.targetSearching);
         }
     }
 

@@ -187,6 +187,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
             if(!hasCoral) {
                 // We do not have the coral or algae
                 RobotContainer.led1.setStatus(LEDStatus.ready);
+            } else if(hasCoral && RobotContainer.led1.getStatus() == LEDStatus.targetAquired) { 
+                RobotContainer.led1.setStatus(LEDStatus.targetAquired);
             } else if(hasCoral) {
                 // we have the coral
                 RobotContainer.led1.setStatus(LEDStatus.hasCoral);

@@ -3,32 +3,15 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-
-import java.util.EnumSet;
-import java.util.Map;
-
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -37,7 +20,6 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -64,7 +46,14 @@ public class ArmSubsystem extends SubsystemBase {
     //private SparkClosedLoopController pid = null;
     private SparkMaxConfig config = new SparkMaxConfig();
 
-    private PIDController pidController = new PIDController(0.0, 0.0, 0.0);
+    // need to look into using this
+    private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
+        0.1,
+        0.0, 
+        0.1, 
+        new TrapezoidProfile.Constraints(2, 2),
+        0.02
+    ); 
 
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
@@ -175,37 +164,9 @@ public class ArmSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableArm) {
-            //pid.setReference(targetPosition, ControlType.kPosition);
-            //pid.setReference(targetPosition, ControlType.kMAXMotionPositionControl);
-
-            // Try to do a setReference using a Feed Forward
-            /*pid.setReference(
-                targetPosition,
-                ControlType.kMAXMotionPositionControl,
-                ClosedLoopSlot.kSlot0,
-                armFeedforward.calculate(
-                    Units.degreesToRadians(
-                        (motor.getAbsoluteEncoder().getPosition() * 360)
-                    ),
-                    motor.getAbsoluteEncoder().getVelocity()
-                )
-            );
-            //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
-            */
-
-            //motor.set(pidController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
-
+    
             motor.set(
-                pidController.calculate(
-                    /*armFeedforward.calculate(
-                        Units.degreesToRadians(
-                            (motor.getAbsoluteEncoder().getPosition() * 360)
-                        ),
-                        motor.getAbsoluteEncoder().getVelocity()
-                    )
-                    + */
-                    motor.getAbsoluteEncoder().getPosition(), targetPosition
-                )
+                profiledPIDController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition)
             );
 
             if (isSim) {
@@ -257,9 +218,8 @@ public class ArmSubsystem extends SubsystemBase {
 			PersistMode.kPersistParameters
 		);
 
-        pidController.setPID(p, i, d);
-        pidController.setTolerance(0.05);
-        //MathUtil.clamp(pid.calculate(encoder.getDistance(), setpoint), -0.5, 0.5);
+        profiledPIDController.setPID(p, i, d);
+        profiledPIDController.setTolerance(0.05);
     }
 
     public double getPosition() {
@@ -281,7 +241,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public boolean atTargetPosition() {
-        return pidController.atSetpoint();
+        return profiledPIDController.atSetpoint();
     }
 
     public double getP() {

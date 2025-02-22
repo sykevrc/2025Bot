@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -54,6 +55,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkMax motor2 = null;
     private SparkMaxSim motor2Sim = null;
     private SparkClosedLoopController pid = null;
+    //private ProfiledPIDController profiledPIDController; // need to look into using this
     private SparkMaxConfig config = new SparkMaxConfig();
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;

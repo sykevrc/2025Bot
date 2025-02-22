@@ -121,7 +121,7 @@ public class RobotContainer {
 			operatorController.button(9).whileTrue(new AlgaeFloorCommand());
 			//operatorController.button(9).whileFalse(new StopIntake());
 
-			// Press twice to stop
+			// Press again to stop
 			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
 			//operatorController.button(9).whileFalse(new StopIntake());
 
@@ -143,6 +143,8 @@ public class RobotContainer {
 			));
 
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
+
+			//operatorController.rightTrigger().onTrue(getAutonomousCommand())
 
 			operatorController.rightTrigger().whileTrue(new SequentialCommandGroup(
 				new EjectCoralCommand()//,

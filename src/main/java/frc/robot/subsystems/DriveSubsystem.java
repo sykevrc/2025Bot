@@ -478,8 +478,6 @@ public class DriveSubsystem extends SubsystemBase {
 
 		swerveModuleStatesRobotRelative = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-		//feedForwards.
-
 		// In simulation, the actual navx does not work, so set the value from the chassisSpeeds
 		if(isSim) {
 			int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[4]");
@@ -607,7 +605,9 @@ public class DriveSubsystem extends SubsystemBase {
 				combinedEstimatedPoseArray[5] = limelightMeasurement.pose.getRotation().getDegrees();*/
 
 				//if(!gyro.isMoving() && limelightMeasurement.tagCount >= 1) {
+
 				if(!gyro.isMoving()) {
+					// if we are not moving, reset the odometry to the location from the limelight
 					resetOdometry(limelightMeasurement.pose);
 				}
 			} else {
