@@ -47,8 +47,8 @@ public class AutoAlignRightCommand extends Command{
             //System.out.println("aprilTagLocation: " + aprilTagLocation + " -Constants.DriveConstants.kAutoAlignOffset: " + (-Constants.DriveConstants.kAutoAlignOffset) + "Constants.DriveConstants.kAutoAlignTolerance")
 
             if(
-                (aprilTagLocation ) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                && (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation ) > (Constants.DriveConstants.kAutoAlignRightOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                && (aprilTagLocation) < (Constants.DriveConstants.kAutoAlignRightOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
@@ -79,14 +79,14 @@ public class AutoAlignRightCommand extends Command{
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
                 }
             } else if(
-                (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation) < (Constants.DriveConstants.kAutoAlignRightOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             } else if (
-                (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation) > (Constants.DriveConstants.kAutoAlignRightOffset - Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 

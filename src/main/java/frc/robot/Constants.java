@@ -129,8 +129,11 @@ public final class Constants {
 		public static final double kGyroTurnTolerance = 2;
 
 		public static double kAutoAlignSpeed = 0.05;
-		public static double kAutoAlignTolerance = 5.0;
+		public static double kAutoAlignTolerance = 4;
 		public static double kAutoAlignOffset = 15.0;
+		//public static double kAutoAlignLeftOffset = -16.0;
+		public static double kAutoAlignRightOffset = 25.0;
+
 	}
 
 	/**
@@ -234,7 +237,7 @@ public final class Constants {
 		//public static double CoralHuman = -0.462;
 		public static double CoralHuman = 0.596; // using bore encoder
 		//public static double AlgaeL1 = -0.9;
-		public static double AlgaeL1 = 0.171; // using bore encoder
+		public static double AlgaeL1 = 0.34; // using bore encoder
 		//public static double AlgaeL2 = -0.9;
 		public static double AlgaeL2 = 0.171; // using bore encoder;
 		//public static double AlgaeL3 = -0.9;
@@ -244,7 +247,7 @@ public final class Constants {
 		//public static double AlgaeHuman = -0.9;
 		public static double AlgaeHuman = 0.905; // using bore encoder
 		//public static double AlgaeFloor = -10;
-		public static double AlgaeFloor = 0.49; // using bore encoder
+		public static double AlgaeFloor = 0.4847; // using bore encoder
 
 		public static double Start = 0.55; // using bore encoder
 
@@ -266,12 +269,13 @@ public final class Constants {
 		public static double StoppedMotor1 = 0.0;
 		public static double StoppedMotor2 = 0.0;
 		public static double IntakeAlgaeFloorMotor1 = -0.2;
-		public static double IntakeAlgaeFloorMotor2 = -0.2;
+		public static double IntakeAlgaeFloorMotor2 = 0.2;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;
-		public static double IntakeCoralHumanElementMotor2 = -0.16;
+		public static double IntakeCoralHumanElementMotor2 = -0.10;
 		public static double EjectAlgaeFloorMotor1 = 0.2;
 		public static double EjectAlgaeFloorMotor2 = -0.2;
-		public static double EjectCoralMotor1 = 0.2;
+		public static double EjectCoralMotor1 = 0.4
+		;
 		public static double EjectCoralMotor2 = 0.0;
 		
 		//public static double P = 1.5;
@@ -298,12 +302,12 @@ public final class Constants {
 		//public static double D = 0.02;
 		public static double D = 0.0;
 
-		public static double Start = .595;
+		public static double Start = 1.0;
 		//public static double Start = -0.4;  // Bore encoder testing
 		public static double Stopped = 0.0;
 		//public static double CoralHuman = 5.0;
-		public static double CoralHuman = 4.0;
-		public static double CoralL4 = 11.167;
+		public static double CoralHuman = 4.5;
+		public static double CoralL4 = 14.167;
 		//public static double CoralL3 = 13.45;
 		public static double CoralL3 = .595;
 		public static double CoralL2 = 11.167;
