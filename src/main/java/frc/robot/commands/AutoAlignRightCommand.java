@@ -44,9 +44,11 @@ public class AutoAlignRightCommand extends Command{
         if(limelight.hasTarget()) {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);
 
+            //System.out.println("aprilTagLocation: " + aprilTagLocation + " -Constants.DriveConstants.kAutoAlignOffset: " + (-Constants.DriveConstants.kAutoAlignOffset) + "Constants.DriveConstants.kAutoAlignTolerance")
+
             if(
-                (aprilTagLocation ) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                && (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                (aprilTagLocation ) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                && (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
@@ -79,16 +81,14 @@ public class AutoAlignRightCommand extends Command{
             } else if(
                 (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
-                // Move right
-                driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             } else if (
                 (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
             ) {
-                // Move left
-                driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);

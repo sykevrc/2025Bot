@@ -129,8 +129,8 @@ public final class Constants {
 		public static final double kGyroTurnTolerance = 2;
 
 		public static double kAutoAlignSpeed = 0.05;
-		public static double kAutoAlignTolerance = 1.0;
-		public static double kAutoAlignOffset = 11.0;
+		public static double kAutoAlignTolerance = 5.0;
+		public static double kAutoAlignOffset = 15.0;
 	}
 
 	/**
