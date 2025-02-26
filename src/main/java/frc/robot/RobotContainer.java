@@ -35,8 +35,10 @@ import frc.robot.commands.Coral4Command;
 import frc.robot.commands.CoralHumanCommand;
 import frc.robot.commands.DriveBackwardsCommand;
 import frc.robot.commands.EjectAlgaeCommand;
+import frc.robot.commands.EjectCoralNoCheck;
 import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
+import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
 import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
@@ -81,6 +83,7 @@ public class RobotContainer {
 		
 		// Register commands to be used in Auto
 		NamedCommands.registerCommand("IntakeCoralWait", new IntakeCoralWaitCommand());
+		NamedCommands.registerCommand("IntakeWait", new IntakeCoralWaitCommand());
 		NamedCommands.registerCommand("IntakeNoWait", new IntakeNoWait());
 		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
 		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand());
@@ -90,6 +93,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Coral3Command", new Coral3Command());
 		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
 		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
+		NamedCommands.registerCommand("AutoAlignLeftCommand", new AutoAlignLeftCommand());
+		NamedCommands.registerCommand("AutoAlignRightCommand", new AutoAlignRightCommand());
 
 		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
 
@@ -129,6 +134,8 @@ public class RobotContainer {
 			operatorController.povDown().whileTrue(new Algae1Command());
 			operatorController.povUp().whileTrue(new Algae2Command());
 
+			// Driver to reset field oriented drive
+			driverController.button(8).whileTrue(new ResetPositionCommand());
 
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
@@ -147,7 +154,8 @@ public class RobotContainer {
 			//operatorController.rightTrigger().onTrue(getAutonomousCommand())
 
 			operatorController.rightTrigger().whileTrue(new SequentialCommandGroup(
-				new EjectCoralCommand()//,
+				new EjectCoralNoCheck(0.4)
+				//new EjectCoralCommand()//,
 				//new DriveBackwardsCommand()
 				//new ArmStartCommand(), // this will retract the arm and stop end effector
 				//new StartCommand() // this will retract the arm and move the elevator down
@@ -156,6 +164,11 @@ public class RobotContainer {
 			// Climber Stuff
 			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
 			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
+
+			// Move the end effector wheels freely
+			operatorController.axisGreaterThan(1, 0.2).whileTrue(
+				new EjectCoralNoCheck(operatorController.getRightX())
+			);
 
 			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
 			

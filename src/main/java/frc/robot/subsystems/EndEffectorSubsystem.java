@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.mechanisms.LED.LEDStatus;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
 
 public class EndEffectorSubsystem extends SubsystemBase {
     public enum EndEffectorState {
@@ -38,7 +39,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
         IntakeCoralHumanElement,
         EjectAlgaeFloor,
         EjectCoralFront,
-        EjectCoralBack
+        EjectCoralBack,
+        EjectCoralFrontNoCheck,
+        EjectCoralBackNoCheck
     }
 
     private boolean isSim = false;
@@ -125,6 +128,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
             // the EjectAlgaeFloor has been pressed twice so
             // stop the motors
             state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.EjectCoralFront
+            && this.state == EndEffectorState.EjectCoralFront
+        ) {
+            // The EjectCoralFront was sent twice so stop it
+            state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.EjectCoralBack
+            && this.state == EndEffectorState.EjectCoralBack
+        ) {
+            // The EjectCoralBack was sent twice so stop it
+            state = EndEffectorState.Stopped;
         } else if (this.state == state) {
             // trying to set the state to the state we are already at
             // just returning to save cycles
@@ -153,12 +168,31 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 targetVelocity2 = Constants.EndEffectorConstants.EjectAlgaeFloorMotor2;
                 break;
             case EjectCoralFront:
+
                 System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralFront"));
-                targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
-                targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
+
+                if(RobotContainer.armSubsystem.getDesiredState() == ArmState.CoralL1) {
+                    // If we are trying to eject out for a Coral L1, slow it down
+                    targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1Slow;
+                    targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2Slow;
+                } else {
+                    // we are not trying to eject to Coral L1 so go the requested speed
+                    targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
+                    targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
+                }
                 break;
             case EjectCoralBack:
                 System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralBack"));
+                targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
+                targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
+                break;
+            case EjectCoralFrontNoCheck:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - MoveWheels"));
+                targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
+                targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
+                break;
+            case EjectCoralBackNoCheck:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - MoveWheels"));
                 targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
                 targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
                 break;
@@ -244,6 +278,14 @@ public class EndEffectorSubsystem extends SubsystemBase {
                         motor.set(0.0);
                         motor2.set(0.0);
                     }
+                    break;
+                case EjectCoralFrontNoCheck:
+                    motor2.set(targetVelocity1);
+                    motor.set(targetVelocity2);
+                    break;
+                case EjectCoralBackNoCheck:
+                    motor2.set(targetVelocity1);
+                    motor.set(targetVelocity2);
                     break;
                 case Stopped:
                     // stop the motors

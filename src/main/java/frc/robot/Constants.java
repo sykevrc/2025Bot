@@ -129,10 +129,14 @@ public final class Constants {
 		public static final double kGyroTurnTolerance = 2;
 
 		public static double kAutoAlignSpeed = 0.05;
-		public static double kAutoAlignTolerance = 4;
+		public static double kAutoAlignTolerance = 4.0;
 		public static double kAutoAlignOffset = 15.0;
 		//public static double kAutoAlignLeftOffset = -16.0;
 		public static double kAutoAlignRightOffset = 25.0;
+
+		// These are to measure the distnace to the target
+		public static double kAutoAlignLeftYOffset = 5.0;
+		public static double kAutoAlignLeftYTolerance = 4.0;
 
 	}
 
@@ -229,7 +233,7 @@ public final class Constants {
 		//public static double CoralL4 = -0.9;
 		public static double CoralL4 = 0.171; // using bore encoder
 		//public static double CoralL3 = -2.738;
-		public static double CoralL3 = 0.171; // using bore encoder
+		public static double CoralL3 = 0.14; // using bore encoder
 		//public static double CoralL2 = -0.9;
 		public static double CoralL2 = 0.55; // using bore encoder
 		//public static double CoralL1 = -10.0;
@@ -239,7 +243,7 @@ public final class Constants {
 		//public static double AlgaeL1 = -0.9;
 		public static double AlgaeL1 = 0.34; // using bore encoder
 		//public static double AlgaeL2 = -0.9;
-		public static double AlgaeL2 = 0.171; // using bore encoder;
+		public static double AlgaeL2 = 0.245; // using bore encoder;
 		//public static double AlgaeL3 = -0.9;
 		public static double AlgaeL3 = 0.171; // using bore encoder;
 		//public static double AlgaeShoot = -0.9;
@@ -247,7 +251,7 @@ public final class Constants {
 		//public static double AlgaeHuman = -0.9;
 		public static double AlgaeHuman = 0.905; // using bore encoder
 		//public static double AlgaeFloor = -10;
-		public static double AlgaeFloor = 0.4847; // using bore encoder
+		public static double AlgaeFloor = 0.49; // using bore encoder
 
 		public static double Start = 0.55; // using bore encoder
 
@@ -268,15 +272,16 @@ public final class Constants {
 	public static class EndEffectorConstants {
 		public static double StoppedMotor1 = 0.0;
 		public static double StoppedMotor2 = 0.0;
-		public static double IntakeAlgaeFloorMotor1 = -0.2;
-		public static double IntakeAlgaeFloorMotor2 = 0.2;
+		public static double IntakeAlgaeFloorMotor1 = -0.15;
+		public static double IntakeAlgaeFloorMotor2 = -0.15;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;
-		public static double IntakeCoralHumanElementMotor2 = -0.10;
+		public static double IntakeCoralHumanElementMotor2 = -0.15;
 		public static double EjectAlgaeFloorMotor1 = 0.2;
-		public static double EjectAlgaeFloorMotor2 = -0.2;
-		public static double EjectCoralMotor1 = 0.4
-		;
+		public static double EjectAlgaeFloorMotor2 = 0.2;
+		public static double EjectCoralMotor1 = 0.4;
 		public static double EjectCoralMotor2 = 0.0;
+		public static double EjectCoralMotor1Slow = 0.2;
+		public static double EjectCoralMotor2Slow = 0.0;
 		
 		//public static double P = 1.5;
 		public static double P = 1.0;
