@@ -116,7 +116,7 @@ public class RobotContainer {
 			// Real, not a simulation
 
 			// Coral stuck on battery command - repeat command if coral is still stuck.
-			// driverController.button().whileTrue(new FailsafeCoralCommand());
+			driverController.button(2).whileTrue(new FailsafeCoralCommand());
 			
 			// Coral Commands
 			operatorController.button(3).whileTrue(new Coral1Command());

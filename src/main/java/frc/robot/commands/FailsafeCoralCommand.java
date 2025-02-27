@@ -6,11 +6,16 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.EndEffectorConstants;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
+import frc.robot.subsystems.ElevatorSubsystem.setElevatorState;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+
 
 /** An example command that uses an example subsystem. */
 public class FailsafeCoralCommand extends Command {
@@ -38,11 +43,11 @@ public class FailsafeCoralCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.setArmPosition(Constants.CoralHuman);
-    if (armSubsystem.getArmPosition() == Constants.CoralHuman) {
+    arm.setArmPosition(Constants.CoralHuman);
+    if (arm.getArmPosition() == Constants.CoralHuman) {
       elevator.setElevatorState(ElevatorSubsystem.ElevatorState.Start);
-      endEffectorSubsystem.setEndEffectorState(EndEffectorSubsystem.EndEffectorState.Intake);
-      armSubsystem.setArmState(ArmSubsystem.ArmState.ClearCoral);
+      endEffector.setEndEffectorState(EndEffectorSubsystem.EndEffectorState.Intake);
+      arm.setArmState(ArmSubsystem.ArmState.ClearCoral);
     
     }
     

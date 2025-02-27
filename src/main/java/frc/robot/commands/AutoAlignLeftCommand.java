@@ -48,24 +48,11 @@ public class AutoAlignLeftCommand extends Command {
 
         if(limelight.hasTarget()) {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
-
-            if(
-                //(aprilTagLocation ) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                //&& (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                //(-aprilTagLocation) > 23.5 && (-aprilTagLocation) < 26.5
-                Constants.DriveConstants.kAutoAlignLeftRight < (-aprilTagLocation) &&  (-aprilTagLocation) < Constants.DriveConstants.kAutoAlignLeftLeft
-            ) {
+            int error = (int) (aprilTagLocation - Constants.DriveConstants.kAutoAlignLeftLeft);
+            double kP = 0.005;
+            if(Math.abs(error) <Constants.DriveConstants.kAutoAlignOffset) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
-
-                /*SequentialCommandGroup scg = new SequentialCommandGroup(
-                    new EjectCoralCommand(),
-                    new DriveBackwardsCommand(),
-                    new ArmStartCommand()
-
-                );
-
-                scg.execute();*/
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetAquired);
@@ -85,47 +72,12 @@ public class AutoAlignLeftCommand extends Command {
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
                     //finished = true;
                 }
-            } else if(
-                //(aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation > Constants.DriveConstants.kAutoAlignLeftLeft)
-            ) {
-                driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
-
-                // Set the LED to show that it has the target
-                RobotContainer.led1.setStatus(LEDStatus.targetSearching);
-            } else if (
-                //(aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation < Constants.DriveConstants.kAutoAlignLeftLeft)
-            ) {
-                driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
+            } else {
+                driveSubsystem.driveRobotRelative(0.0, error*kP, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             }
-
-            // align in the y axis
-            // aprilTagLocationY = LimelightHelpers.getTY(Constants.LimelightConstants.name);
-            // if(
-            //     (aprilTagLocationY ) > (-Constants.DriveConstants.kAutoAlignLeftYOffset - Constants.DriveConstants.kAutoAlignLeftYTolerance)
-            //     && (aprilTagLocationY) < (-Constants.DriveConstants.kAutoAlignLeftYOffset + Constants.DriveConstants.kAutoAlignLeftYTolerance)
-            // ) {
-            //     System.out.println("AutoAlignLeftCommand::execute() - we are at the correct distance");
-            //     // we are now in the correct distance
-            //     //driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
-            //     /*if(
-            //         armSubsystem.getDesiredState() == ArmState.CoralL1
-            //         || armSubsystem.getDesiredState() == ArmState.CoralL2
-            //     ) {
-            //         // We are in a CoralL1 or CoralL2 position, eject out the front
-            //         endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            //     } else if(
-            //         armSubsystem.getDesiredState() == ArmState.CoralL3
-            //         || armSubsystem.getDesiredState() == ArmState.CoralL4
-            //     ) {
-            //         // We are in a CoralL3 or CoralL4 position, eject out the back
-            //         endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            //     }*/
-            // }
         } else {
             // we don't have a target to stop
             driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
