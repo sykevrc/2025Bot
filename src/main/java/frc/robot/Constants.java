@@ -128,11 +128,17 @@ public final class Constants {
 		public static final double kMaxTurningAcceleratonDegrees = 10;
 		public static final double kGyroTurnTolerance = 2;
 
-		public static double kAutoAlignSpeed = 0.05;
+		public static double kAutoAlignSpeed = 0.02;
 		public static double kAutoAlignTolerance = 4.0;
 		public static double kAutoAlignOffset = 15.0;
 		//public static double kAutoAlignLeftOffset = -16.0;
 		public static double kAutoAlignRightOffset = 25.0;
+
+		public static double kAutoAlignLeftLeft = 19.0;
+		public static double kAutoAlignLeftRight = 15.0;
+
+		public static double kAutoAlignRightLeft = 0.0;
+		public static double kAutoAlignRightRight = 0.0;
 
 		// These are to measure the distnace to the target
 		public static double kAutoAlignLeftYOffset = 25.0;
