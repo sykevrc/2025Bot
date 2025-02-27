@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Auto 1 Path 1"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Coral1Command",
-      "waypointRelativePos": 0.6941617398648652,
+      "waypointRelativePos": 0.19873310810810807,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

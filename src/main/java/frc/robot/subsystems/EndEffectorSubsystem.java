@@ -140,6 +140,18 @@ public class EndEffectorSubsystem extends SubsystemBase {
         ) {
             // The EjectCoralBack was sent twice so stop it
             state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.EjectCoralFrontNoCheck
+            && this.state == EndEffectorState.EjectCoralFrontNoCheck
+        ) {
+            // The EjectCoralFront was sent twice so stop it
+            state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.EjectCoralBackNoCheck
+            && this.state == EndEffectorState.EjectCoralBackNoCheck
+        ) {
+            // The EjectCoralFront was sent twice so stop it
+            state = EndEffectorState.Stopped;
         } else if (this.state == state) {
             // trying to set the state to the state we are already at
             // just returning to save cycles
@@ -298,6 +310,20 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     //motor2.set(targetVelocity2);
                     break;
             }
+        }
+
+        if(isSim) {
+            this.motorSim.iterate(
+				targetVelocity1,
+        		RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+        		0.02
+			);
+
+            this.motor2Sim.iterate(
+				targetVelocity2,
+        		RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+        		0.02
+			);
         }
     }
 
