@@ -1,23 +1,18 @@
-package frc.robot.commands;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.mechanisms.LED.LEDStatus;
-import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.tools.Limelight;
 
-public class AutoAlignLeftCommand extends Command {
-
+public class AutoAlignLeftAutoCommand extends Command {
     private DriveSubsystem driveSubsystem;
     private EndEffectorSubsystem endEffectorSubsystem;
     private ArmSubsystem armSubsystem;
@@ -26,7 +21,7 @@ public class AutoAlignLeftCommand extends Command {
     private double aprilTagLocation = 0.0;
     private double aprilTagLocationY = 0.0;
 
-    public AutoAlignLeftCommand() {
+    public AutoAlignLeftAutoCommand() {
         this.driveSubsystem = RobotContainer.driveSubsystem;
         this.endEffectorSubsystem = RobotContainer.endEffectorSubsystem;
         this.limelight = RobotContainer.limelight;
@@ -39,7 +34,8 @@ public class AutoAlignLeftCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        finished = false;
+        System.out.println("AutoAlignLeftAutoCommand::initialize() called");
+        finished = true;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -50,10 +46,11 @@ public class AutoAlignLeftCommand extends Command {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
 
             if(
-                //(aprilTagLocation ) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                //&& (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                //(-aprilTagLocation) > 23.5 && (-aprilTagLocation) < 26.5
-                19 < (-aprilTagLocation) &&  (-aprilTagLocation) < 24
+                 //14 > 20 - 3
+                 //14 < 20 + 3
+                //(-aprilTagLocation ) > (Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
+                //&& (-aprilTagLocation) < (Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
+                (-aprilTagLocation) > 13 && (-aprilTagLocation) < 15
             ) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
@@ -76,26 +73,24 @@ public class AutoAlignLeftCommand extends Command {
                 ) {
                     // We are in a CoralL1 or CoralL2 position, eject out the front
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-                    //finished = true;
+                    finished = true;
                 } else if(
                     armSubsystem.getDesiredState() == ArmState.CoralL3
                     || armSubsystem.getDesiredState() == ArmState.CoralL4
                 ) {
                     // We are in a CoralL3 or CoralL4 position, eject out the back
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-                    //finished = true;
+                    finished = true;
                 }
             } else if(
-                //(aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation > 19)
+                (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             } else if (
-                //(aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation < 24)
+                (aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
@@ -142,6 +137,7 @@ public class AutoAlignLeftCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+        System.out.println("AutoAlignLeftAutoCommand::isFinished() called");
         return finished;
     }
 }

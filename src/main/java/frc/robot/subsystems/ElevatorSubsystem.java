@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -55,7 +56,13 @@ public class ElevatorSubsystem extends SubsystemBase {
     private SparkMax motor2 = null;
     private SparkMaxSim motor2Sim = null;
     private SparkClosedLoopController pid = null;
-    //private ProfiledPIDController profiledPIDController; // need to look into using this
+    /*private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
+        0.1,
+        0.0, 
+        0.1, 
+        new TrapezoidProfile.Constraints(2, 2),
+        0.02
+    );*/ 
     private SparkMaxConfig config = new SparkMaxConfig();
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;
@@ -88,6 +95,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             setConfig();
 
             pid = motor.getClosedLoopController();
+
+            
 
             if (Constants.kEnableDebugElevator) {
 
@@ -190,6 +199,10 @@ public class ElevatorSubsystem extends SubsystemBase {
                 )
             );*/
 
+            /*motor.set(
+                profiledPIDController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition)
+            );*/
+
 
             if (isSim) {
                 motorSim.iterate(
@@ -256,6 +269,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             ResetMode.kResetSafeParameters, 
             PersistMode.kPersistParameters
         );
+
+        /*profiledPIDController.setPID(p, i, d);
+        profiledPIDController.setTolerance(0.05);*/
     }
 
     public double getPosition() {
@@ -318,6 +334,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public int getRevolutions() {
         return this.revolutionCount;
     }
+
+    /*public boolean atTargetPosition() {
+        return profiledPIDController.atSetpoint();
+    }*/
 
     @Override
     public void initSendable(SendableBuilder builder) {
