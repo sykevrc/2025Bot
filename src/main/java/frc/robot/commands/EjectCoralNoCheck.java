@@ -43,6 +43,8 @@ public class EjectCoralNoCheck extends Command {
         } else if(armState == ArmState.CoralL4) {
             this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBackNoCheck);
             //endEffectorSubsystem.setTargetVelocity1(-1.0);
+        } else if(armState == ArmState.Start) {
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFrontNoCheck);
         }
 
         //endEffectorSubsystem.setTargetVelocity1(1.0);

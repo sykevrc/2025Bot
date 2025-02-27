@@ -53,7 +53,7 @@ public class AutoAlignLeftCommand extends Command {
                 //(aprilTagLocation ) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
                 //&& (aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
                 //(-aprilTagLocation) > 23.5 && (-aprilTagLocation) < 26.5
-                19 < (-aprilTagLocation) &&  (-aprilTagLocation) < 24
+                Constants.DriveConstants.kAutoAlignLeftRight < (-aprilTagLocation) &&  (-aprilTagLocation) < Constants.DriveConstants.kAutoAlignLeftLeft
             ) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
@@ -87,7 +87,7 @@ public class AutoAlignLeftCommand extends Command {
                 }
             } else if(
                 //(aprilTagLocation) < (-Constants.DriveConstants.kAutoAlignOffset + Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation > 19)
+                (-aprilTagLocation > Constants.DriveConstants.kAutoAlignLeftLeft)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, -Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 
@@ -95,7 +95,7 @@ public class AutoAlignLeftCommand extends Command {
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
             } else if (
                 //(aprilTagLocation) > (-Constants.DriveConstants.kAutoAlignOffset - Constants.DriveConstants.kAutoAlignTolerance)
-                (-aprilTagLocation < 24)
+                (-aprilTagLocation < Constants.DriveConstants.kAutoAlignLeftLeft)
             ) {
                 driveSubsystem.driveRobotRelative(0.0, Constants.DriveConstants.kAutoAlignSpeed, 0.0);
 

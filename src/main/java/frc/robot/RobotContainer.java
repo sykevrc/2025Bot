@@ -195,7 +195,10 @@ public class RobotContainer {
 
 			// This is for simulation
 			
-			driverController.button(1).whileTrue(new AutoAlignRightCommand());
+			//driverController.button(1).whileTrue(new AutoAlignRightCommand());
+			driverController.button(1).whileTrue(
+				new EjectCoralNoCheck(0.0)
+			);
 			
 			// Swerve Drive method is set as default for drive subsystem
 			driveSubsystem.setDefaultCommand(

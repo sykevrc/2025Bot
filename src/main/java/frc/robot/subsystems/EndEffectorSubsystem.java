@@ -189,12 +189,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
                 break;
             case EjectCoralFrontNoCheck:
-                System.out.println(("EndEffectorSubsystem::setDesiredState() - MoveWheels"));
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralFrontNoCheck"));
                 targetVelocity1 = Constants.EndEffectorConstants.EjectCoralMotor1;
                 targetVelocity2 = Constants.EndEffectorConstants.EjectCoralMotor2;
                 break;
             case EjectCoralBackNoCheck:
-                System.out.println(("EndEffectorSubsystem::setDesiredState() - MoveWheels"));
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralBackNoCheck"));
                 targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
                 targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
                 break;
@@ -259,27 +259,27 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     //hasAlgae = false;
                     break;
                 case EjectCoralFront:
-                    if(hasCoral) {
+                    //if(hasCoral) {
                         // we have the coral so eject it
                         motor2.set(targetVelocity1);
                         motor.set(targetVelocity2);
-                    } else {
+                    /* } else {
                         // we don't have the coral so stop the motors
                         motor.set(0.0);
                         motor2.set(0.0);
-                    }
+                    }*/
                     break;
                 case EjectCoralBack:
-                    if(hasCoral) {
+                    //if(hasCoral) {
                         //System.out.println("ejecting the back");
                         // we have the coral so eject it
                         motor2.set(targetVelocity1);
                         motor.set(targetVelocity2);
-                    } else {
+                    /* } else {
                         // we don't have the coral so stop the motors
                         motor.set(0.0);
                         motor2.set(0.0);
-                    }
+                    }*/
                     break;
                 case EjectCoralFrontNoCheck:
                     motor2.set(targetVelocity1);
