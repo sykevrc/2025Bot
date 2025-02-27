@@ -11,7 +11,9 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
-import frc.robot.subsystems.ElevatorSubsystem.setElevatorState;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -37,17 +39,17 @@ public class FailsafeCoralCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    elevator.setElevatorState(ElevatorSubsystem.ElevatorState.CoralL2);
+    elevator.setDesiredState(ElevatorSubsystem.ElevatorState.CoralL2);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setArmPosition(Constants.CoralHuman);
-    if (arm.getArmPosition() == Constants.CoralHuman) {
-      elevator.setElevatorState(ElevatorSubsystem.ElevatorState.Start);
-      endEffector.setEndEffectorState(EndEffectorSubsystem.EndEffectorState.Intake);
-      arm.setArmState(ArmSubsystem.ArmState.ClearCoral);
+    arm.setDesiredState(ArmState.CoralHuman);
+    if (arm.atTargetPosition()) {
+      elevator.setDesiredState(ElevatorState.Start);      
+      endEffector.setDesiredState(EndEffectorState.EjectCoralFrontNoCheck);
+      arm.setDesiredState(ArmState.ClearCoral);
     
     }
     
@@ -60,7 +62,7 @@ public class FailsafeCoralCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (armSubsystem.getArmState() == ArmSubsystem.ArmState.ClearCoral) {
+    if (arm.atTargetPosition()) {
       return true;
     }
     
