@@ -31,17 +31,17 @@ public class EjectCoralNoCheck extends Command {
         ArmState armState = armSubsystem.getDesiredState();
 
         if(armState == ArmState.CoralL1) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            endEffectorSubsystem.setTargetVelocity1(speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+            // endEffectorSubsystem.setTargetVelocity1(speed);
         } else if(armState == ArmState.CoralL2) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            endEffectorSubsystem.setTargetVelocity1(speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+            // endEffectorSubsystem.setTargetVelocity1(speed);
         } else if(armState == ArmState.CoralL3) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            endEffectorSubsystem.setTargetVelocity1(-speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+            // endEffectorSubsystem.setTargetVelocity1(-speed);
         } else if(armState == ArmState.CoralL4) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            endEffectorSubsystem.setTargetVelocity1(-speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+            // endEffectorSubsystem.setTargetVelocity1(-speed);
         }
         
         finished = true;

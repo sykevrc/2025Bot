@@ -38,6 +38,7 @@ import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralNoCheck;
 import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.IntakeNoWait;
+import frc.robot.commands.FailsafeCoralCommand;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.autonomous.DelayCommand;
 import frc.robot.commands.autonomous.EjectCoralCommand;
@@ -112,6 +113,9 @@ public class RobotContainer {
 		if(RobotBase.isReal()) {
 			// Real, not a simulation
 
+			// Coral stuck on battery command - repeat command if coral is still stuck.
+			// driverController.button().whileTrue(new FailsafeCoralCommand());
+			
 			// Coral Commands
 			operatorController.button(3).whileTrue(new Coral1Command());
 			operatorController.button(4).whileTrue(new Coral2Command());

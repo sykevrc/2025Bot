@@ -257,7 +257,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     //hasAlgae = false;
                     break;
                 case EjectCoralFront:
-                    if(hasCoral) {
+                    if(hasCoral  ||  RobotContainer.operatorController.rightTrigger()) { {
                         // we have the coral so eject it
                         motor2.set(targetVelocity1);
                         motor.set(targetVelocity2);
@@ -268,7 +268,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     }
                     break;
                 case EjectCoralBack:
-                    if(hasCoral) {
+                    if(hasCoral  ||  RobotContainer.operatorController.rightTrigger()) {
                         //System.out.println("ejecting the back");
                         // we have the coral so eject it
                         motor2.set(targetVelocity1);
