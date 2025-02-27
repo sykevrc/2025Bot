@@ -35,7 +35,9 @@ public class AutoAlignRightCommand extends Command{
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+        finished = false;
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
@@ -71,12 +73,14 @@ public class AutoAlignRightCommand extends Command{
                 ) {
                     // We are in a CoralL1 or CoralL2 position, eject out the front
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+                    //finished = true;
                 } else if(
                     armSubsystem.getDesiredState() == ArmState.CoralL3
                     || armSubsystem.getDesiredState() == ArmState.CoralL4
                 ) {
                     // We are in a CoralL3 or CoralL4 position, eject out the back
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+                    //finished = true;
                 }
             } else if(
                 (aprilTagLocation) < (Constants.DriveConstants.kAutoAlignRightOffset + Constants.DriveConstants.kAutoAlignTolerance)

@@ -135,7 +135,7 @@ public final class Constants {
 		public static double kAutoAlignRightOffset = 25.0;
 
 		// These are to measure the distnace to the target
-		public static double kAutoAlignLeftYOffset = 5.0;
+		public static double kAutoAlignLeftYOffset = 25.0;
 		public static double kAutoAlignLeftYTolerance = 4.0;
 
 	}
@@ -273,12 +273,12 @@ public final class Constants {
 		public static double StoppedMotor1 = 0.0;
 		public static double StoppedMotor2 = 0.0;
 		public static double IntakeAlgaeFloorMotor1 = -0.15;
-		public static double IntakeAlgaeFloorMotor2 = -0.15;
+		public static double IntakeAlgaeFloorMotor2 = -0.2;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;
-		public static double IntakeCoralHumanElementMotor2 = -0.15;
+		public static double IntakeCoralHumanElementMotor2 = -0.25;
 		public static double EjectAlgaeFloorMotor1 = 0.2;
 		public static double EjectAlgaeFloorMotor2 = 0.2;
-		public static double EjectCoralMotor1 = 0.4;
+		public static double EjectCoralMotor1 = 0.5;
 		public static double EjectCoralMotor2 = 0.0;
 		public static double EjectCoralMotor1Slow = 0.2;
 		public static double EjectCoralMotor2Slow = 0.0;

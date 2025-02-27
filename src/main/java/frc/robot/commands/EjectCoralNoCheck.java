@@ -24,6 +24,7 @@ public class EjectCoralNoCheck extends Command {
     @Override
     public void initialize() {
         finished = false;
+        System.out.println("EjectCoralNoCheck::initialize() called");
     }
 
     @Override
@@ -31,20 +32,22 @@ public class EjectCoralNoCheck extends Command {
         ArmState armState = armSubsystem.getDesiredState();
 
         if(armState == ArmState.CoralL1) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            endEffectorSubsystem.setTargetVelocity1(speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFrontNoCheck);
+            //endEffectorSubsystem.setTargetVelocity1(1.0);
         } else if(armState == ArmState.CoralL2) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            endEffectorSubsystem.setTargetVelocity1(speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFrontNoCheck);
+            //endEffectorSubsystem.setTargetVelocity1(1.0);
         } else if(armState == ArmState.CoralL3) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            endEffectorSubsystem.setTargetVelocity1(-speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBackNoCheck);
+            //endEffectorSubsystem.setTargetVelocity1(-1.0);
         } else if(armState == ArmState.CoralL4) {
-            //this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            endEffectorSubsystem.setTargetVelocity1(-speed);
+            this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBackNoCheck);
+            //endEffectorSubsystem.setTargetVelocity1(-1.0);
         }
+
+        //endEffectorSubsystem.setTargetVelocity1(1.0);
         
-        finished = true;
+        //finished = true;
     }
 
     @Override
@@ -54,6 +57,7 @@ public class EjectCoralNoCheck extends Command {
 
     @Override
     public boolean isFinished() {
-        return finished;
+        //System.out.println("EjectCoralNoCheck::isFinished() called");
+        return true;
     }
 }
