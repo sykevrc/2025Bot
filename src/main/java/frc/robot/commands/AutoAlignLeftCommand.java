@@ -45,12 +45,12 @@ public class AutoAlignLeftCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
         if(limelight.hasTarget()) {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
-            int error = (int) (aprilTagLocation - Constants.DriveConstants.kAutoAlignLeftLeft);
+            int error = (int) (-19 - aprilTagLocation);
             double kP = 0.005;
-            if(Math.abs(error) <Constants.DriveConstants.kAutoAlignOffset) {
+
+            if(Math.abs(error) <4) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 
@@ -73,7 +73,7 @@ public class AutoAlignLeftCommand extends Command {
                     //finished = true;
                 }
             } else {
-                driveSubsystem.driveRobotRelative(0.0, error*kP, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, -error*kP, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
@@ -85,6 +85,7 @@ public class AutoAlignLeftCommand extends Command {
             // Set the LED to show that it has the target
             RobotContainer.led1.setStatus(LEDStatus.targetSearching);
         }
+    
     }
 
     // Called once the command ends or is interrupted.
@@ -97,3 +98,4 @@ public class AutoAlignLeftCommand extends Command {
         return finished;
     }
 }
+
