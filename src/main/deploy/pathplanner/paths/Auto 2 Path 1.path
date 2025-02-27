@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5847394808070865,
-        "y": 0.7924035740649618
+        "x": 7.560772330216536,
+        "y": 1.9372668553149606
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.584739480807085,
-        "y": 0.7924035740649619
+        "x": 6.943348302165354,
+        "y": 1.9237718380905513
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.920518423966535,
-        "y": 2.734390532726378
+        "x": 5.354660894438976,
+        "y": 2.920513810285432
       },
       "prevControl": {
-        "x": 4.397648252952759,
-        "y": 1.1893730007381897
+        "x": 5.865744186761811,
+        "y": 2.652934608759842
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Auto 2 Path 1"
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Coral4Command",
-      "waypointRelativePos": 0.9640730574324323,
+      "name": "Coral2Command",
+      "waypointRelativePos": 0.2879011824324326,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Coral4Command"
+          "name": "Coral2Command"
         }
       }
     }
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.10087105642722
+    "rotation": 120.2454601345606
   },
   "reversed": false,
   "folder": "Auto 2 Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 179.3779791567017
   },
   "useDefaultConstraints": true
 }
