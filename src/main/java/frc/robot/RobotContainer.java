@@ -155,8 +155,8 @@ public class RobotContainer {
 
 			//operatorController.rightTrigger().onTrue(getAutonomousCommand())
 
-			operatorController.rightTrigger().onTrue(//new SequentialCommandGroup(
-				new EjectCoralNoCheck(0.4)
+			operatorController.rightTrigger().whileTrue(//new SequentialCommandGroup(
+				new EjectCoralNoCheck(0.6)
 				//new EjectCoralCommand()//,
 				//new DriveBackwardsCommand()
 				//new ArmStartCommand(), // this will retract the arm and stop end effector
@@ -169,9 +169,9 @@ public class RobotContainer {
 			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
 
 			// Move the end effector wheels freely
-			operatorController.axisGreaterThan(1, 0.2).whileTrue(
+			/*operatorController.axisGreaterThan(1, 0.2).whileTrue(
 				new EjectCoralNoCheck(operatorController.getRightX())
-			);
+			);*/
 
 			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
 			
