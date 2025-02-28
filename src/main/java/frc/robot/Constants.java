@@ -236,6 +236,8 @@ public final class Constants {
 	}
 
 	public static class ArmConstants {
+		// how high the arm goes to clear a stuck coral on the battery
+		public static double ClearCoral = .30; 
 		//public static double CoralL4 = -0.9;
 		public static double CoralL4 = 0.171; // using bore encoder
 		//public static double CoralL3 = -2.738;
