@@ -37,6 +37,8 @@ import frc.robot.commands.DriveBackwardsCommand;
 import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralNoCheck;
 import frc.robot.commands.EjectCoralReverse;
+import frc.robot.commands.ElevatorStartCommand;
+import frc.robot.commands.EndEffectorStopCommand;
 import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.autonomous.AutoAlignLeftAutoCommand;
@@ -48,6 +50,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
@@ -126,11 +129,13 @@ public class RobotContainer {
 			// Algae Commands
 			// This is for the floor algae, press again to stop
 			operatorController.button(9).whileTrue(new AlgaeFloorCommand());
-			//operatorController.button(9).whileFalse(new StopIntake());
 
 			// Press again to stop
 			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
-			//operatorController.button(9).whileFalse(new StopIntake());
+
+			/*operatorController.leftTrigger().whileTrue(new SequentialCommandGroup(
+				new ArmStartCommand()
+			));*/
 
 			// these are to get the algae off of the reef
 			operatorController.povDown().whileTrue(new Algae1Command());
@@ -139,16 +144,16 @@ public class RobotContainer {
 			// Driver to reset field oriented drive
 			driverController.button(8).whileTrue(new ResetPositionCommand());
 
+			// Auto align for the coral
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
 			//driverController.button(3).whileTrue(new StartCommand());
 			operatorController.button(1).whileTrue(new SequentialCommandGroup(
-				//new RunCommand(() -> armSubsystem.setDesiredState(ArmState.Start)),
+				new EndEffectorStopCommand(),
 				new ArmStartCommand(),
-				//new RunCommand(() -> new DelayCommand(OptionalLong.of(500))),
-				//new WaitCommand(1.0),
-				new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
+				//new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
+				new ElevatorStartCommand()
 			));
 
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
@@ -197,7 +202,14 @@ public class RobotContainer {
 			
 			//driverController.button(1).whileTrue(new AutoAlignRightCommand());
 			driverController.button(1).whileTrue(
-				new EjectCoralNoCheck(0.0)
+				//new EjectCoralNoCheck(0.0)
+				//new Algae1Command()
+				new SequentialCommandGroup(
+					//new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeHoldAlgae)),
+					new EndEffectorStopCommand(),
+					new ArmStartCommand(),
+					new ElevatorStartCommand()
+				)
 			);
 			
 			// Swerve Drive method is set as default for drive subsystem

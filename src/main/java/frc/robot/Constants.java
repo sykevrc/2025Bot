@@ -278,6 +278,8 @@ public final class Constants {
 	public static class EndEffectorConstants {
 		public static double StoppedMotor1 = 0.0;
 		public static double StoppedMotor2 = 0.0;
+		public static double IntakeHoldAlgaeMotor1 = -0.1;
+		public static double IntakeHoldAlgaeMotor2 = -0.1;
 		public static double IntakeAlgaeFloorMotor1 = -0.15;
 		public static double IntakeAlgaeFloorMotor2 = -0.2;
 		public static double IntakeCoralHumanElementMotor1 = 0.0;

@@ -304,6 +304,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         this.targetPosition = targetPosition;
     }
 
+    public boolean atTargetPosition() {
+        // return true if we are just about at the target position
+        return Math.abs(targetPosition - currentPosition) < 0.05;
+    }
+
     public double getP() {
         return this.p;
     }
@@ -349,6 +354,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("P", this::getP, this::setP);
         builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
         builder.addDoubleProperty("Position", this::getPosition,null);
+        builder.addBooleanProperty("At Target Position", this::atTargetPosition,null);
         builder.addDoubleProperty("Revolutions", this::getRevolutions,null);
     }
 }

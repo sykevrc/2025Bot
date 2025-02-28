@@ -35,7 +35,7 @@ public class ArmStartCommand extends Command {
     @Override
     public void execute() {
         armSubsystem.setDesiredState(ArmState.Start);
-        endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
+        //endEffectorSubsystem.setDesiredState(EndEffectorState.Stopped);
     }
 
     // Called once the command ends or is interrupted.

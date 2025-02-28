@@ -13,6 +13,7 @@ public class Algae2Command extends Command {
     ElevatorSubsystem elevatorSubsystem;
     ArmSubsystem armSubsystem;
     EndEffectorSubsystem endEffectorSubsystem;
+    EndEffectorState state = EndEffectorState.IntakeAlgaeFloor;
 
   public Algae2Command() {
       this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
@@ -26,14 +27,19 @@ public class Algae2Command extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if(endEffectorSubsystem.getState() == EndEffectorState.IntakeAlgaeFloor) {
+      state = EndEffectorState.IntakeHoldAlgae;
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     elevatorSubsystem.setDesiredState(ElevatorState.AlgaeL2);
     armSubsystem.setDesiredState(ArmState.AlgaeL2);
-    endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+    //endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+    endEffectorSubsystem.setDesiredState(state);
   }
 
   // Called once the command ends or is interrupted.

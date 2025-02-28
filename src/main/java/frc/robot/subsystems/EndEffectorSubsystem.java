@@ -35,6 +35,7 @@ import frc.robot.subsystems.ArmSubsystem.ArmState;
 public class EndEffectorSubsystem extends SubsystemBase {
     public enum EndEffectorState {
         Stopped,
+        IntakeHoldAlgae,
         IntakeAlgaeFloor,
         IntakeCoralHumanElement,
         EjectAlgaeFloor,
@@ -152,6 +153,12 @@ public class EndEffectorSubsystem extends SubsystemBase {
         ) {
             // The EjectCoralFront was sent twice so stop it
             state = EndEffectorState.Stopped;
+        } else if(
+            state == EndEffectorState.IntakeHoldAlgae
+            && this.state == EndEffectorState.IntakeHoldAlgae
+        ) {
+            // The EjectCoralFront was sent twice so stop it
+            state = EndEffectorState.Stopped;
         } else if (this.state == state) {
             // trying to set the state to the state we are already at
             // just returning to save cycles
@@ -209,6 +216,11 @@ public class EndEffectorSubsystem extends SubsystemBase {
                 System.out.println(("EndEffectorSubsystem::setDesiredState() - EjectCoralBackNoCheck"));
                 targetVelocity1 = -Constants.EndEffectorConstants.EjectCoralMotor1;
                 targetVelocity2 = -Constants.EndEffectorConstants.EjectCoralMotor2;
+                break;
+            case IntakeHoldAlgae:
+                System.out.println(("EndEffectorSubsystem::setDesiredState() - IntakeHoldAlgae"));
+                targetVelocity1 = Constants.EndEffectorConstants.IntakeHoldAlgaeMotor1;
+                targetVelocity2 = Constants.EndEffectorConstants.IntakeHoldAlgaeMotor2;
                 break;
             default:
                 System.out.println(("EndEffectorSubsystem::setDesiredState() - default"));
@@ -445,6 +457,10 @@ public class EndEffectorSubsystem extends SubsystemBase {
 
     public double motor2OutputCurrent() {
         return motor2.getOutputCurrent();
+    }
+
+    public EndEffectorState getState() {
+        return this.state;
     }
 
     @Override
