@@ -34,16 +34,23 @@ public class EjectCoralCommand extends Command {
     @Override
     public void execute() {
         if(endEffectorSubsystem.hasCoral()) {
-            ArmState armState = armSubsystem.getDesiredState();
 
-            if(armState == ArmState.CoralL1) {
-                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            } else if(armState == ArmState.CoralL2) {
-                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-            } else if(armState == ArmState.CoralL3) {
-                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-            } else if(armState == ArmState.CoralL4) {
-                this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+            // Lets make sure the end effector is not already running an eject before
+            // we try to set it again
+            if(endEffectorSubsystem.getState() != EndEffectorState.EjectCoralFront 
+                && endEffectorSubsystem.getState() != EndEffectorState.EjectCoralBack
+            ) {
+                ArmState armState = armSubsystem.getDesiredState();
+
+                if(armState == ArmState.CoralL1) {
+                    this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+                } else if(armState == ArmState.CoralL2) {
+                    this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
+                } else if(armState == ArmState.CoralL3) {
+                    this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+                } else if(armState == ArmState.CoralL4) {
+                    this.endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
+                }
             }
             
         } else {
