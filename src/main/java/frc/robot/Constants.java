@@ -321,7 +321,7 @@ public final class Constants {
 		//public static double Start = -0.4;  // Bore encoder testing
 		public static double Stopped = 0.0;
 		//public static double CoralHuman = 5.0;
-		public static double CoralHuman = 4.5;
+		public static double CoralHuman = 4.3;
 		public static double CoralL4 = 14.167;
 		//public static double CoralL3 = 13.45;
 		public static double CoralL3 = .595;
