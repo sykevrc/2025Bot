@@ -340,6 +340,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.revolutionCount;
     }
 
+    public void resetEncoder() {
+        motor.getEncoder().setPosition(0.0);
+    }
+
     /*public boolean atTargetPosition() {
         return profiledPIDController.atSetpoint();
     }*/

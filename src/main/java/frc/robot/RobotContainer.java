@@ -40,6 +40,7 @@ import frc.robot.commands.EjectCoralReverse;
 import frc.robot.commands.ElevatorStartCommand;
 import frc.robot.commands.EndEffectorStopCommand;
 import frc.robot.commands.IntakeNoWait;
+import frc.robot.commands.ResetElevatorEncoder;
 import frc.robot.commands.FailsafeCoralCommand;
 import frc.robot.commands.ResetPositionCommand;
 import frc.robot.commands.autonomous.AutoAlignLeftAutoCommand;
@@ -148,6 +149,7 @@ public class RobotContainer {
 
 			// Driver to reset field oriented drive
 			driverController.button(8).whileTrue(new ResetPositionCommand());
+			operatorController.button(7).whileTrue(new ResetElevatorEncoder());
 
 			// Auto align for the coral
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
@@ -158,7 +160,8 @@ public class RobotContainer {
 				new EndEffectorStopCommand(),
 				new ArmStartCommand(),
 				//new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
-				new ElevatorStartCommand()
+				new ElevatorStartCommand(),
+				new ResetElevatorEncoder()
 			));
 
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));

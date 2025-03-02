@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Coral2Command",
+      "name": "Coral1Command",
       "waypointRelativePos": 0.2879011824324326,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Coral2Command"
+          "name": "Coral1Command"
         }
       }
     }
