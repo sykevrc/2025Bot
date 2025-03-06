@@ -541,52 +541,15 @@ public class DriveSubsystem extends SubsystemBase {
 					phoneEstimatedRobotPose.timestampSeconds,
 					visionMeasurementStdDevs
 				);
-
-				/*if(!gyro.isMoving()) {
-					resetOdometry(phoneEstimatedRobotPose.estimatedPose.toPose2d());
-				}*/
 			}
-
-			
-
-			/*if(phoneEstimatedRobotPose != null) {
-
-				if(phoneEstimatedRobotPose.targetsUsed.size() >= 1) {
-					poseEstimator.addVisionMeasurement(
-						phoneEstimatedRobotPose.estimatedPose.toPose2d(),
-						//Timer.getFPGATimestamp() - phoneEstimatedRobotPose.timestampSeconds,
-						phoneEstimatedRobotPose.timestampSeconds,
-						visionMeasurementStdDevs
-					);
-					photonVisionCanSeeTag = true;
-
-					// update the combined
-					combinedEstimatedPoseArray[6] = phoneEstimatedRobotPose.estimatedPose.getX();
-					combinedEstimatedPoseArray[7] = phoneEstimatedRobotPose.estimatedPose.getY();
-					combinedEstimatedPoseArray[8] = phoneEstimatedRobotPose.estimatedPose.getRotation().toRotation2d().getDegrees();
-				} else {
-					photonVisionCanSeeTag = false;
-				}
-			} else {
-				photonVisionCanSeeTag = false;
-			}*/
 		}
 
-		if (Constants.kEnableLimelight) {
+		/*if (Constants.kEnableLimelight) {
 
-			/*_limeLight.setPose(odometry.getPoseMeters());
-
-			limelightMeasurement = _limeLight.getPoseEstimate();*/
-
-			//limelightMeasurement = _limeLight.getPose2d(odometry.getPoseMeters());
 			limelightMeasurement = _limeLight.getPose2d(poseEstimator.getEstimatedPosition());
 
 			// Did we get a measurement?
 			if(limelightMeasurement != null && limelightMeasurement.tagCount >= 1) {
-
-				/*if(!setupAuto) {
-					RobotContainer.led1.setStatus(LEDStatus.ready);
-				}*/
 
 				limeLightCanSeeTag = true;
 
@@ -598,13 +561,7 @@ public class DriveSubsystem extends SubsystemBase {
 				if(Constants.kEnableDriveSubSystemLogger) {
 					Logger.recordOutput("Limelight/Pose", limelightMeasurement.pose);
 				}
-				//Logger.recordOutput("Limelight/position", _limeLight.getPoseArray());
 
-				/*combinedEstimatedPoseArray[3] = limelightMeasurement.pose.getX();
-				combinedEstimatedPoseArray[4] = limelightMeasurement.pose.getY();
-				combinedEstimatedPoseArray[5] = limelightMeasurement.pose.getRotation().getDegrees();*/
-
-				//if(!gyro.isMoving() && limelightMeasurement.tagCount >= 1) {
 
 				if(!gyro.isMoving()) {
 					// if we are not moving, reset the odometry to the location from the limelight
@@ -614,7 +571,7 @@ public class DriveSubsystem extends SubsystemBase {
 				//RobotContainer.led1.setStatus(LEDStatus.targetSearching);
 				limeLightCanSeeTag = false;
 			}
-		}
+		}*/
 
 		if(isSim) {
 
