@@ -187,7 +187,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                     targetPosition = Constants.ElevatorConstants.ClimberDown;
                     break;
                 default:
-                    targetPosition = 0.0;
+                    targetPosition = 0.4;
                     break;
             }
         //}

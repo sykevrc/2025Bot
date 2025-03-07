@@ -124,10 +124,19 @@ public class RobotContainer {
 
 			
 			// Coral Commands
-			operatorController.button(3).whileTrue(new Coral1Command());
-			operatorController.button(4).whileTrue(new Coral2Command());
+			operatorController.button(3).whileTrue(new SequentialCommandGroup(
+				new ArmStartCommand(),
+				new Coral1Command()
+			));
+			operatorController.button(4).whileTrue(new SequentialCommandGroup(
+				new ArmStartCommand(),
+				new Coral2Command()
+			));
 			operatorController.button(2).whileTrue(new Coral3Command());
-			operatorController.button(10).whileTrue(new Coral4Command());
+			operatorController.button(10).whileTrue(new SequentialCommandGroup(
+				new ArmStartCommand(),
+				new Coral4Command()
+			));
 			
 			// Intake coral from human element
 			operatorController.button(8).whileTrue(new CoralHumanCommand());
