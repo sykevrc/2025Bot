@@ -16,6 +16,13 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -51,18 +58,25 @@ public class ElevatorSubsystem extends SubsystemBase {
     private boolean isSim = false;
     private ElevatorState state = ElevatorState.Start;
     private double targetPosition = 0.0;
-    private SparkMax motor = null;
-    private SparkMaxSim motorSim = null;
-    private SparkMax motor2 = null;
-    private SparkMaxSim motor2Sim = null;
-    private SparkClosedLoopController pid = null;
+    //private SparkMax motor = null;
+    private TalonFX motor = null;
+    //private SparkMaxSim motorSim = null;
+    //private SparkMax motor2 = null;
+    private TalonFX motor2 = null;
+    //private SparkMaxSim motor2Sim = null;
+    //private SparkClosedLoopController pid = null;
+
+    // create a Motion Magic request, voltage output
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+
+    
     /*private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
         0.1,
         0.0, 
         0.1, 
         new TrapezoidProfile.Constraints(2, 2),
         0.02
-    );*/ 
+    );*/
     private SparkMaxConfig config = new SparkMaxConfig();
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;
@@ -84,17 +98,20 @@ public class ElevatorSubsystem extends SubsystemBase {
                 isSim = true;
             }
 
-            motor = new SparkMax(Constants.ElevatorConstants.motor_id, MotorType.kBrushless);
-            motor2 = new SparkMax(Constants.ElevatorConstants.motor2_id, MotorType.kBrushless);
+            //motor = new SparkMax(Constants.ElevatorConstants.motor_id, MotorType.kBrushless);
+            //motor2 = new SparkMax(Constants.ElevatorConstants.motor2_id, MotorType.kBrushless);
 
-            if(isSim) {
+            motor = new TalonFX(Constants.ElevatorConstants.motor_id, Constants.kCanivoreCANBusName);
+            motor2 = new TalonFX(Constants.ElevatorConstants.motor2_id, Constants.kCanivoreCANBusName);
+
+            /*if(isSim) {
                 motorSim = new SparkMaxSim(motor, DCMotor.getNEO(1));
                 motor2Sim = new SparkMaxSim(motor2, DCMotor.getNEO(1));
-            }
+            }*/
 
             setConfig();
 
-            pid = motor.getClosedLoopController();
+            //pid = motor.getClosedLoopController();
 
             
 
@@ -186,7 +203,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 	public void periodic() {
 
         if (Constants.kEnableElevator) {
-            pid.setReference(targetPosition, ControlType.kPosition);
+            
+
+            // set target position to 100 rotations
+            motor.setControl(m_request.withPosition(targetPosition));
+
+            //pid.setReference(targetPosition, ControlType.kPosition);
             //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
 
             // Try to do a setReference using a Feed Forward
@@ -204,7 +226,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             );*/
 
 
-            if (isSim) {
+            /*if (isSim) {
                 motorSim.iterate(
                         // 0.1,
                         // desiredState.speedMetersPerSecond,
@@ -212,41 +234,61 @@ public class ElevatorSubsystem extends SubsystemBase {
                         RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
                         0.02
                     );
-            }
+            }*/
         }
     }
 
     private void setConfig() {
+
+        /*profiledPIDController = new ProfiledPIDController(
+            p, 
+            i, 
+            d, 
+            new TrapezoidProfile.Constraints(2, 2)
+        );*/
+
+        TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+
+        // set slot 0 gains
+        var slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
+        slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+        slot0Configs.kP = 4.8; // A position error of 2.5 rotations results in 12 V output
+        slot0Configs.kI = 0; // no output for integrated error
+        slot0Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+
+        // set Motion Magic settings
+        var motionMagicConfigs = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+        motor.getConfigurator().apply(talonFXConfigs);
+
+        // Set motor 2 to follow motor 1
+        motor2.setControl(new Follower(Constants.ElevatorConstants.motor2_id, false));
+
         // Vortex
-        config = new SparkMaxConfig();
+        /*config = new SparkMaxConfig();
 
         config
-            //.inverted(false) // bore encoder testing
             .inverted(true)
-            //.smartCurrentLimit(200)
             .idleMode(IdleMode.kCoast);
-        //config.encoder
-            //.positionConversionFactor(25)
-            //.velocityConversionFactor(25);
+
 
         config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            //.feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            //.feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-            //.feedbackSensor(FeedbackSensor.kAnalogSensor)
-            //.positionWrappingEnabled(true)
 		    .pid(
 			    p, 
                 i, 
                 d
-			);//.outputRange(-1, 1);
+			);
 
         // Set MAXMotion parameters
         config.closedLoop.maxMotion
-            //.maxVelocity(6784)
             .maxVelocity(100)
             .maxAcceleration(50)
-            //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
             .allowedClosedLoopError(.05);
 
         config.signals.primaryEncoderPositionPeriodMs(5);
@@ -268,31 +310,19 @@ public class ElevatorSubsystem extends SubsystemBase {
             config2, 
             ResetMode.kResetSafeParameters, 
             PersistMode.kPersistParameters
-        );
+        );*/
 
-        /*profiledPIDController.setPID(p, i, d);
-        profiledPIDController.setTolerance(0.05);*/
+
     }
 
     public double getPosition() {
 
-        if(isSim) {
+        /*if(isSim) {
             return motorSim.getRelativeEncoderSim().getPosition();
-        }
+        }*/
 
-        return motor.getEncoder().getPosition();
-        //currentPosition = motor.getEncoder().getPosition();
-        /*currentPosition = motor.getAbsoluteEncoder().getPosition();
-
-        if(currentPosition < .2 && previousValue > .8) {
-            revolutionCount++;
-        } else if(currentPosition > .8 && previousValue < .2) {
-            revolutionCount--;
-        }
-
-        previousValue = currentPosition;
-
-        return revolutionCount + currentPosition;*/
+        //return motor.getEncoder().getPosition();
+        return motor.getPosition().getValueAsDouble();
     }
 
     public double getTargetPosition() {
@@ -341,7 +371,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     public void resetEncoder() {
-        motor.getEncoder().setPosition(0.0);
+        //motor.getEncoder().setPosition(0.0);
     }
 
     /*public boolean atTargetPosition() {
