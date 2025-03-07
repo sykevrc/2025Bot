@@ -1,38 +1,21 @@
 package frc.robot.subsystems;
 
-import java.util.EnumSet;
-import java.util.Map;
 
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.ctre.phoenix6.configs.FeedbackConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
+
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -67,22 +50,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     //private SparkClosedLoopController pid = null;
 
     // create a Motion Magic request, voltage output
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-
-    
-    /*private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
-        0.1,
-        0.0, 
-        0.1, 
-        new TrapezoidProfile.Constraints(2, 2),
-        0.02
-    );*/
+    private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     private SparkMaxConfig config = new SparkMaxConfig();
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;
     private double d = Constants.ElevatorConstants.D;
     // these values were calculate using https://www.reca.lc/linear
-    private ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(1.1, 1.55, 3.07);
 
     private double currentPosition = 0.0;
     private double previousValue = 0.0;
@@ -98,23 +71,11 @@ public class ElevatorSubsystem extends SubsystemBase {
                 isSim = true;
             }
 
-            //motor = new SparkMax(Constants.ElevatorConstants.motor_id, MotorType.kBrushless);
-            //motor2 = new SparkMax(Constants.ElevatorConstants.motor2_id, MotorType.kBrushless);
-
             motor = new TalonFX(Constants.ElevatorConstants.motor_id, Constants.kCanivoreCANBusName);
             motor2 = new TalonFX(Constants.ElevatorConstants.motor2_id, Constants.kCanivoreCANBusName);
 
-            /*if(isSim) {
-                motorSim = new SparkMaxSim(motor, DCMotor.getNEO(1));
-                motor2Sim = new SparkMaxSim(motor2, DCMotor.getNEO(1));
-            }*/
-
             setConfig();
-
-            //pid = motor.getClosedLoopController();
-
-            
-
+  
             if (Constants.kEnableDebugElevator) {
 
                 Shuffleboard.getTab("Elevator")
@@ -138,10 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
             return;
         }
 
-        // Are we sending the same state again?  If so act like a toggle and stop
-        //if (this.state == state) {
-        //    targetPosition = Constants.SliderConstants.Stopped;
-        //} else {
+
 
             switch (state) {
                 case Start:
@@ -190,7 +148,6 @@ public class ElevatorSubsystem extends SubsystemBase {
                     targetPosition = 0.4;
                     break;
             }
-        //}
 
         this.state = state;
     }
@@ -207,45 +164,10 @@ public class ElevatorSubsystem extends SubsystemBase {
 
             // set target position to 100 rotations
             motor.setControl(m_request.withPosition(targetPosition));
-
-            //pid.setReference(targetPosition, ControlType.kPosition);
-            //pid.setReference(targetPosition, SparkBase.ControlType.kMAXMotionPositionControl);
-
-            // Try to do a setReference using a Feed Forward
-            /*pid.setReference(
-                targetPosition,
-                ControlType.kPosition,
-                ClosedLoopSlot.kSlot0,
-                elevatorFeedforward.calculate(
-                    motor.getEncoder().getVelocity()
-                )
-            );*/
-
-            /*motor.set(
-                profiledPIDController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition)
-            );*/
-
-
-            /*if (isSim) {
-                motorSim.iterate(
-                        // 0.1,
-                        // desiredState.speedMetersPerSecond,
-                        motor.getOutputCurrent(),
-                        RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-                        0.02
-                    );
-            }*/
         }
     }
 
     private void setConfig() {
-
-        /*profiledPIDController = new ProfiledPIDController(
-            p, 
-            i, 
-            d, 
-            new TrapezoidProfile.Constraints(2, 2)
-        );*/
 
         TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
@@ -268,51 +190,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Set motor 2 to follow motor 1
         motor2.setControl(new Follower(Constants.ElevatorConstants.motor_id, false));
-
-        // Vortex
-        /*config = new SparkMaxConfig();
-
-        config
-            .inverted(true)
-            .idleMode(IdleMode.kCoast);
-
-
-        config.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-		    .pid(
-			    p, 
-                i, 
-                d
-			);
-
-        // Set MAXMotion parameters
-        config.closedLoop.maxMotion
-            .maxVelocity(100)
-            .maxAcceleration(50)
-            .allowedClosedLoopError(.05);
-
-        config.signals.primaryEncoderPositionPeriodMs(5);
-        config.signals.primaryEncoderPositionAlwaysOn(true);
-
-        motor.configure(
-		    config, 
-			ResetMode.kResetSafeParameters, 
-			PersistMode.kPersistParameters
-		);
-
-        SparkMaxConfig config2 = new SparkMaxConfig();
-
-        config2
-            .idleMode(IdleMode.kCoast);
-        config2.follow(Constants.ElevatorConstants.motor_id);
-
-        motor2.configure(
-            config2, 
-            ResetMode.kResetSafeParameters, 
-            PersistMode.kPersistParameters
-        );*/
-
-
     }
 
     public double getPosition() {
@@ -321,7 +198,6 @@ public class ElevatorSubsystem extends SubsystemBase {
             return motorSim.getRelativeEncoderSim().getPosition();
         }*/
 
-        //return motor.getEncoder().getPosition();
         return motor.getPosition().getValueAsDouble();
     }
 
@@ -370,12 +246,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.revolutionCount;
     }
 
-    public void resetEncoder() {
+    /*public void resetEncoder() {
         //motor.getEncoder().setPosition(0.0);
-    }
-
-    /*public boolean atTargetPosition() {
-        return profiledPIDController.atSetpoint();
     }*/
 
     @Override
@@ -389,6 +261,5 @@ public class ElevatorSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
         builder.addDoubleProperty("Position", this::getPosition,null);
         builder.addBooleanProperty("At Target Position", this::atTargetPosition,null);
-        builder.addDoubleProperty("Revolutions", this::getRevolutions,null);
     }
 }
