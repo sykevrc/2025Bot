@@ -308,23 +308,25 @@ public final class Constants {
 	}
 
 	public static class ElevatorConstants {
-		public static int motor_id = 33;
-		public static int motor2_id = 32;
+		public static int motor_id = 10;
+		public static int motor2_id = 11;
 		//public static double P = 0.1; // bore encoder testing
-		public static double P = 0.06;
+		public static double P = 4.8;
 		//public static double P = 5;
 		public static double I = 0.00;
 		//public static double D = 0.02;
-		public static double D = 0.0;
+		public static double D = 0.1;
 
-		public static double Start = 1.0;
+		public static double MMJerk = 1600;
+
+		public static double Start = -0.46;
 		//public static double Start = -0.4;  // Bore encoder testing
 		public static double Stopped = 0.0;
 		//public static double CoralHuman = 5.0;
-		public static double CoralHuman = 4.15;
+		public static double CoralHuman = 0;
 		public static double CoralL4 = 14.167;
 		//public static double CoralL3 = 13.45;
-		public static double CoralL3 = .595;
+		public static double CoralL3 = 0;
 		public static double CoralL2 = 11.167;
 		public static double CoralL1 = 6.5;
 		public static double AlgaeHuman = 1.0;
