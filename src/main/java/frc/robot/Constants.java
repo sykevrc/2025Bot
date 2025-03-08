@@ -261,7 +261,7 @@ public final class Constants {
 		//public static double AlgaeFloor = -10;
 		public static double AlgaeFloor = 0.49; // using bore encoder
 
-		public static double Start = 0.58; // using bore encoder
+		public static double Start = 0.55; // using bore encoder
 
 		//public static double P = 1.5;
 		//public static double P = 0.05;
