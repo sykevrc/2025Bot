@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.AbsoluteEncoder;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -10,8 +11,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -42,6 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorState state = ElevatorState.Start;
     private double targetPosition = 0.0;
     //private SparkMax motor = null;
+    private AnalogEncoder encoder = null;
     private TalonFX motor = null;
     //private SparkMaxSim motorSim = null;
     //private SparkMax motor2 = null;
@@ -51,15 +56,28 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // create a Motion Magic request, voltage output
     private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
-    private SparkMaxConfig config = new SparkMaxConfig();
+    //private SparkMaxConfig config = new SparkMaxConfig();
+
     private double p = Constants.ElevatorConstants.P;
     private double i = Constants.ElevatorConstants.I;
     private double d = Constants.ElevatorConstants.D;
+
+    private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
+        p,
+        i, 
+        d, 
+        new TrapezoidProfile.Constraints(2, 2),
+        0.02
+    ); 
+
+    
     // these values were calculate using https://www.reca.lc/linear
 
     private double currentPosition = 0.0;
     private double previousValue = 0.0;
     private int revolutionCount = 0;
+
+    
 
     public ElevatorSubsystem() {
 
@@ -70,9 +88,12 @@ public class ElevatorSubsystem extends SubsystemBase {
             } else {
                 isSim = true;
             }
-
+            
+            encoder = new AnalogEncoder(1, 36, 0); 
             motor = new TalonFX(Constants.ElevatorConstants.motor_id, Constants.kCanivoreCANBusName);
             motor2 = new TalonFX(Constants.ElevatorConstants.motor2_id, Constants.kCanivoreCANBusName);
+                
+        
 
             setConfig();
   
@@ -161,7 +182,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if (Constants.kEnableElevator) {
             
-
+            currentPosition = encoder.get();
             // set target position to 100 rotations
             motor.setControl(m_request.withPosition(targetPosition));
         }
@@ -198,7 +219,9 @@ public class ElevatorSubsystem extends SubsystemBase {
             return motorSim.getRelativeEncoderSim().getPosition();
         }*/
 
-        return motor.getPosition().getValueAsDouble();
+        //return motor.getPosition().getValueAsDouble();
+        return encoder.get();
+        
     }
 
     public double getTargetPosition() {
