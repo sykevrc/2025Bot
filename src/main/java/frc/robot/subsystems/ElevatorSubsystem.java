@@ -275,9 +275,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         return this.revolutionCount;
     }
 
-    /*public void resetEncoder() {
+    public void resetEncoder() {
         //motor.getEncoder().setPosition(0.0);
-    }*/
+        motor.setPosition(0.0);
+    }
 
     @Override
     public void initSendable(SendableBuilder builder) {
