@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.tools.JoystickUtils;
 import frc.robot.tools.Limelight;
@@ -124,17 +125,20 @@ public class RobotContainer {
 
 			
 			// Coral Commands
-			operatorController.button(3).whileTrue(new SequentialCommandGroup(
+			operatorController.button(3).onTrue(new SequentialCommandGroup(
 				new ArmStartCommand(),
+				new WaitCommand(0.15),
 				new Coral1Command()
 			));
-			operatorController.button(4).whileTrue(new SequentialCommandGroup(
+			operatorController.button(4).onTrue(new SequentialCommandGroup(
 				new ArmStartCommand(),
+				new WaitCommand(0.15),
 				new Coral2Command()
 			));
 			operatorController.button(2).whileTrue(new Coral3Command());
-			operatorController.button(10).whileTrue(new SequentialCommandGroup(
+			operatorController.button(10).onTrue(new SequentialCommandGroup(
 				new ArmStartCommand(),
+				new WaitCommand(0.15),
 				new Coral4Command()
 			));
 			
@@ -168,6 +172,7 @@ public class RobotContainer {
 			operatorController.button(1).whileTrue(new SequentialCommandGroup(
 				new EndEffectorStopCommand(),
 				new ArmStartCommand(),
+				new WaitCommand(.1),
 				//new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
 				new ElevatorStartCommand(),
 				new ResetElevatorEncoder()
