@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -46,7 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private ElevatorState state = ElevatorState.Start;
     private double targetPosition = 0.0;
     //private SparkMax motor = null;
-    private AnalogEncoder encoder = null;
+    private DutyCycleEncoder encoder = null;
     private TalonFX motor = null;
     //private SparkMaxSim motorSim = null;
     //private SparkMax motor2 = null;
@@ -89,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 isSim = true;
             }
             
-            encoder = new AnalogEncoder(1, 30, 0.0); 
+            encoder = new DutyCycleEncoder(1, 30, 16.484); 
             motor = new TalonFX(Constants.ElevatorConstants.motor_id, Constants.kCanivoreCANBusName);
             motor2 = new TalonFX(Constants.ElevatorConstants.motor2_id, Constants.kCanivoreCANBusName);
                 
@@ -213,6 +214,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         // Set motor 2 to follow motor 1
         motor2.setControl(new Follower(Constants.ElevatorConstants.motor_id, false));
+        
+        encoder.setInverted(true);
+
     }
 
     public double getPosition() {
