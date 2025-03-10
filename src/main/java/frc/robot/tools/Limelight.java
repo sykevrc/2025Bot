@@ -21,13 +21,7 @@ public class Limelight {
 
     public Limelight() {
 		LimelightHelpers.setCameraPose_RobotSpace(
-			"limelight", 
-			0, 
-			0.32, 
-			0.17, 
-			75, 
-			15, 
-			210
+			"limelight", 0,0,0,0,0,0
 		);
 	}
 
