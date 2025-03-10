@@ -48,9 +48,9 @@ public class AutoAlignLeftCommand extends Command {
         if(limelight.hasTarget()) {
             aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
             int error = (int) (12.5 - aprilTagLocation);
-            double kP = 0.005;
+            double kP = 0.004;
 
-            if(Math.abs(error) <4) {
+            if(Math.abs(error) <3) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 

@@ -39,11 +39,11 @@ public final class Constants {
 	public static boolean kDebugLimelight = true;
 	
 	// Arm
-	public static boolean kEnableArm = true;
+	public static boolean kEnableArm = false;
 	public static boolean kEnableDebugArm = true;
 
 	// Elevator
-	public static boolean kEnableElevator = true;
+	public static boolean kEnableElevator = false;
 	public static boolean kEnableDebugElevator = true;
 
 	// End Effector
@@ -184,6 +184,7 @@ public final class Constants {
 
 	public static class LimelightConstants {
 		public static String name = "limelight";
+		public static double TARGET = 15;
 	}
 
 	public static class PhotonVisionConstants {
@@ -193,9 +194,9 @@ public final class Constants {
 
 		public static double camDiagFOV = 170.0;
 		public static double camPitch = 0.0;
-		public static double camHeightOffGround = Units.inchesToMeters(24.0);
+		public static double camHeightOffGround = Units.inchesToMeters(6.0);
 		// the side to side position of the camera relative to the robot center
-		public static double camX = Units.inchesToMeters(-15.0);
+		public static double camX = Units.inchesToMeters(-12.0);
 		// the front to back position of the camera relative to the robot center
 		public static double camY = Units.inchesToMeters(0.0);
 
@@ -338,4 +339,5 @@ public final class Constants {
 		public static double ClimberUp = 12.0;
 		public static double ClimberDown = 9.0;
 	}
+	
 }

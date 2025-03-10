@@ -13,6 +13,8 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.tools.Limelight;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class AutoAlignRightCommand extends Command{
 
@@ -43,11 +45,10 @@ public class AutoAlignRightCommand extends Command{
     @Override
     public void execute() {
         if(limelight.hasTarget()) {
-            aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
+            aprilTagLocation = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getX();            
             int error = (int) (-12.5 - aprilTagLocation);
             double kP = 0.004;
-            System.out.println(error);
-            if(Math.abs(error) <4) {
+            if(Math.abs(error) <3) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 
@@ -70,7 +71,7 @@ public class AutoAlignRightCommand extends Command{
                     //finished = true;
                 }
             } else {
-                driveSubsystem.driveRobotRelative(0.0, -error*kP, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, error*kP, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);

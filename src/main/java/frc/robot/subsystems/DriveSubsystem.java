@@ -37,6 +37,7 @@ import frc.robot.tools.Limelight;
 import frc.robot.tools.PhotonVision;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -736,7 +737,12 @@ public class DriveSubsystem extends SubsystemBase {
 	public double getAutoDriveD() {
 		return AutoConstants.PathPLannerConstants.kPPDriveConstants.kD;
 	}
-
+	public double getLimePos() {
+		return LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getX();
+	}
+	public double getLimeError() {
+		return LimelightConstants.TARGET-LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getX();
+	}
 	public void CreateAutoBuilder() {
 
 		try {
@@ -775,7 +781,7 @@ public class DriveSubsystem extends SubsystemBase {
 	@Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("RobotPreferences");
-        builder.addDoubleProperty("Turn_D", this::getTurnD, this::setTurnD);
+        /* builder.addDoubleProperty("Turn_D", this::getTurnD, this::setTurnD);
         builder.addDoubleProperty("Turn_I", this::getTurnI, this::setTurnI);
         builder.addDoubleProperty("Turn_P", this::getTurnP, this::setTurnP);
         builder.addDoubleProperty("Drive_D", this::getDriveD, this::setDriveD);
@@ -783,7 +789,9 @@ public class DriveSubsystem extends SubsystemBase {
         builder.addDoubleProperty("Drive_P", this::getDriveP, this::setDriveP);
 		builder.addDoubleProperty("Auto_Drive_P", this::getAutoDriveP, null);
 		builder.addDoubleProperty("Auto_Drive_I", this::getAutoDriveI, null);
-		builder.addDoubleProperty("Auto_Drive_D", this::getAutoDriveD, null);
-		
+		builder.addDoubleProperty("Auto_Drive_D", this::getAutoDriveD, null); */
+		builder.addDoubleProperty("LimePos", this::getLimePos, null);
+		builder.addDoubleProperty("LimeError", this::getLimeError, null);
+
     }
 }
