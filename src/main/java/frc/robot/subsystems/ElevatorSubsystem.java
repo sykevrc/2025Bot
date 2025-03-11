@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import com.revrobotics.AbsoluteEncoder;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -56,7 +57,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     //private SparkClosedLoopController pid = null;
 
     // create a Motion Magic request, voltage output
-  //  private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
+    private final MotionMagicVoltage m_request = new MotionMagicVoltage(0);
     //private SparkMaxConfig config = new SparkMaxConfig();
 
     private double p = Constants.ElevatorConstants.P;
@@ -90,7 +91,7 @@ public class ElevatorSubsystem extends SubsystemBase {
                 isSim = true;
             }
             
-            encoder = new DutyCycleEncoder(1, 30, 16.484); 
+            //encoder = new DutyCycleEncoder(1, 30, 16.484); 
             motor = new TalonFX(Constants.ElevatorConstants.motor_id, Constants.kCanivoreCANBusName);
             motor2 = new TalonFX(Constants.ElevatorConstants.motor2_id, Constants.kCanivoreCANBusName);
                 
@@ -183,11 +184,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         if (Constants.kEnableElevator) {
             
-            currentPosition = encoder.get();
+            currentPosition = motor.getPosition().getValueAsDouble();
             // set target position to 100 rotations
-            motor.set(
-                profiledPIDController.calculate(currentPosition, targetPosition)
-            );//(m_request.withPosition(targetPosition));
+            motor.setControl(m_request.withPosition(targetPosition));
+                //profiledPIDController.calculate(currentPosition, targetPosition)
+           // );(m_request.withPosition(targetPosition));
         }
     }
 
@@ -196,26 +197,26 @@ public class ElevatorSubsystem extends SubsystemBase {
         TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
         // set slot 0 gains
-        // var slot0Configs = talonFXConfigs.Slot0;
-        // slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
-        // slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        // slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        // slot0Configs.kP = Constants.ElevatorConstants.P; // A position error of 2.5 rotations results in 12 V output
-        // slot0Configs.kI = Constants.ElevatorConstants.I; // no output for integrated error
-        // slot0Configs.kD = Constants.ElevatorConstants.D; // A velocity error of 1 rps results in 0.1 V output
+        var slot0Configs = talonFXConfigs.Slot0;
+        slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
+        slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+        slot0Configs.kP = Constants.ElevatorConstants.P; // A position error of 2.5 rotations results in 12 V output
+        slot0Configs.kI = Constants.ElevatorConstants.I; // no output for integrated error
+        slot0Configs.kD = Constants.ElevatorConstants.D; // A velocity error of 1 rps results in 0.1 V output
 
-        // set Motion Magic settings
-        // var motionMagicConfigs = talonFXConfigs.MotionMagic;
-        // motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
-        // motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
-        // motionMagicConfigs.MotionMagicJerk = Constants.ElevatorConstants.MMJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+        //set Motion Magic settings
+        var motionMagicConfigs = talonFXConfigs.MotionMagic;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps
+        motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = Constants.ElevatorConstants.MMJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
         motor.getConfigurator().apply(talonFXConfigs);
 
         // Set motor 2 to follow motor 1
         motor2.setControl(new Follower(Constants.ElevatorConstants.motor_id, false));
         
-        encoder.setInverted(true);
+        //encoder.setInverted(true);
 
     }
 
@@ -225,8 +226,8 @@ public class ElevatorSubsystem extends SubsystemBase {
             return motorSim.getRelativeEncoderSim().getPosition();
         }*/
 
-        //return motor.getPosition().getValueAsDouble();
-        return encoder.get();
+        return motor.getPosition().getValueAsDouble();
+        //return encoder.get();
         
     }
 
@@ -237,11 +238,15 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     public void setTargetPosition(double targetPosition) {
         this.targetPosition = targetPosition;
+        
     }
-
+    public void droptozero() {
+        motor.setVoltage(0);
+        motor2.setVoltage(0);
+    }
     public boolean atTargetPosition() {
         // return true if we are just about at the target position
-        return Math.abs(targetPosition - currentPosition) < 0.05;
+        return Math.abs(targetPosition - currentPosition) < 0.7;
     }
 
     public double getP() {

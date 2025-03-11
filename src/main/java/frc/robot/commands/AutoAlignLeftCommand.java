@@ -7,6 +7,7 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.mechanisms.LED.LEDStatus;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
 import frc.robot.subsystems.ArmSubsystem;
@@ -46,11 +47,11 @@ public class AutoAlignLeftCommand extends Command {
     @Override
     public void execute() {
         if(limelight.hasTarget()) {
-            aprilTagLocation = LimelightHelpers.getTX(Constants.LimelightConstants.name);            
-            int error = (int) (12.5 - aprilTagLocation);
-            double kP = 0.004;
+            double[] postions = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.name);           
+            double error = -0.16 - postions[0];
+            double kP = 0.7;
 
-            if(Math.abs(error) <3) {
+            if(Math.abs(error) <0.015) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 

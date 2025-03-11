@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.569787001722441,
+        "x": 7.22475,
         "y": 3.831
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.212854694247761,
+        "x": 6.86781769252532,
         "y": 3.8336912571945287
       },
       "isLocked": false,
@@ -33,20 +33,21 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Coral1Command",
-      "waypointRelativePos": 0.5854813809880244,
+      "name": "Coral4Command",
+      "waypointRelativePos": 0.1,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Coral1Command"
-        }
-      }
+      "command": null
+    },
+    {
+      "name": "AutoAlignRightCommand",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 0.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

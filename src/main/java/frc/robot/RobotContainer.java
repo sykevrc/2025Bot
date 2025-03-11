@@ -169,13 +169,12 @@ public class RobotContainer {
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
 			//driverController.button(3).whileTrue(new StartCommand());
-			operatorController.button(1).whileTrue(new SequentialCommandGroup(
+			operatorController.button(1).onTrue(new SequentialCommandGroup(
 				new EndEffectorStopCommand(),
-				new ArmStartCommand(),
-				new WaitCommand(.1),
-				//new RunCommand(() -> elevatorSubsystem.setDesiredState(ElevatorState.Start))
 				new ElevatorStartCommand(),
-				new ResetElevatorEncoder()
+				new WaitCommand(0.05),
+				new ArmStartCommand()
+			
 			));
 
 			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));

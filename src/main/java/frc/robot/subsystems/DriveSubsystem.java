@@ -545,7 +545,7 @@ public class DriveSubsystem extends SubsystemBase {
 			}
 		}
 
-		/*if (Constants.kEnableLimelight) {
+		if (Constants.kEnableLimelight) {
 
 			limelightMeasurement = _limeLight.getPose2d(poseEstimator.getEstimatedPosition());
 
@@ -572,7 +572,7 @@ public class DriveSubsystem extends SubsystemBase {
 				//RobotContainer.led1.setStatus(LEDStatus.targetSearching);
 				limeLightCanSeeTag = false;
 			}
-		}*/
+		}
 
 		if(isSim) {
 
@@ -737,12 +737,7 @@ public class DriveSubsystem extends SubsystemBase {
 	public double getAutoDriveD() {
 		return AutoConstants.PathPLannerConstants.kPPDriveConstants.kD;
 	}
-	public double getLimePos() {
-		return LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getY();
-	}
-	public double getLimeError() {
-		return LimelightConstants.TARGET-LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getY();
-	}
+	
 	public void CreateAutoBuilder() {
 
 		try {
@@ -790,8 +785,6 @@ public class DriveSubsystem extends SubsystemBase {
 		builder.addDoubleProperty("Auto_Drive_P", this::getAutoDriveP, null);
 		builder.addDoubleProperty("Auto_Drive_I", this::getAutoDriveI, null);
 		builder.addDoubleProperty("Auto_Drive_D", this::getAutoDriveD, null); */
-		builder.addDoubleProperty("LimePos", this::getLimePos, null);
-		builder.addDoubleProperty("LimeError", this::getLimeError, null);
-
+		
     }
 }

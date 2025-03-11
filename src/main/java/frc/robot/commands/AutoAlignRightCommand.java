@@ -1,29 +1,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.commands.autonomous.EjectCoralCommand;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.mechanisms.LED.LEDStatus;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmState;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.tools.Limelight;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-public class AutoAlignRightCommand extends Command{
+public class AutoAlignRightCommand extends Command {
 
     private DriveSubsystem driveSubsystem;
     private EndEffectorSubsystem endEffectorSubsystem;
     private ArmSubsystem armSubsystem;
-    Limelight limelight;
+    private Limelight limelight;
     private boolean finished = false;
-    double aprilTagLocation = 0.0;
+    private double aprilTagLocation = 0.0;
+    private double aprilTagLocationY = 0.0;
 
     public AutoAlignRightCommand() {
         this.driveSubsystem = RobotContainer.driveSubsystem;
@@ -45,10 +47,11 @@ public class AutoAlignRightCommand extends Command{
     @Override
     public void execute() {
         if(limelight.hasTarget()) {
-            aprilTagLocation = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.LimelightConstants.name).pose.getX();            
-            int error = (int) (-12.5 - aprilTagLocation);
-            double kP = 0.004;
-            if(Math.abs(error) <3) {
+            double[] postions = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.name);           
+            double error = 0.16 - postions[0];
+            double kP = 0.7;
+
+            if(Math.abs(error) <0.015) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 
@@ -71,7 +74,7 @@ public class AutoAlignRightCommand extends Command{
                     //finished = true;
                 }
             } else {
-                driveSubsystem.driveRobotRelative(0.0, error*kP, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, -error*kP, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
@@ -83,6 +86,7 @@ public class AutoAlignRightCommand extends Command{
             // Set the LED to show that it has the target
             RobotContainer.led1.setStatus(LEDStatus.targetSearching);
         }
+    
     }
 
     // Called once the command ends or is interrupted.
@@ -95,3 +99,4 @@ public class AutoAlignRightCommand extends Command{
         return finished;
     }
 }
+
