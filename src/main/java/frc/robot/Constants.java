@@ -239,7 +239,7 @@ public final class Constants {
 		// how high the arm goes to clear a stuck coral on the battery
 		public static double ClearCoral = .30; 
 		//public static double CoralL4 = -0.9;
-		public static double CoralL4 = 0.161; // using bore encoder
+		public static double CoralL4 = 0.17; // using bore encoder
 		//public static double CoralL3 = -2.738;
 		public static double CoralL3 = 0.15; // using bore encoder
 		//public static double CoralL2 = -0.9;
@@ -290,7 +290,7 @@ public final class Constants {
 		public static double EjectAlgaeFloorMotor2 = 0.2;
 		public static double EjectCoralMotor1 = 0.5;
 		public static double EjectCoralMotor2 = 0.0;
-		public static double EjectCoralMotor1Slow = 0.2;
+		public static double EjectCoralMotor1Slow = 0.3;
 		public static double EjectCoralMotor2Slow = 0.0;
 		
 		//public static double P = 1.5;

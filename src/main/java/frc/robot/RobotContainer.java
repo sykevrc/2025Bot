@@ -103,6 +103,8 @@ public class RobotContainer {
 		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
 		NamedCommands.registerCommand("AutoAlignLeftAutoCommand", new AutoAlignLeftAutoCommand());
 		NamedCommands.registerCommand("AutoAlignRightAutoCommand", new AutoAlignRightAutoCommand());
+		NamedCommands.registerCommand("CoralHumanCommand", new CoralHumanCommand());
+		
 
 		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
 

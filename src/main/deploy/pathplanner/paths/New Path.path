@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.503924671784718,
-        "y": 1.7627781278393377
+        "x": 6.791500000000049,
+        "y": 4.366250000001403
       },
       "isLocked": false,
       "linkedName": "Auto 1 Path 1"
     },
     {
       "anchor": {
-        "x": 1.349124325022978,
-        "y": 1.255
+        "x": 7.22475,
+        "y": 3.831
       },
       "prevControl": {
-        "x": 2.6325,
-        "y": 1.8312500000000003
+        "x": 6.22475,
+        "y": 3.831
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Auto 1 Path 2"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -34,9 +34,14 @@
   "eventMarkers": [
     {
       "name": "CoralHumanCommand",
-      "waypointRelativePos": 0.2974820143884854,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "CoralHumanCommand"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -49,10 +54,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Auto 1 Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
