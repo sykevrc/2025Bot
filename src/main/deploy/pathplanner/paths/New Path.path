@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.791500000000047,
-        "y": 4.366250000001403
+        "x": 5.793494318181818,
+        "y": 4.139673295454545
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.791500000000049,
-        "y": 4.366250000001403
+        "x": 6.7934943181818195,
+        "y": 4.139673295454545
       },
       "isLocked": false,
       "linkedName": "Auto 1 Path 1"
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "CoralHumanCommand",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.28097868981846047,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

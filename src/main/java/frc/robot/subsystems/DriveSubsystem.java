@@ -545,34 +545,34 @@ public class DriveSubsystem extends SubsystemBase {
 			}
 		}
 
-		if (Constants.kEnableLimelight) {
+		// if (Constants.kEnableLimelight) {
 
-			limelightMeasurement = _limeLight.getPose2d(poseEstimator.getEstimatedPosition());
+		// 	limelightMeasurement = _limeLight.getPose2d(poseEstimator.getEstimatedPosition());
 
-			// Did we get a measurement?
-			if(limelightMeasurement != null && limelightMeasurement.tagCount >= 1) {
+		// 	// Did we get a measurement?
+		// 	if(limelightMeasurement != null && limelightMeasurement.tagCount >= 1) {
 
-				limeLightCanSeeTag = true;
+		// 		limeLightCanSeeTag = true;
 
-     			poseEstimator.addVisionMeasurement(
-         			limelightMeasurement.pose,
-         			limelightMeasurement.timestampSeconds
-				);
+     	// 		poseEstimator.addVisionMeasurement(
+        //  			limelightMeasurement.pose,
+        //  			limelightMeasurement.timestampSeconds
+		// 		);
 
-				if(Constants.kEnableDriveSubSystemLogger) {
-					Logger.recordOutput("Limelight/Pose", limelightMeasurement.pose);
-				}
+		// 		if(Constants.kEnableDriveSubSystemLogger) {
+		// 			Logger.recordOutput("Limelight/Pose", limelightMeasurement.pose);
+		// 		}
 
 
-				if(!gyro.isMoving()) {
-					// if we are not moving, reset the odometry to the location from the limelight
-					resetOdometry(limelightMeasurement.pose);
-				}
-			} else {
-				//RobotContainer.led1.setStatus(LEDStatus.targetSearching);
-				limeLightCanSeeTag = false;
-			}
-		}
+		// 		if(!gyro.isMoving()) {
+		// 			// if we are not moving, reset the odometry to the location from the limelight
+		// 			resetOdometry(limelightMeasurement.pose);
+		// 		}
+		// 	} else {
+		// 		//RobotContainer.led1.setStatus(LEDStatus.targetSearching);
+		// 		limeLightCanSeeTag = false;
+		// 	}
+		// }
 
 		if(isSim) {
 
@@ -760,11 +760,17 @@ public class DriveSubsystem extends SubsystemBase {
 					// This will flip the path being followed to the red side of the field.
 					// THE ORIGIN WILL REMAIN ON THE BLUE SIDE
   
-					var alliance = DriverStation.getAlliance();
+					/*var alliance = DriverStation.getAlliance();
 					if (alliance.isPresent()) {
 				  		return alliance.get() == DriverStation.Alliance.Red;
 					}
-					return false;
+					return false;*/
+					// this is for blue
+					//System.out.println("setting to blue!!!!!");
+					//return false;
+
+					// this is for red
+					return true;
 			  	}, 
 				  this
 			);

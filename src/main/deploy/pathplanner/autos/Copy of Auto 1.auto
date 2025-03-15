@@ -11,15 +11,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "New Path"
+            "name": "AutoAlignRightCommand"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutoAlignLeftAutoCommand"
+            "name": "EjectCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
           }
         }
       ]

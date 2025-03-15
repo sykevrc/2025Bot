@@ -64,14 +64,14 @@ public class AutoAlignLeftCommand extends Command {
                 ) {
                     // We are in a CoralL1 or CoralL2 position, eject out the front
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
-                    //finished = true;
+                    finished = true;
                 } else if(
                     armSubsystem.getDesiredState() == ArmState.CoralL3
                     || armSubsystem.getDesiredState() == ArmState.CoralL4
                 ) {
                     // We are in a CoralL3 or CoralL4 position, eject out the back
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
-                    //finished = true;
+                    finished = true;
                 }
             } else {
                 driveSubsystem.driveRobotRelative(0.0, -error*kP, 0.0);
