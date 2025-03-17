@@ -767,10 +767,10 @@ public class DriveSubsystem extends SubsystemBase {
 					return false;*/
 					// this is for blue
 					//System.out.println("setting to blue!!!!!");
-					//return false;
+					return false;
 
 					// this is for red
-					return true;
+					// return true;
 			  	}, 
 				  this
 			);
