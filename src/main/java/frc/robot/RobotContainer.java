@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.tools.JoystickUtils;
 import frc.robot.tools.Limelight;
 import frc.robot.tools.PhotonVision;
-import frc.robot.tools.parts.PathBuilder;
+//import frc.robot.tools.parts.PathBuilder;
 import frc.robot.mechanisms.LED;
 import frc.robot.mechanisms.LED.LEDStatus;
-import frc.robot.Constants.AutoConstants;
+//import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.Algae1Command;
 import frc.robot.commands.Algae2Command;
 import frc.robot.commands.AlgaeFloorCommand;
@@ -34,7 +34,7 @@ import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
 import frc.robot.commands.CoralHumanCommand;
-import frc.robot.commands.DriveBackwardsCommand;
+//import frc.robot.commands.DriveBackwardsCommand;
 import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralNoCheck;
 import frc.robot.commands.EjectCoralReverse;
@@ -52,9 +52,10 @@ import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
-import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
+//import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+//import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 
 public class RobotContainer {
 
@@ -65,10 +66,11 @@ public class RobotContainer {
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
 	public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+	public static final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 	public static final LED led1 = new LED(0);
-	
+
 	// This is required by pathplanner
-	//public final static PathBuilder autoBuilder = new PathBuilder();
+	// public final static PathBuilder autoBuilder = new PathBuilder();
 
 	private final CommandXboxController driverController = new CommandXboxController(0);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -88,7 +90,7 @@ public class RobotContainer {
 
 		// Configure the trigger bindings
 		configureBindings();
-		
+
 		// Register commands to be used in Auto
 		NamedCommands.registerCommand("IntakeCoralWait", new IntakeCoralWaitCommand());
 		NamedCommands.registerCommand("IntakeWait", new IntakeCoralWaitCommand());
@@ -104,7 +106,6 @@ public class RobotContainer {
 		NamedCommands.registerCommand("AutoAlignLeftAutoCommand", new AutoAlignLeftAutoCommand());
 		NamedCommands.registerCommand("AutoAlignRightAutoCommand", new AutoAlignRightAutoCommand());
 		NamedCommands.registerCommand("CoralHumanCommand", new CoralHumanCommand());
-		
 
 		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
 
@@ -112,38 +113,37 @@ public class RobotContainer {
 
 		// Add the chooser to the Shuffleboard to select which Auo to run
 		Shuffleboard.getTab("Autonomous").add("Auto", autoChooser)
-		.withWidget(BuiltInWidgets.kComboBoxChooser);
+				.withWidget(BuiltInWidgets.kComboBoxChooser);
 
 		led1.setStatus(LEDStatus.ready);
 	}
 
 	private void configureBindings() {
 
-		if(RobotBase.isReal()) {
+		if (RobotBase.isReal()) {
 			// Real, not a simulation
 
 			// Coral stuck on battery command - repeat command if coral is still stuck.
 			driverController.button(2).whileTrue(new FailsafeCoralCommand());
 
-			
 			// Coral Commands
+			// X = L1, Y = L2, B = L3, Right Joystick Down = L4, A = Home
 			operatorController.button(3).onTrue(new SequentialCommandGroup(
-				new ArmStartCommand(),
-				new WaitCommand(0.15),
-				new Coral1Command()
-			));
+					new ArmStartCommand(),
+					new WaitCommand(0.15),
+					new Coral1Command()));
+
 			operatorController.button(4).onTrue(new SequentialCommandGroup(
-				new ArmStartCommand(),
-				new WaitCommand(0.15),
-				new Coral2Command()
-			));
+					new ArmStartCommand(),
+					new WaitCommand(0.15),
+					new Coral2Command()));
+
 			operatorController.button(2).whileTrue(new Coral3Command());
 			operatorController.button(10).onTrue(new SequentialCommandGroup(
-				new ArmStartCommand(),
-				new WaitCommand(0.15),
-				new Coral4Command()
-			));
-			
+					new ArmStartCommand(),
+					new WaitCommand(0.15),
+					new Coral4Command()));
+
 			// Intake coral from human element
 			operatorController.button(8).whileTrue(new CoralHumanCommand());
 
@@ -153,10 +153,6 @@ public class RobotContainer {
 
 			// Press again to stop
 			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
-
-			/*operatorController.leftTrigger().whileTrue(new SequentialCommandGroup(
-				new ArmStartCommand()
-			));*/
 
 			// these are to get the algae off of the reef
 			operatorController.povDown().whileTrue(new Algae1Command());
@@ -170,83 +166,52 @@ public class RobotContainer {
 			driverController.leftBumper().whileTrue(new AutoAlignLeftCommand());
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
-			//driverController.button(3).whileTrue(new StartCommand());
+			// driverController.button(3).whileTrue(new StartCommand());
 			operatorController.button(1).onTrue(new SequentialCommandGroup(
-				new EndEffectorStopCommand(),
-				new ElevatorStartCommand(),
-				new WaitCommand(0.05),
-				new ArmStartCommand()
-			
+					new EndEffectorStopCommand(),
+					new ElevatorStartCommand(),
+					new WaitCommand(0.05),
+					new ArmStartCommand()
+
 			));
+			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
+			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
 
-			//driverController.rightBumper().whileTrue(new RunCommand(() -> new SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
-
-			//operatorController.rightTrigger().onTrue(getAutonomousCommand())
-
-			operatorController.rightTrigger().whileTrue(//new SequentialCommandGroup(
-				new EjectCoralNoCheck(0.6)
-				//new EjectCoralCommand()//,
-				//new DriveBackwardsCommand()
-				//new ArmStartCommand(), // this will retract the arm and stop end effector
-				//new StartCommand() // this will retract the arm and move the elevator down
-			//)
-			);
+			operatorController.rightTrigger().whileTrue(// new SequentialCommandGroup(
+					new EjectCoralNoCheck(0.6));
 
 			// Climber Stuff
 			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
 			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
 
-			// Move the end effector wheels freely
-			/*operatorController.axisGreaterThan(1, 0.2).whileTrue(
-				new EjectCoralNoCheck(operatorController.getRightX())
-			);*/
-
-			//driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
-			
-			//driverController.button(1).whileTrue(new RunCommand(() -> new ResetPositionCommand()));
-
-			//driverController.button(1).whileTrue(new RunCommand(() -> sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
-
 			// Swerve Drive method is set as default for drive subsystem
 			driveSubsystem.setDefaultCommand(
 
-				new RunCommand(() -> driveSubsystem.drive(
-					JoystickUtils.processJoystickInput(driverController.getLeftY()),
-					JoystickUtils.processJoystickInput(driverController.getLeftX()),
-					JoystickUtils.processJoystickInput(-driverController.getRightX())
-				),
-				driveSubsystem
-			)
-			);
-			
+					new RunCommand(() -> driveSubsystem.drive(
+							JoystickUtils.processJoystickInput(driverController.getLeftY()),
+							JoystickUtils.processJoystickInput(driverController.getLeftX()),
+							JoystickUtils.processJoystickInput(-driverController.getRightX())),
+							driveSubsystem));
+
 		} else {
 
 			// This is for simulation
-			
-			//driverController.button(1).whileTrue(new AutoAlignRightCommand());
+
 			driverController.button(1).whileTrue(
-				//new EjectCoralNoCheck(0.0)
-				//new Algae1Command()
-				new SequentialCommandGroup(
-					//new RunCommand(() -> endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeHoldAlgae)),
-					new EndEffectorStopCommand(),
-					new ArmStartCommand(),
-					new ElevatorStartCommand()
-				)
-			);
-			
+					new SequentialCommandGroup(
+							new EndEffectorStopCommand(),
+							new ArmStartCommand(),
+							new ElevatorStartCommand()));
+
 			// Swerve Drive method is set as default for drive subsystem
 			driveSubsystem.setDefaultCommand(
 
-				//new RunCommand(() -> driveSubsystem.drive(
-				new RunCommand(() -> driveSubsystem.driveRobotRelative(
-						JoystickUtils.processJoystickInput(driverController.getLeftY()),
-						JoystickUtils.processJoystickInput(driverController.getLeftX()),
-						JoystickUtils.processJoystickInput(-driverController.getRawAxis(2))
-					),
-					driveSubsystem
-				)
-			);
+					// new RunCommand(() -> driveSubsystem.drive(
+					new RunCommand(() -> driveSubsystem.driveRobotRelative(
+							JoystickUtils.processJoystickInput(driverController.getLeftY()),
+							JoystickUtils.processJoystickInput(driverController.getLeftX()),
+							JoystickUtils.processJoystickInput(-driverController.getRawAxis(2))),
+							driveSubsystem));
 		}
 	}
 

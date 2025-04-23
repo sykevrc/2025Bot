@@ -51,34 +51,35 @@ public final class Constants {
 
 	public static final String kRioCANBusName = "rio";
 	public static final String kCanivoreCANBusName = "canivore";
-	//public static final String logFolders = "/media/sda2/";
+	// public static final String logFolders = "/media/sda2/";
 
 	public static class ModuleConstants {
 
 		// Current limits for the wheels
-		//public static final int kTurnMotorCurrentLimit = 25;
-		//public static final int kDriveMotorCurrentLimit = 35;
+		// public static final int kTurnMotorCurrentLimit = 25;
+		// public static final int kDriveMotorCurrentLimit = 35;
 
 		// Constants set for the _SDS MK4i_ and MK4
-		//public static final double kdriveGearRatioL1 = 1d / 8.14;
-		//public static final double kdriveGearRatioL2 = 1d / 6.75;
+		// public static final double kdriveGearRatioL1 = 1d / 8.14;
+		// public static final double kdriveGearRatioL2 = 1d / 6.75;
 		public static final double kdriveGearRatioL3 = 1d / 6.12;
-		//public static final double kdriveGearRatioL3 = 1d / 5.7;
-		//public static final double kdriveGearRatioL4 = 1d / 5.14;
+		// public static final double kdriveGearRatioL3 = 1d / 5.7;
+		// public static final double kdriveGearRatioL4 = 1d / 5.14;
 		public static final double kturnGearRatio = 1d / (150d / 7d);
 
 		public static final double kwheelCircumference = Units.inchesToMeters(4) * Math.PI;
 
 		// The max speed the modules are capable of
-		//public static final double kMaxModuleSpeedMetersPerSecond = Units.feetToMeters(16.5);
+		// public static final double kMaxModuleSpeedMetersPerSecond =
+		// Units.feetToMeters(16.5);
 		public static final double kMaxModuleSpeedMetersPerSecond = 16.5;
 
-		//public static final double ksVolts = .1;
-		//public static final double kDriveFeedForward = .2;
+		// public static final double ksVolts = .1;
+		// public static final double kDriveFeedForward = .2;
 
 		// TODO: Retune feedforward values for turning
 		public static final double kvTurning = .43205;
-		public static final double ksTurning = .17161; 
+		public static final double ksTurning = .17161;
 
 		// NEO drive motor CAN ID's
 		public static final int kFrontLeftDriveMotorPort = 2;
@@ -130,7 +131,7 @@ public final class Constants {
 		public static double kAutoAlignSpeed = 0.02;
 		public static double kAutoAlignTolerance = 4.0;
 		public static double kAutoAlignOffset = 15.0;
-		//public static double kAutoAlignLeftOffset = -16.0;
+		// public static double kAutoAlignLeftOffset = -16.0;
 		public static double kAutoAlignRightOffset = 25.0;
 
 		public static double kAutoAlignLeftLeft = 19.0;
@@ -146,7 +147,7 @@ public final class Constants {
 	}
 
 	/**
-	 * The constants pertaining to Autonoumus 
+	 * The constants pertaining to Autonoumus
 	 */
 	public static class AutoConstants {
 
@@ -154,21 +155,27 @@ public final class Constants {
 
 			// PID constants for path planner (these control drive direction not reaching
 			// target wheel speeds)
-			//public static final PIDConstants kPPDriveConstants = new PIDConstants(8.5, 0, 0);
-			//public static final PIDConstants kPPDriveConstants = new PIDConstants(5.0, 0, 0);
-			//public static final PIDConstants kPPDriveConstants = new PIDConstants(6.5, 0, 0); // best one
+			// public static final PIDConstants kPPDriveConstants = new PIDConstants(8.5, 0,
+			// 0);
+			// public static final PIDConstants kPPDriveConstants = new PIDConstants(5.0, 0,
+			// 0);
+			// public static final PIDConstants kPPDriveConstants = new PIDConstants(6.5, 0,
+			// 0); // best one
 			public static final PIDConstants kPPDriveConstants = new PIDConstants(7.5, 0, 0);
-			//public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
-			//public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0, 0);
+			// public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0,
+			// 0);
+			// public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0,
+			// 0);
 			public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
 
-			//public static final double kPPMaxVelocity = 4.00;
-			//public static final double kPPMaxAcceleration = 2.50;
-			//public static final double kMaxModuleSpeed = 4.5; // Max module speed, in m/s
-			//public static final double kDriveBaseRadius = 0.4; // Drive base radius in meters. Distance from robot center to furthest module.
+			// public static final double kPPMaxVelocity = 4.00;
+			// public static final double kPPMaxAcceleration = 2.50;
+			// public static final double kMaxModuleSpeed = 4.5; // Max module speed, in m/s
+			// public static final double kDriveBaseRadius = 0.4; // Drive base radius in
+			// meters. Distance from robot center to furthest module.
 		}
 
-		//public static final double kAimTargetTolerance = 2.0;
+		// public static final double kAimTargetTolerance = 2.0;
 	}
 
 	/**
@@ -188,7 +195,8 @@ public final class Constants {
 
 	public static class PhotonVisionConstants {
 
-		//public static final PoseStrategy poseStrategy = PoseStrategy.AVERAGE_BEST_TARGETS;
+		// public static final PoseStrategy poseStrategy =
+		// PoseStrategy.AVERAGE_BEST_TARGETS;
 		public static final PoseStrategy poseStrategy = PoseStrategy.CLOSEST_TO_REFERENCE_POSE;
 
 		public static double camDiagFOV = 170.0;
@@ -200,78 +208,90 @@ public final class Constants {
 		public static double camY = Units.inchesToMeters(0.0);
 
 		public static Transform3d cameraToRobot = new Transform3d(
-                    new Translation3d(
+				new Translation3d(
 						camX,
 						camY,
-					 	PhotonVisionConstants.camHeightOffGround
-					),
-					new Rotation3d(
+						PhotonVisionConstants.camHeightOffGround),
+				new Rotation3d(
 						0,
 						PhotonVisionConstants.camPitch,
-						180
-					)
-				);
+						180));
 
 		public static final String CameraName = "cam1";
 
 		// Simulated Vision System.
-    	// Configure these to match your PhotonVision Camera,
-    	// pipeline, and LED setup.
+		// Configure these to match your PhotonVision Camera,
+		// pipeline, and LED setup.
 		public static double sim_camDiagFOV = camDiagFOV; // degrees - assume wide-angle camera
 		public static double sim_camPitch = camPitch; // degrees
-    	public static double sim_camHeightOffGround = camHeightOffGround; // meters
-    	//public static double sim_maxLEDRange = 20; // meters
-    	public static int sim_camResolutionWidth = 640; // pixels
-    	public static int sim_camResolutionHeight = 480; // pixels
-    	//public static double sim_minTargetArea = 10; // square pixels
-		//public static double sim_minTargetArea = 300; // square pixels
+		public static double sim_camHeightOffGround = camHeightOffGround; // meters
+		// public static double sim_maxLEDRange = 20; // meters
+		public static int sim_camResolutionWidth = 640; // pixels
+		public static int sim_camResolutionHeight = 480; // pixels
+		// public static double sim_minTargetArea = 10; // square pixels
+		// public static double sim_minTargetArea = 300; // square pixels
 
 		/**
-    	* Standard deviations of the vision measurements. Increase these numbers to trust global measurements from vision
-    	* less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
-    	*/
+		 * Standard deviations of the vision measurements. Increase these numbers to
+		 * trust global measurements from vision
+		 * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and
+		 * radians.
+		 */
 		public static double visionMeasurementStdDevsX = 0.5;
 		public static double visionMeasurementStdDevsY = 0.5;
 		public static double visionMeasurementStdDevsTheta = Units.degreesToRadians(10);
 	}
 
+	public static class ClimbConstants {
+
+		public static boolean climberEnabled = true;
+		public static int motor_id = 30;
+
+		public static double climberExtended = 0.0;
+		public static double climberRetracted = 0.0;
+		public static double P = 0.05;
+		public static double I = 0.00005;
+		public static double D = 0.01;
+
+	}
+
 	public static class ArmConstants {
 		// how high the arm goes to clear a stuck coral on the battery
-		public static double ClearCoral = .30; 
-		//public static double CoralL4 = -0.9;
+		public static double ClearCoral = .30;
+		// public static double CoralL4 = -0.9;
 		public static double CoralL4 = 0.17; // using bore encoder
-		//public static double CoralL3 = -2.738;
+		// public static double CoralL3 = -2.738;
 		public static double CoralL3 = 0.15; // using bore encoder
-		//public static double CoralL2 = -0.9;
+		// public static double CoralL2 = -0.9;
 		public static double CoralL2 = 0.56; // using bore encoder
-		//public static double CoralL1 = -10.0;
+		// public static double CoralL1 = -10.0;
 		public static double CoralL1 = 0.55; // using bore encoder
-		//public static double CoralHuman = -0.462;
+		// public static double CoralHuman = -0.462;
 		public static double CoralHuman = 0.58; // using bore encoder
-		//public static double AlgaeL1 = -0.9;
+		// public static double AlgaeL1 = -0.9;
 		public static double AlgaeL1 = 0.34; // using bore encoder
-		//public static double AlgaeL2 = -0.9;
+		// public static double AlgaeL2 = -0.9;
 		public static double AlgaeL2 = 0.245; // using bore encoder;
-		//public static double AlgaeL3 = -0.9;
+		// public static double AlgaeL3 = -0.9;
 		public static double AlgaeL3 = 0.171; // using bore encoder;
-		//public static double AlgaeShoot = -0.9;
+		// public static double AlgaeShoot = -0.9;
 		public static double AlgaeShoot = 0.171; // using bore encoder
-		//public static double AlgaeHuman = -0.9;
+		// public static double AlgaeHuman = -0.9;
 		public static double AlgaeHuman = 0.905; // using bore encoder
-		//public static double AlgaeFloor = -10;
+		// public static double AlgaeFloor = -10;
 		public static double AlgaeFloor = 0.49; // using bore encoder
 
 		public static double Start = 0.55; // using bore encoder
 
-		//public static double P = 1.5;
-		//public static double P = 0.05;
-		//public static double P = 1.5; // using bore encoder
+		// public static double P = 1.5;
+		// public static double P = 0.05;
+		// public static double P = 1.5; // using bore encoder
 		public static double P = 2.0; // using bore encoder and maxmotion
-		//public static double I = 0.0;
+		// public static double I = 0.0;
 		public static double I = 0.01; // using bore encoder and maxmotion
-		//public static double D = 0.0;
-		//public static double D = 0.0;
-		//public static double D = 10.0;
+		// public static double D = 0.0;
+		// public static double D = 0.0;
+		// public static double D = 10.0;
 		public static double D = 0.0; // using bore encoder and maxmotion
 
 		public static int motor_id = 20;
@@ -292,11 +312,11 @@ public final class Constants {
 		public static double EjectCoralMotor2 = 0.0;
 		public static double EjectCoralMotor1Slow = 0.3;
 		public static double EjectCoralMotor2Slow = 0.0;
-		
-		//public static double P = 1.5;
+
+		// public static double P = 1.5;
 		public static double P = 1.0;
 		public static double I = 0.0;
-		//public static double D = 0.0;
+		// public static double D = 0.0;
 		public static double D = 0.01;
 
 		public static int motor_id = 18;
@@ -310,22 +330,22 @@ public final class Constants {
 	public static class ElevatorConstants {
 		public static int motor_id = 10;
 		public static int motor2_id = 11;
-		//public static double P = 0.1; // bore encoder testing
+		// public static double P = 0.1; // bore encoder testing
 		public static double P = 5;
-		//public static double P = 5;
+		// public static double P = 5;
 		public static double I = 0.00;
-		//public static double D = 0.02;
+		// public static double D = 0.02;
 		public static double D = 0.1;
 
 		public static double MMJerk = 1600;
 
 		public static double Start = 0.1;
-		//public static double Start = -0.4;  // Bore encoder testing
+		// public static double Start = -0.4; // Bore encoder testing
 		public static double Stopped = 0.0;
-		//public static double CoralHuman = 5.0;
+		// public static double CoralHuman = 5.0;
 		public static double CoralHuman = 0.1;
 		public static double CoralL4 = 18;
-		//public static double CoralL3 = 13.45;
+		// public static double CoralL3 = 13.45;
 		public static double CoralL3 = 0.1;
 		public static double CoralL2 = 13.8;
 		public static double CoralL1 = 14;
@@ -338,5 +358,5 @@ public final class Constants {
 		public static double ClimberUp = 12.0;
 		public static double ClimberDown = 9.0;
 	}
-	
+
 }

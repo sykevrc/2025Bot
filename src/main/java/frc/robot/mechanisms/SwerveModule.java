@@ -47,7 +47,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 public class SwerveModule {
 	/** Creates a new SwerveModule. */
-	//private final CANBus kCANBus = new CANBus();
+	// private final CANBus kCANBus = new CANBus();
 
 	private final SparkFlex driveMotor;
 	private SparkFlexSim driveFlexSim = null;
@@ -66,17 +66,18 @@ public class SwerveModule {
 
 	private double m_moduleAngleRadians;
 	private Rotation2d m_moduleAngleRotation2d = new Rotation2d();
-	//private SwerveModuleState optimizedState;
+	// private SwerveModuleState optimizedState;
 	private double angularPIDOutput;
 	private double angularFFOutput;
 	private double turnOutput;
 	private boolean isSim = false;
 	private ShuffleboardTab swerveTab = null;
-	//private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
+	// private NetworkTableInstance networkTableInstance =
+	// NetworkTableInstance.getDefault();
 
 	SparkMaxConfig turnConfig = null;
 	SparkFlexConfig driveConfig = null;
-	
+
 	SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
 			ModuleConstants.ksTurning, ModuleConstants.kvTurning);
 
@@ -89,13 +90,12 @@ public class SwerveModule {
 			PIDGains angularPID,
 			PIDGains drivePID,
 			boolean invertTurningMotor,
-			boolean invertDriveMotor
-			) {
+			boolean invertDriveMotor) {
 
 		this.moduleName = moduleName;
 		this.angleZero = angleZero;
 
-		if(RobotBase.isReal()) {
+		if (RobotBase.isReal()) {
 			isSim = false;
 		} else {
 			isSim = true;
@@ -105,55 +105,52 @@ public class SwerveModule {
 		// Initialize the motors
 		driveMotor = new SparkFlex(driveMotorChannel, MotorType.kBrushless);
 
-		if(isSim) {
+		if (isSim) {
 			driveFlexSim = new SparkFlexSim(driveMotor, DCMotor.getNeoVortex(1));
 		}
-		
+
 		turningMotor = new SparkMax(turningMotorChannel, MotorType.kBrushless);
 
-		if(isSim) {
+		if (isSim) {
 			turningMaxSim = new SparkMaxSim(turningMotor, DCMotor.getNEO(1));
 		}
 
 		cancoder = new CANcoder(absoluteEncoderPort, Constants.kCanivoreCANBusName);
-		//cancoder = new CANcoder(absoluteEncoderPort);
+		// cancoder = new CANcoder(absoluteEncoderPort);
 		cancoder.clearStickyFaults();
 
 		driveConfig = new SparkFlexConfig();
 
 		driveConfig
-            .inverted(invertDriveMotor)
-            .idleMode(IdleMode.kCoast);
+				.inverted(invertDriveMotor)
+				.idleMode(IdleMode.kCoast);
 
-        driveConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-			.pid(
-				drivePID.kP,
-				drivePID.kI,
-				drivePID.kD
-			);
+		driveConfig.closedLoop
+				.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+				.pid(
+						drivePID.kP,
+						drivePID.kI,
+						drivePID.kD);
 
-        driveConfig.signals.primaryEncoderPositionPeriodMs(5);
+		driveConfig.signals.primaryEncoderPositionPeriodMs(5);
 
 		// Set the gear ratio
 		driveConfig.encoder
-		.positionConversionFactor(
-			ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference
-			//Divide the circumference by the gear ratio to get your conversion calculation
-			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
-		)
-		.velocityConversionFactor(
-			ModuleConstants.kdriveGearRatioL3
-			* ModuleConstants.kwheelCircumference
-			//ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3 
-			* (1d / 60d)
-		);
+				.positionConversionFactor(
+						ModuleConstants.kdriveGearRatioL3 * ModuleConstants.kwheelCircumference
+				// Divide the circumference by the gear ratio to get your conversion calculation
+				// ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3
+				)
+				.velocityConversionFactor(
+						ModuleConstants.kdriveGearRatioL3
+								* ModuleConstants.kwheelCircumference
+								// ModuleConstants.kwheelCircumference / ModuleConstants.kdriveGearRatioL3
+								* (1d / 60d));
 
-        driveMotor.configure(
-			driveConfig, 
-			ResetMode.kResetSafeParameters, 
-			PersistMode.kPersistParameters
-		);
+		driveMotor.configure(
+				driveConfig,
+				ResetMode.kResetSafeParameters,
+				PersistMode.kPersistParameters);
 
 		this.sparkDrivePID = driveMotor.getClosedLoopController();
 
@@ -162,30 +159,29 @@ public class SwerveModule {
 		turnConfig = new SparkMaxConfig();
 
 		turnConfig
-            .inverted(invertTurningMotor)
-            .idleMode(IdleMode.kCoast);
-        turnConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-			.pid(
-				Constants.DriveConstants.kGyroTurningGains.kP, 
-				Constants.DriveConstants.kGyroTurningGains.kI, 
-				Constants.DriveConstants.kGyroTurningGains.kD
-			);
-        turnConfig.signals.primaryEncoderPositionPeriodMs(5);
+				.inverted(invertTurningMotor)
+				.idleMode(IdleMode.kCoast);
+		turnConfig.closedLoop
+				.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+				.pid(
+						Constants.DriveConstants.kGyroTurningGains.kP,
+						Constants.DriveConstants.kGyroTurningGains.kI,
+						Constants.DriveConstants.kGyroTurningGains.kD);
+		turnConfig.signals.primaryEncoderPositionPeriodMs(5);
 
-        turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 		m_turningPIDController = new ProfiledPIDController(
-			angularPID.kP,
-			angularPID.kI,
-			angularPID.kD,
-			new TrapezoidProfile.Constraints( // radians/s?
-					2 * Math.PI * 600, // theoretical is 5676 RPM -> 94*2pi
-					2 * Math.PI * 1200));
+				angularPID.kP,
+				angularPID.kI,
+				angularPID.kD,
+				new TrapezoidProfile.Constraints( // radians/s?
+						2 * Math.PI * 600, // theoretical is 5676 RPM -> 94*2pi
+						2 * Math.PI * 1200));
 
 		m_turningPIDController.enableContinuousInput(0, Math.toRadians(360));
 
-		if(Constants.kDebugDriveTrain == true) {
+		if (Constants.kDebugDriveTrain == true) {
 			// Swerve tab stuff
 			swerveTab = Shuffleboard.getTab("Swerve");
 			swerveTab.addDouble(moduleName + " Absolute", this::getAbsoluteHeading);
@@ -208,7 +204,7 @@ public class SwerveModule {
 
 		m_moduleAngleRadians = Math.toRadians(cancoder.getAbsolutePosition(true).getValueAsDouble() * 360.0);
 
-		if(isSim){
+		if (isSim) {
 			m_moduleAngleRotation2d = _simulatedAbsoluteEncoderRotation2d;
 			return new SwerveModulePosition(driveEncoder.getPosition(), _simulatedAbsoluteEncoderRotation2d);
 		}
@@ -219,9 +215,9 @@ public class SwerveModule {
 	}
 
 	// Sets the position of the swerve module
-	public void setDesiredState(SwerveModuleState desiredState) {	
+	public void setDesiredState(SwerveModuleState desiredState) {
 
-		if(isSim) {
+		if (isSim) {
 			m_moduleAngleRadians = Math.toRadians(desiredState.angle.getDegrees());
 			_simulatedAbsoluteEncoderRotation2d = desiredState.angle;
 		}
@@ -231,35 +227,33 @@ public class SwerveModule {
 		desiredState.optimize(m_moduleAngleRotation2d);
 
 		angularPIDOutput = m_turningPIDController.calculate(m_moduleAngleRadians,
-			desiredState.angle.getRadians());
+				desiredState.angle.getRadians());
 
 		angularFFOutput = turnFeedForward.calculate(m_turningPIDController.getSetpoint().velocity);
 
 		turnOutput = angularPIDOutput + angularFFOutput;
 
 		turningMotor.setVoltage(turnOutput);
-		
-		if(isSim) {
+
+		if (isSim) {
 			sparkDrivePID.setReference(
-				desiredState.speedMetersPerSecond,
-				ControlType.kVelocity
-			);
+					desiredState.speedMetersPerSecond,
+					ControlType.kVelocity);
 
 			driveFlexSim.iterate(
-				desiredState.speedMetersPerSecond,
-        		RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-        		0.02
-			);
+					desiredState.speedMetersPerSecond,
+					RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+					0.02);
 
 		} else {
 			sparkDrivePID.setReference(
-				desiredState.speedMetersPerSecond,
-				ControlType.kVelocity
-				//ControlType.kMAXMotionVelocityControl
+					desiredState.speedMetersPerSecond,
+					ControlType.kVelocity
+			// ControlType.kMAXMotionVelocityControl
 			);
 		}
 
-		if(Constants.kEnableDriveSubSystemLogger) {
+		if (Constants.kEnableDriveSubSystemLogger) {
 			Logger.recordOutput("Motors/DriveMotorCurrentOutput_" + moduleName, driveMotor.getOutputCurrent());
 			Logger.recordOutput("Motors/DriveMotorTemp_" + moduleName, driveMotor.getMotorTemperature());
 			Logger.recordOutput("Motors/TurnMotorCurrentOutput_" + moduleName, turningMotor.getOutputCurrent());
@@ -268,7 +262,7 @@ public class SwerveModule {
 	}
 
 	public void resetEncoders() {
-		
+
 	}
 
 	public void stopMotors() {
@@ -289,16 +283,15 @@ public class SwerveModule {
 	}
 
 	public void simulatePeriodic() {
-		
+
 	}
 
 	public void setDrivePID(double p, double i, double d) {
 		driveConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-			.pid(
-				p,
-				i,
-				d
-			);
+				.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+				.pid(
+						p,
+						i,
+						d);
 	}
 }

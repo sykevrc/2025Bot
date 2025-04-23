@@ -46,35 +46,31 @@ public class AutoAlignLeftCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(limelight.hasTarget()) {
-            double[] postions = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.name);           
+        if (limelight.hasTarget()) {
+            double[] postions = LimelightHelpers.getBotPose_TargetSpace(LimelightConstants.name);
             double error = -0.16 - postions[0];
             double kP = 0.7;
 
-            if(Math.abs(error) <0.015) {
+            if (Math.abs(error) < 0.015) {
                 // We are in the zone
                 driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetAquired);
-                
-                if(
-                    armSubsystem.getDesiredState() == ArmState.CoralL1
-                    || armSubsystem.getDesiredState() == ArmState.CoralL2
-                ) {
+
+                if (armSubsystem.getDesiredState() == ArmState.CoralL1
+                        || armSubsystem.getDesiredState() == ArmState.CoralL2) {
                     // We are in a CoralL1 or CoralL2 position, eject out the front
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralFront);
                     finished = true;
-                } else if(
-                    armSubsystem.getDesiredState() == ArmState.CoralL3
-                    || armSubsystem.getDesiredState() == ArmState.CoralL4
-                ) {
+                } else if (armSubsystem.getDesiredState() == ArmState.CoralL3
+                        || armSubsystem.getDesiredState() == ArmState.CoralL4) {
                     // We are in a CoralL3 or CoralL4 position, eject out the back
                     endEffectorSubsystem.setDesiredState(EndEffectorState.EjectCoralBack);
                     finished = true;
                 }
             } else {
-                driveSubsystem.driveRobotRelative(0.0, -error*kP, 0.0);
+                driveSubsystem.driveRobotRelative(0.0, -error * kP, 0.0);
 
                 // Set the LED to show that it has the target
                 RobotContainer.led1.setStatus(LEDStatus.targetSearching);
@@ -86,12 +82,13 @@ public class AutoAlignLeftCommand extends Command {
             // Set the LED to show that it has the target
             RobotContainer.led1.setStatus(LEDStatus.targetSearching);
         }
-    
+
     }
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+    }
 
     // Returns true when the command should end.
     @Override
@@ -99,4 +96,3 @@ public class AutoAlignLeftCommand extends Command {
         return finished;
     }
 }
-
