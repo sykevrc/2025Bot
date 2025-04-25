@@ -1,8 +1,8 @@
 package frc.robot;
 
 import java.util.OptionalLong;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+//import com.pathplanner.lib.auto.AutoBuilder;
+//import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -20,11 +20,12 @@ import frc.robot.tools.PhotonVision;
 //import frc.robot.tools.parts.PathBuilder;
 import frc.robot.mechanisms.LED;
 import frc.robot.mechanisms.LED.LEDStatus;
-//import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.commands.Algae1Command;
 import frc.robot.commands.Algae2Command;
 import frc.robot.commands.AlgaeFloorCommand;
 import frc.robot.commands.ArmStartCommand;
+import frc.robot.commands.ArmUpCommand;
 import frc.robot.commands.AutoAlignLeftCommand;
 import frc.robot.commands.AutoAlignRightCommand;
 import frc.robot.commands.ClimberDownCommand;
@@ -34,7 +35,7 @@ import frc.robot.commands.Coral2Command;
 import frc.robot.commands.Coral3Command;
 import frc.robot.commands.Coral4Command;
 import frc.robot.commands.CoralHumanCommand;
-//import frc.robot.commands.DriveBackwardsCommand;
+import frc.robot.commands.DriveBackwardsCommand;
 import frc.robot.commands.EjectAlgaeCommand;
 import frc.robot.commands.EjectCoralNoCheck;
 import frc.robot.commands.EjectCoralReverse;
@@ -44,18 +45,15 @@ import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetElevatorEncoder;
 import frc.robot.commands.FailsafeCoralCommand;
 import frc.robot.commands.ResetPositionCommand;
-import frc.robot.commands.autonomous.AutoAlignLeftAutoCommand;
-import frc.robot.commands.autonomous.AutoAlignRightAutoCommand;
-import frc.robot.commands.autonomous.DelayCommand;
-import frc.robot.commands.autonomous.EjectCoralCommand;
-import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
+import frc.robot.commands.StartCommand;
+import frc.robot.commands.ComplexAuto;
+
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
-//import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
-//import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
 
 public class RobotContainer {
 
@@ -66,7 +64,6 @@ public class RobotContainer {
 	public static final ArmSubsystem armSubsystem = new ArmSubsystem();
 	public static final EndEffectorSubsystem endEffectorSubsystem = new EndEffectorSubsystem();
 	public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-	public static final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 	public static final LED led1 = new LED(0);
 
 	// This is required by pathplanner
@@ -74,48 +71,28 @@ public class RobotContainer {
 
 	private final CommandXboxController driverController = new CommandXboxController(0);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
-	private SendableChooser<Command> autoChooser = new SendableChooser<>();
+	// private final Command m_simpleAuto = new DriveDistance(
+	// AutoConstants.kAutoDriveDistanceInches, AutoConstants.kAutoDriveSpeed,
+	// m_robotDrive);
 
-	public SendableChooser<Command> getAutoChooser() {
-		return autoChooser;
-	}
+	// A complex auto routine that drives forward, drops a hatch, and then drives
+	// backward.
+	private final Command m_complexAuto = new ComplexAuto();
+
+	// A chooser for autonomous commands
+	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 	public RobotContainer(boolean isSim) {
 
-		// This is required for auto
-		RobotContainer.driveSubsystem.CreateAutoBuilder();
-
 		// Configure the trigger bindings
 		configureBindings();
+		m_chooser.addOption("9 Points", m_complexAuto);
 
-		// Register commands to be used in Auto
-		NamedCommands.registerCommand("IntakeCoralWait", new IntakeCoralWaitCommand());
-		NamedCommands.registerCommand("IntakeWait", new IntakeCoralWaitCommand());
-		NamedCommands.registerCommand("IntakeNoWait", new IntakeNoWait());
-		NamedCommands.registerCommand("Delay500", new DelayCommand(OptionalLong.of(500)));
-		NamedCommands.registerCommand("EjectCoral500", new EjectCoralCommand());
-		NamedCommands.registerCommand("EjectCoral", new EjectCoralCommand());
-		NamedCommands.registerCommand("EjectCoralReverse500", new EjectCoralReverse(OptionalLong.of(500)));
-		NamedCommands.registerCommand("Coral4Command", new Coral4Command());
-		NamedCommands.registerCommand("Coral3Command", new Coral3Command());
-		NamedCommands.registerCommand("Coral2Command", new Coral2Command());
-		NamedCommands.registerCommand("Coral1Command", new Coral1Command());
-		NamedCommands.registerCommand("AutoAlignLeftAutoCommand", new AutoAlignLeftAutoCommand());
-		NamedCommands.registerCommand("AutoAlignRightAutoCommand", new AutoAlignRightAutoCommand());
-		NamedCommands.registerCommand("CoralHumanCommand", new CoralHumanCommand());
-
-		autoChooser = AutoBuilder.buildAutoChooser("Auto 1");
-
-		SmartDashboard.putData("Auto", autoChooser);
-
-		// Add the chooser to the Shuffleboard to select which Auo to run
-		Shuffleboard.getTab("Autonomous").add("Auto", autoChooser)
-				.withWidget(BuiltInWidgets.kComboBoxChooser);
-
-		led1.setStatus(LEDStatus.ready);
+		// Put the chooser on the dashboard
+		Shuffleboard.getTab("Autonomous").add(m_chooser);
 	}
 
 	private void configureBindings() {
@@ -127,20 +104,20 @@ public class RobotContainer {
 			driverController.button(2).whileTrue(new FailsafeCoralCommand());
 
 			// Coral Commands
-			// X = L1, Y = L2, B = L3, Right Joystick Down = L4, A = Home
 			operatorController.button(3).onTrue(new SequentialCommandGroup(
-					new ArmStartCommand(),
+					new ArmUpCommand(),
 					new WaitCommand(0.15),
 					new Coral1Command()));
-
 			operatorController.button(4).onTrue(new SequentialCommandGroup(
-					new ArmStartCommand(),
+					new ArmUpCommand(),
 					new WaitCommand(0.15),
 					new Coral2Command()));
-
-			operatorController.button(2).whileTrue(new Coral3Command());
+			operatorController.button(2).onTrue(new SequentialCommandGroup(
+					new ArmUpCommand(),
+					new WaitCommand(0.15),
+					new Coral3Command()));
 			operatorController.button(10).onTrue(new SequentialCommandGroup(
-					new ArmStartCommand(),
+					new ArmUpCommand(),
 					new WaitCommand(0.15),
 					new Coral4Command()));
 
@@ -153,6 +130,12 @@ public class RobotContainer {
 
 			// Press again to stop
 			operatorController.leftTrigger().whileTrue(new EjectAlgaeCommand());
+
+			/*
+			 * operatorController.leftTrigger().whileTrue(new SequentialCommandGroup(
+			 * new ArmStartCommand()
+			 * ));
+			 */
 
 			// these are to get the algae off of the reef
 			operatorController.povDown().whileTrue(new Algae1Command());
@@ -167,22 +150,40 @@ public class RobotContainer {
 			driverController.rightBumper().whileTrue(new AutoAlignRightCommand());
 
 			// driverController.button(3).whileTrue(new StartCommand());
-			operatorController.button(1).onTrue(new SequentialCommandGroup(
-					new EndEffectorStopCommand(),
-					new ElevatorStartCommand(),
-					new WaitCommand(0.05),
-					new ArmStartCommand()
+			operatorController.button(1).onTrue(new StartCommand());
 
-			));
-			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
-			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
+			// driverController.rightBumper().whileTrue(new RunCommand(() -> new
+			// SequentialCommandGroup(new IntakeNoWait(), new StopIntake()).execute()));
+
+			// operatorController.rightTrigger().onTrue(getAutonomousCommand())
 
 			operatorController.rightTrigger().whileTrue(// new SequentialCommandGroup(
-					new EjectCoralNoCheck(0.6));
+					new EjectCoralNoCheck(0.6)
+			// new EjectCoralCommand()//,
+			// new DriveBackwardsCommand()
+			// new ArmStartCommand(), // this will retract the arm and stop end effector
+			// new StartCommand() // this will retract the arm and move the elevator down
+			// )
+			);
 
 			// Climber Stuff
 			operatorController.rightBumper().whileTrue(new ClimberUpCommand());
 			operatorController.leftBumper().whileTrue(new ClimberDownCommand());
+
+			// Move the end effector wheels freely
+			/*
+			 * operatorController.axisGreaterThan(1, 0.2).whileTrue(
+			 * new EjectCoralNoCheck(operatorController.getRightX())
+			 * );
+			 */
+
+			// driverController.rightTrigger().whileFalse(new StopEjectCoralCommand());
+
+			// driverController.button(1).whileTrue(new RunCommand(() -> new
+			// ResetPositionCommand()));
+
+			// driverController.button(1).whileTrue(new RunCommand(() ->
+			// sliderSubsystem.setDesiredState(ElevatorSubsystem.ElevatorState.Start)));
 
 			// Swerve Drive method is set as default for drive subsystem
 			driveSubsystem.setDefaultCommand(
@@ -197,8 +198,13 @@ public class RobotContainer {
 
 			// This is for simulation
 
+			// driverController.button(1).whileTrue(new AutoAlignRightCommand());
 			driverController.button(1).whileTrue(
+					// new EjectCoralNoCheck(0.0)
+					// new Algae1Command()
 					new SequentialCommandGroup(
+							// new RunCommand(() ->
+							// endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeHoldAlgae)),
 							new EndEffectorStopCommand(),
 							new ArmStartCommand(),
 							new ElevatorStartCommand()));
@@ -216,6 +222,6 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return autoChooser.getSelected();
+		return m_chooser.getSelected();
 	}
 }

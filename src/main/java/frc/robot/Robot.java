@@ -3,7 +3,7 @@ package frc.robot;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
-import com.pathplanner.lib.pathfinding.Pathfinding;
+//import com.pathplanner.lib.pathfinding.Pathfinding;
 //import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.net.PortForwarder;
@@ -15,29 +15,29 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 // This is needed for AdvantageScope
 public class Robot extends LoggedRobot {
-//public class Robot extends TimedRobot {
+	// public class Robot extends TimedRobot {
 	private Command autonomousCommand;
 
 	private RobotContainer robotContainer;
-	//private REVPhysicsSim simulator;
+	// private REVPhysicsSim simulator;
 
 	@Override
 	public void robotInit() {
 
-		Pathfinding.setPathfinder(new LocalADStarAK());
+		//Pathfinding.setPathfinder(new LocalADStarAK());
 
 		// This is for advantagekit
 		Logger.addDataReceiver(new NT4Publisher());
 
-		//PathPlannerServer.startServer(5811);
+		// PathPlannerServer.startServer(5811);
 
 		robotContainer = new RobotContainer(!Robot.isReal());
 		DriverStation.silenceJoystickConnectionWarning(true);
 
-		if(Constants.kEnableLimelight) {
+		if (Constants.kEnableLimelight) {
 			for (int port = 5800; port <= 5809; port++) {
-            	PortForwarder.add(port, "limelight.local", port);
-        	}
+				PortForwarder.add(port, "limelight.local", port);
+			}
 		}
 
 		// This is for advantagekit
@@ -49,8 +49,11 @@ public class Robot extends LoggedRobot {
 
 		CommandScheduler.getInstance().run();
 
-		/*Logger.recordOutput("Power/BatteryVoltage", RobotController.getBatteryVoltage());
-		Logger.recordOutput("Power/IsBrownedOut", RobotController.isBrownedOut());*/
+		/*
+		 * Logger.recordOutput("Power/BatteryVoltage",
+		 * RobotController.getBatteryVoltage());
+		 * Logger.recordOutput("Power/IsBrownedOut", RobotController.isBrownedOut());
+		 */
 		Logger.recordOutput("CAN/ReceiveErrorCount", RobotController.getCANStatus().receiveErrorCount);
 		Logger.recordOutput("CAN/TransmitErrorCount", RobotController.getCANStatus().transmitErrorCount);
 		Logger.recordOutput("CAN/PercentBusUtilization", RobotController.getCANStatus().percentBusUtilization);
@@ -58,17 +61,17 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void disabledInit() {
-		//robotContainer.setupAuto(true);
+		// robotContainer.setupAuto(true);
 	}
 
 	@Override
 	public void disabledPeriodic() {
-		
+
 	}
 
 	@Override
 	public void autonomousInit() {
-		//robotContainer.setupAuto(false);
+		// robotContainer.setupAuto(false);
 		autonomousCommand = robotContainer.getAutonomousCommand();
 
 		if (autonomousCommand != null) {
@@ -83,7 +86,7 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopInit() {
-		//robotContainer.setupAuto(false);
+		// robotContainer.setupAuto(false);
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
@@ -91,7 +94,7 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		
+
 	}
 
 	@Override
@@ -106,12 +109,12 @@ public class Robot extends LoggedRobot {
 
 	@Override
 	public void simulationInit() {
-		//simulator = REVPhysicsSim.getInstance();
-		//simulator.run();
+		// simulator = REVPhysicsSim.getInstance();
+		// simulator.run();
 	}
 
 	@Override
 	public void simulationPeriodic() {
-		//REVPhysicsSim.getInstance().run();
+		// REVPhysicsSim.getInstance().run();
 	}
 }
