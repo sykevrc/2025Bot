@@ -5,7 +5,7 @@
 package frc.robot;
 
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import com.pathplanner.lib.config.PIDConstants;
+//import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -161,12 +161,14 @@ public final class Constants {
 			// 0);
 			// public static final PIDConstants kPPDriveConstants = new PIDConstants(6.5, 0,
 			// 0); // best one
-			public static final PIDConstants kPPDriveConstants = new PIDConstants(7.5, 0, 0);
+			// public static final PIDConstants kPPDriveConstants = new PIDConstants(7.5, 0,
+			// 0);
 			// public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0,
 			// 0);
 			// public static final PIDConstants kPPTurnConstants = new PIDConstants(5.0, 0,
 			// 0);
-			public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0, 0);
+			// public static final PIDConstants kPPTurnConstants = new PIDConstants(3.5, 0,
+			// 0);
 
 			// public static final double kPPMaxVelocity = 4.00;
 			// public static final double kPPMaxAcceleration = 2.50;
@@ -242,19 +244,6 @@ public final class Constants {
 		public static double visionMeasurementStdDevsTheta = Units.degreesToRadians(10);
 	}
 
-	public static class ClimbConstants {
-
-		public static boolean climberEnabled = true;
-		public static int motor_id = 30;
-
-		public static double climberExtended = 0.0;
-		public static double climberRetracted = 0.0;
-		public static double P = 0.05;
-		public static double I = 0.00005;
-		public static double D = 0.01;
-
-	}
-
 	public static class ArmConstants {
 		// how high the arm goes to clear a stuck coral on the battery
 		public static double ClearCoral = 0.62;
@@ -281,18 +270,18 @@ public final class Constants {
 		// public static double AlgaeFloor = -10;
 		public static double AlgaeFloor = 0.49; // using bore encoder
 
-		public static double Start = 0.62; // using bore encoder
-
+		public static double Start = 0.63; // using bore encoder
+		public static double Up = 0.7;
 		// public static double P = 1.5;
 		// public static double P = 0.05;
 		// public static double P = 1.5; // using bore encoder
-		public static double P = 0.25; // using bore encoder and maxmotion
+		public static double P = 3; // using bore encoder and maxmotion
 		// public static double I = 0.0;
-		public static double I = 0.001; // using bore encoder and maxmotion
+		public static double I = 0.01; // using bore encoder and maxmotion
 		// public static double D = 0.0;
 		// public static double D = 0.0;
 		// public static double D = 10.0;
-		public static double D = 0.02; // using bore encoder and maxmotion
+		public static double D = 0.01; // using bore encoder and maxmotion
 
 		public static int motor_id = 20;
 	}
@@ -330,11 +319,11 @@ public final class Constants {
 		public static int motor_id = 32;
 		public static int motor2_id = 33;
 		// public static double P = 0.1; // bore encoder testing
-		public static double P = 0.05;
+		public static double P = 0.08;
 		// public static double P = 5;
-		public static double I = 0.00005;
+		public static double I = 0.00006;
 		// public static double D = 0.02;
-		public static double D = 0.02;
+		public static double D = 0;
 
 		public static double MMJerk = 1600;
 
@@ -345,9 +334,9 @@ public final class Constants {
 		public static double CoralHuman = 0;
 		public static double CoralL4 = 12;
 		// public static double CoralL3 = 13.45;
-		public static double CoralL3 = 0.1;
-		public static double CoralL2 = 0;
-		public static double CoralL1 = 0;
+		public static double CoralL3 = 8;
+		public static double CoralL2 = 6;
+		public static double CoralL1 = 2;
 		public static double AlgaeHuman = 1.0;
 		public static double AlgaeL3 = 10;
 		public static double AlgaeL2 = .595;
