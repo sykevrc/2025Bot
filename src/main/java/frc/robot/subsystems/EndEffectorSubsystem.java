@@ -56,8 +56,8 @@ public class EndEffectorSubsystem extends SubsystemBase {
     private double i = Constants.EndEffectorConstants.I;
     private double d = Constants.EndEffectorConstants.D;
 
-    // private SparkMax motor2 = null;
-    // private SparkMaxSim motor2Sim = null;
+    //private SparkMax motor2 = null;
+    //private SparkMaxSim motor2Sim = null;
     private SparkClosedLoopController pid2 = null;
     private SparkMaxConfig config2 = new SparkMaxConfig();
 
@@ -73,18 +73,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
             }
 
             motor = new SparkFlex(Constants.EndEffectorConstants.motor_id, MotorType.kBrushless);
-            // motor2 = new SparkMax(Constants.EndEffectorConstants.motor2_id,
-            // MotorType.kBrushless);
+            //motor2 = new SparkMax(Constants.EndEffectorConstants.motor2_id, MotorType.kBrushless);
 
             if (isSim) {
                 motorSim = new SparkFlexSim(motor, DCMotor.getNeoVortex(1));
-                // motor2Sim = new SparkMaxSim(motor2, DCMotor.getNEO(1));
+                //motor2Sim = new SparkMaxSim(motor2, DCMotor.getNEO(1));
             }
 
             setConfig();
 
             pid = motor.getClosedLoopController();
-            // pid2 = motor2.getClosedLoopController();
+            //pid2 = motor2.getClosedLoopController();
 
             if (Constants.kEnableDebugEndEffector) {
 
@@ -222,7 +221,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
         if (Constants.kEnableEndEffector) {
 
             if (motor.getOutputCurrent() > 60) {
-                hasCoral = true;
+                motor.set(0.0);
             }
 
             // if(!hasCoral && !hasAlgae) {
@@ -247,29 +246,29 @@ public class EndEffectorSubsystem extends SubsystemBase {
                         // we are trying to intake the coral and the beam breaker says we have it so
                         // stop the motors
                         motor.set(0.0);
-                        // motor2.set(0.0);
+                        //motor2.set(0.0);
                     } else {
                         // We don't have the coral so run the intake motors
                         motor.set(targetVelocity1);
-                        // motor2.set(targetVelocity2);
+                        //motor2.set(targetVelocity2);
                     }
                     break;
                 case IntakeAlgaeFloor:
                     // Run the motors
                     motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
-                    // motor2.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2);
+                    //motor2.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor2);
 
                     // motor.set(Constants.EndEffectorConstants.IntakeAlgaeFloorMotor1);
                     break;
                 case EjectAlgaeFloor:
                     motor.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor1);
-                    // motor2.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor2);
+                    //motor2.set(Constants.EndEffectorConstants.EjectAlgaeFloorMotor2);
                     // hasAlgae = false;
                     break;
                 case EjectCoralFront:
                     // if(hasCoral) {
                     // we have the coral so eject it
-                    // motor2.set(targetVelocity1);
+                    //motor2.set(targetVelocity1);
                     motor.set(targetVelocity2);
                     /*
                      * } else {
@@ -283,7 +282,7 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     // if(hasCoral) {
                     // System.out.println("ejecting the back");
                     // we have the coral so eject it
-                    // motor2.set(targetVelocity1);
+                    //motor2.set(targetVelocity1);
                     motor.set(targetVelocity2);
                     /*
                      * } else {
@@ -294,17 +293,17 @@ public class EndEffectorSubsystem extends SubsystemBase {
                      */
                     break;
                 case EjectCoralFrontNoCheck:
-                    // motor2.set(targetVelocity1);
+                    //motor2.set(targetVelocity1);
                     motor.set(targetVelocity2);
                     break;
                 case EjectCoralBackNoCheck:
-                    // motor2.set(targetVelocity1);
+                    //motor2.set(targetVelocity1);
                     motor.set(targetVelocity2);
                     break;
                 case Stopped:
                     // stop the motors
                     motor.set(0.0);
-                    // motor2.set(0.0);
+                    //motor2.set(0.0);
                 default:
                     // motor.set(targetVelocity1);
                     // motor2.set(targetVelocity2);
@@ -319,9 +318,9 @@ public class EndEffectorSubsystem extends SubsystemBase {
                     0.02);
 
             // this.motor2Sim.iterate(
-            // targetVelocity2,
-            // RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
-            // 0.02);
+            //         targetVelocity2,
+            //         RoboRioSim.getVInVoltage(), // Simulated battery voltage, in Volts
+            //         0.02);
         }
     }
 
