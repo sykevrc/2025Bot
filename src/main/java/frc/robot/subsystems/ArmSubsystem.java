@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -35,7 +36,8 @@ public class ArmSubsystem extends SubsystemBase {
         AlgaeL2,
         AlgaeL1,
         AlgaeShoot,
-        ArmFloor
+        ArmFloor,
+        Up
     }
 
     private boolean isSim = false;
@@ -43,24 +45,25 @@ public class ArmSubsystem extends SubsystemBase {
     private double targetPosition = Constants.ArmConstants.Start;
     private SparkMax motor = null;
     private SparkMaxSim motorSim = null;
-    // private SparkClosedLoopController pid = null;
+    //private SparkClosedLoopController pid = null;
     private SparkMaxConfig config = new SparkMaxConfig();
 
     // need to look into using this
     private ProfiledPIDController profiledPIDController = new ProfiledPIDController(
-            0.1,
-            0.0,
-            0.1,
-            new TrapezoidProfile.Constraints(2, 2),
-            0.02);
+        0.1,
+        0.0, 
+        0.1, 
+        new TrapezoidProfile.Constraints(2, 2),
+        0.02
+    ); 
 
     private double p = Constants.ArmConstants.P;
     private double i = Constants.ArmConstants.I;
     private double d = Constants.ArmConstants.D;
 
     // these values were calculate using https://www.reca.lc/arm
-    // private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
-    // private ArmFeedforward armFeedforward = new ArmFeedforward(0.1, 2.0, 0.25);
+    //private ArmFeedforward armFeedforward = new ArmFeedforward(1.1, 5.02, 0.25);
+    //private ArmFeedforward armFeedforward = new ArmFeedforward(0.1, 2.0, 0.25);
 
     public ArmSubsystem() {
 
@@ -74,23 +77,23 @@ public class ArmSubsystem extends SubsystemBase {
 
             motor = new SparkMax(Constants.ArmConstants.motor_id, MotorType.kBrushless);
 
-            if (isSim) {
-                motorSim = new SparkMaxSim(motor, DCMotor.getNeoVortex(1));
-            }
+		    if(isSim) {
+			    motorSim = new SparkMaxSim(motor, DCMotor.getNeoVortex(1));
+		    }
 
             setConfig();
 
-            // pid = motor.getClosedLoopController();
+		    //pid = motor.getClosedLoopController();
 
             if (Constants.kEnableDebugArm) {
 
                 Shuffleboard.getTab("Arm")
-                        .addDouble("Position", this::getPosition)
-                        .withWidget(BuiltInWidgets.kTextView);
+                    .addDouble("Position", this::getPosition)
+                    .withWidget(BuiltInWidgets.kTextView);
 
                 Shuffleboard.getTab("Arm")
-                        .addDouble("Target", this::getPosition)
-                        .withWidget(BuiltInWidgets.kTextView);
+                    .addDouble("Target", this::getPosition)
+                    .withWidget(BuiltInWidgets.kTextView);
 
                 SmartDashboard.putData(this);
                 Shuffleboard.getTab("Arm").add(this);
@@ -101,13 +104,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setDesiredState(ArmState state) {
 
-        if (this.state == state) {
+        if(this.state == state) {
             // trying to set the state to the state we are already at
             // just returning to save cycles
             return;
         }
 
-        switch (state) {
+        switch(state) {
             case ClearCoral:
                 targetPosition = Constants.ArmConstants.ClearCoral;
                 break;
@@ -147,15 +150,18 @@ public class ArmSubsystem extends SubsystemBase {
             case Start:
                 targetPosition = Constants.ArmConstants.Start;
                 break;
+            case Up:
+                targetPosition = Constants.ArmConstants.Up;
+                break;
             default:
-                // targetPosition = 0.0;
+                //targetPosition = 0.0;
                 targetPosition = Constants.ArmConstants.Start;
                 break;
-
+            
         }
 
         this.state = state;
-        // drivePID.setReference(targetPosition, ControlType.kPosition);
+        //drivePID.setReference(targetPosition, ControlType.kPosition);
     }
 
     public ArmState getDesiredState() {
@@ -163,12 +169,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {
+	public void periodic() {
 
         if (Constants.kEnableArm) {
-
+    
             motor.set(
-                    profiledPIDController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition));
+                profiledPIDController.calculate(motor.getAbsoluteEncoder().getPosition(), targetPosition)
+            );
 
             if (isSim) {
                 motorSim.iterate(
@@ -180,41 +187,44 @@ public class ArmSubsystem extends SubsystemBase {
             }
         }
 
+        
     }
-
+    
     private void setConfig() {
         config = new SparkMaxConfig();
 
         config
-                .inverted(true)
-                .idleMode(IdleMode.kBrake);
+            .inverted(true)
+            .idleMode(IdleMode.kBrake);
         config.encoder
-                .positionConversionFactor(9)
-                .velocityConversionFactor(9);
+            .positionConversionFactor(9)
+            .velocityConversionFactor(9);
         config.closedLoop
-                // .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-                .pid(
-                        p,
-                        i,
-                        d);
+            //.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+		    .pid(
+			    p, 
+                i, 
+                d
+			);
 
         config.absoluteEncoder.zeroOffset(0.5);
 
         // Set MAXMotion parameters
         config.closedLoop.maxMotion
-                // .maxVelocity(6784)
-                .maxVelocity(400)
-                .maxAcceleration(100)
-                // .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-                .allowedClosedLoopError(.05);
+            //.maxVelocity(6784)
+            .maxVelocity(400)
+            .maxAcceleration(100)
+            //.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
+            .allowedClosedLoopError(.05);
 
         config.signals.primaryEncoderPositionPeriodMs(5);
 
         motor.configure(
-                config,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+		    config, 
+			ResetMode.kResetSafeParameters, 
+			PersistMode.kPersistParameters
+		);
 
         profiledPIDController.setPID(p, i, d);
         profiledPIDController.setTolerance(0.01);
@@ -222,12 +232,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     public double getPosition() {
 
-        if (isSim) {
+        if(isSim) {
             return motorSim.getRelativeEncoderSim().getPosition();
         }
 
-        // return motor.getEncoder().getPosition();
-        return motor.getAbsoluteEncoder().getPosition();
+        //return motor.getEncoder().getPosition();
+        return  motor.getAbsoluteEncoder().getPosition();
     }
 
     public double getTargetPosition() {
@@ -276,7 +286,7 @@ public class ArmSubsystem extends SubsystemBase {
         builder.addDoubleProperty("I", this::getI, this::setI);
         builder.addDoubleProperty("P", this::getP, this::setP);
         builder.addDoubleProperty("Target", this::getTargetPosition, this::setTargetPosition);
-        builder.addDoubleProperty("Position", this::getPosition, null);
+        builder.addDoubleProperty("Position", this::getPosition,null);
         builder.addBooleanProperty("At Target", this::atTargetPosition, null);
     }
 }
